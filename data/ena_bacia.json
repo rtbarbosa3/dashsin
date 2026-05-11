@@ -1,0 +1,73 @@
+{
+  "generated_at_utc": "2026-05-11T13:00:00Z",
+  "source": {
+    "name": "INITIAL SEED — will be replaced by ONS Dados Abertos data on first Action run",
+    "years": [2024, 2025, 2026],
+    "fetch_errors": [],
+    "records_count": 0,
+    "note": "ENA Bruta (MWmed) is the runoff energy equivalent — proxy for precipitation accumulation per basin."
+  },
+  "basin_order": ["paranaiba", "grande", "parana", "iguacu", "uruguai", "sao_francisco", "parnaiba", "tocantins"],
+  "basin_meta": {
+    "paranaiba":     {"name": "Paranaíba",      "sub": "SECO"},
+    "grande":        {"name": "Grande",         "sub": "SECO"},
+    "parana":        {"name": "Paraná",         "sub": "SECO"},
+    "iguacu":        {"name": "Iguaçu",         "sub": "SUL"},
+    "uruguai":       {"name": "Uruguai",        "sub": "SUL"},
+    "sao_francisco": {"name": "São Francisco",  "sub": "NE"},
+    "parnaiba":      {"name": "Parnaíba",       "sub": "NE"},
+    "tocantins":     {"name": "Tocantins",      "sub": "N"}
+  },
+  "now": {
+    "paranaiba":     {"mwmed": 8500,  "date": "2026-05-10", "sub": "SECO", "name": "Paranaíba"},
+    "grande":        {"mwmed": 7200,  "date": "2026-05-10", "sub": "SECO", "name": "Grande"},
+    "parana":        {"mwmed": 5800,  "date": "2026-05-10", "sub": "SECO", "name": "Paraná"},
+    "iguacu":        {"mwmed": 4200,  "date": "2026-05-10", "sub": "SUL", "name": "Iguaçu"},
+    "uruguai":       {"mwmed": 3800,  "date": "2026-05-10", "sub": "SUL", "name": "Uruguai"},
+    "sao_francisco": {"mwmed": 2100,  "date": "2026-05-10", "sub": "NE", "name": "São Francisco"},
+    "parnaiba":      {"mwmed": 1200,  "date": "2026-05-10", "sub": "NE", "name": "Parnaíba"},
+    "tocantins":     {"mwmed": 12500, "date": "2026-05-10", "sub": "N", "name": "Tocantins"}
+  },
+  "monthly_mwmed": {
+    "paranaiba": {
+      "2024": [13500, 14200, 11800, 8200, 5100, 3500, 2800, 2400, 3100, 4800, 7500, 11200],
+      "2025": [14800, 15500, 12500, 8800, 5600, 3800, 3000, 2600, 3300, 5200, 8400, 12800],
+      "2026": [17200, 16800, 13500, 9200, 8500, null, null, null, null, null, null, null]
+    },
+    "grande": {
+      "2024": [11800, 12500, 10500, 7100, 4400, 2800, 2200, 2000, 2700, 4200, 6500, 9800],
+      "2025": [12500, 13200, 11000, 7500, 4800, 3000, 2400, 2100, 2800, 4500, 7100, 10500],
+      "2026": [14500, 14200, 11800, 8000, 7200, null, null, null, null, null, null, null]
+    },
+    "parana": {
+      "2024": [9500, 10200, 8500, 6200, 4500, 3200, 2500, 2300, 3100, 4500, 6200, 8500],
+      "2025": [10500, 11000, 9200, 6800, 5000, 3500, 2700, 2500, 3300, 4800, 6800, 9200],
+      "2026": [11500, 11800, 10000, 7200, 5800, null, null, null, null, null, null, null]
+    },
+    "iguacu": {
+      "2024": [2800, 2200, 2500, 3200, 4500, 7800, 9500, 8200, 6500, 5500, 3800, 3100],
+      "2025": [2600, 2000, 2200, 3000, 4200, 7200, 10800, 9200, 7200, 5500, 3500, 2800],
+      "2026": [2400, 2200, 2800, 4500, 4200, null, null, null, null, null, null, null]
+    },
+    "uruguai": {
+      "2024": [2400, 1800, 2100, 2800, 4100, 7500, 9200, 8500, 6800, 5800, 3500, 2700],
+      "2025": [2200, 1700, 1900, 2700, 3900, 7200, 11500, 9800, 7500, 5800, 3300, 2500],
+      "2026": [2100, 1900, 2400, 4000, 3800, null, null, null, null, null, null, null]
+    },
+    "sao_francisco": {
+      "2024": [3500, 4500, 5800, 4200, 2200, 1100, 600, 400, 500, 1000, 1800, 2800],
+      "2025": [3200, 4200, 5500, 4000, 2100, 1000, 550, 380, 480, 950, 1700, 2700],
+      "2026": [4200, 5500, 6800, 3800, 2100, null, null, null, null, null, null, null]
+    },
+    "parnaiba": {
+      "2024": [2200, 3100, 4500, 3200, 1500, 600, 200, 100, 250, 800, 1500, 1800],
+      "2025": [2000, 2900, 4200, 3000, 1400, 580, 190, 95, 240, 780, 1400, 1750],
+      "2026": [2800, 3800, 5200, 2800, 1200, null, null, null, null, null, null, null]
+    },
+    "tocantins": {
+      "2024": [17500, 21500, 26800, 19500, 11200, 5200, 2500, 1500, 1800, 4500, 9500, 14500],
+      "2025": [18500, 23500, 26500, 19500, 11200, 5200, 2500, 1500, 1800, 5000, 10500, 15500],
+      "2026": [19500, 22500, 21500, 14500, 12500, null, null, null, null, null, null, null]
+    }
+  }
+}

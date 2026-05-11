@@ -7,7 +7,10 @@ from typing import Iterator
 
 import requests
 
-USER_AGENT = "dashsin-pipeline/1.0 (+https://github.com/rtbarbosa3/dashsin)"
+USER_AGENT = (
+    "Mozilla/5.0 (compatible; dashsin-pipeline/1.0; "
+    "+https://github.com/rtbarbosa3/dashsin)"
+)
 DEFAULT_TIMEOUT = 60
 
 

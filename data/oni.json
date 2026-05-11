@@ -1,0 +1,49 @@
+{
+  "generated_at_utc": "2026-05-11T13:00:00Z",
+  "source": {
+    "name": "INITIAL SEED — will be replaced by NOAA CPC data on first Action run",
+    "url": "https://www.cpc.ncep.noaa.gov/data/indices/oni.ascii.txt",
+    "records_count": 30,
+    "note": "ONI = 3-month running mean SST anomaly in Niño 3.4 region. ±0.5 °C is the El Niño / La Niña threshold."
+  },
+  "current": {
+    "year": 2026,
+    "month": 5,
+    "season": "AMJ",
+    "anom": 0.4,
+    "phase": "Neutral",
+    "streak_months": 1
+  },
+  "recent_30m": [
+    {"year": 2023, "month": 12, "season": "NDJ", "anom": -0.7, "classification": "La Niña"},
+    {"year": 2024, "month": 1,  "season": "DJF", "anom": -0.7, "classification": "La Niña"},
+    {"year": 2024, "month": 2,  "season": "JFM", "anom": -0.5, "classification": "La Niña"},
+    {"year": 2024, "month": 3,  "season": "FMA", "anom": -0.3, "classification": "Neutral"},
+    {"year": 2024, "month": 4,  "season": "MAM", "anom": -0.2, "classification": "Neutral"},
+    {"year": 2024, "month": 5,  "season": "AMJ", "anom": -0.1, "classification": "Neutral"},
+    {"year": 2024, "month": 6,  "season": "MJJ", "anom":  0.0, "classification": "Neutral"},
+    {"year": 2024, "month": 7,  "season": "JJA", "anom":  0.1, "classification": "Neutral"},
+    {"year": 2024, "month": 8,  "season": "JAS", "anom":  0.0, "classification": "Neutral"},
+    {"year": 2024, "month": 9,  "season": "ASO", "anom": -0.2, "classification": "Neutral"},
+    {"year": 2024, "month": 10, "season": "SON", "anom": -0.4, "classification": "Neutral"},
+    {"year": 2024, "month": 11, "season": "OND", "anom": -0.6, "classification": "La Niña"},
+    {"year": 2024, "month": 12, "season": "NDJ", "anom": -0.8, "classification": "La Niña"},
+    {"year": 2025, "month": 1,  "season": "DJF", "anom": -0.9, "classification": "La Niña"},
+    {"year": 2025, "month": 2,  "season": "JFM", "anom": -0.8, "classification": "La Niña"},
+    {"year": 2025, "month": 3,  "season": "FMA", "anom": -0.6, "classification": "La Niña"},
+    {"year": 2025, "month": 4,  "season": "MAM", "anom": -0.4, "classification": "Neutral"},
+    {"year": 2025, "month": 5,  "season": "AMJ", "anom": -0.2, "classification": "Neutral"},
+    {"year": 2025, "month": 6,  "season": "MJJ", "anom": -0.1, "classification": "Neutral"},
+    {"year": 2025, "month": 7,  "season": "JJA", "anom":  0.0, "classification": "Neutral"},
+    {"year": 2025, "month": 8,  "season": "JAS", "anom":  0.1, "classification": "Neutral"},
+    {"year": 2025, "month": 9,  "season": "ASO", "anom":  0.2, "classification": "Neutral"},
+    {"year": 2025, "month": 10, "season": "SON", "anom":  0.4, "classification": "Neutral"},
+    {"year": 2025, "month": 11, "season": "OND", "anom":  0.5, "classification": "El Niño"},
+    {"year": 2025, "month": 12, "season": "NDJ", "anom":  0.6, "classification": "El Niño"},
+    {"year": 2026, "month": 1,  "season": "DJF", "anom":  0.7, "classification": "El Niño"},
+    {"year": 2026, "month": 2,  "season": "JFM", "anom":  0.7, "classification": "El Niño"},
+    {"year": 2026, "month": 3,  "season": "FMA", "anom":  0.6, "classification": "El Niño"},
+    {"year": 2026, "month": 4,  "season": "MAM", "anom":  0.5, "classification": "El Niño"},
+    {"year": 2026, "month": 5,  "season": "AMJ", "anom":  0.4, "classification": "Neutral"}
+  ]
+}
