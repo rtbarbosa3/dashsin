@@ -1,7 +1,1 @@
-# Python dependencies for data pipelines (Fase 2+)
-# Será preenchido quando começarmos a estruturar pipelines/
-
-# Esperado:
-# requests>=2.31
-# pandas>=2.0
-# pdfplumber>=0.10  (para parser do IPDO)
+requests>=2.31,<3
