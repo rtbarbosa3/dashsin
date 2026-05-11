@@ -231,7 +231,7 @@ html, body { background: var(--bg); color: var(--text); font-family: var(--font-
     </div>
   </div>
   <div class="topbar-right">
-    <span class="meta"><span class="live"></span><span data-i18n="dataLag">ONS / IPDO 09 May 2026</span></span>
+    <span class="meta"><span class="live"></span><span id="data-status">Loading...</span></span>
     <div class="lang-toggle">
       <button data-lang="EN" class="active">EN</button>
       <button data-lang="PT">PT</button>
@@ -334,86 +334,13 @@ const SUB_FULL = {SECO:'Sudeste / Centro-Oeste', SUL:'Sul', NE:'Nordeste', N:'No
 const MONTH_ABBR_EN = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 const MONTH_ABBR_PT = ['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
 
-// ── Current EAR snapshot (IPDO 09/05/2026) ────────────────────────
-const EAR_NOW = {
-  SECO: {pct: 65.6, mwmes: 134297, max: 204615},
-  SUL:  {pct: 41.5, mwmes: 8500,   max: 20459},
-  NE:   {pct: 95.4, mwmes: 49314,  max: 51691},
-  N:    {pct: 96.6, mwmes: 14787,  max: 15302},
-  SIN:  {pct: 70.8, mwmes: 206899, max: 292068},
-};
-
-// ── EAR monthly history (% end of month) ─────────────────────────
-// 2024 + 2025 approximated from ONS published seasonal patterns
-// 2026 Jan-May actual snapshots
-const EAR_MONTHLY = {
-  SECO: {
-    '2024':[42,45,55,70,75,78,78,72,55,42,44,42],
-    '2025':[42,45,55,65,68,65,60,55,50,42,45,48],
-    '2026':[48,52,58,62,65.6,null,null,null,null,null,null,null]
-  },
-  SUL: {
-    '2024':[70,60,50,40,30,35,65,88,90,92,88,75],
-    '2025':[75,60,45,38,35,40,70,90,92,90,85,70],
-    '2026':[65,55,45,40,41.5,null,null,null,null,null,null,null]
-  },
-  NE: {
-    '2024':[55,65,75,80,80,80,75,70,60,50,45,45],
-    '2025':[48,55,65,75,78,75,70,65,58,50,45,45],
-    '2026':[60,70,85,92,95.4,null,null,null,null,null,null,null]
-  },
-  N: {
-    '2024':[60,75,90,95,95,90,85,75,60,50,50,55],
-    '2025':[60,75,90,95,95,90,85,75,60,50,55,55],
-    '2026':[65,80,92,95,96.6,null,null,null,null,null,null,null]
-  },
-};
-
-// ── ENA snapshot (IPDO 09/05/2026, month-to-date) ─────────────────
-const ENA_NOW = {
-  SECO: {mwmed: 31098, pct_mlt_bruta: 84,  pct_mlt_armaz: 73},
-  SUL:  {mwmed: 9909,  pct_mlt_bruta: 117, pct_mlt_armaz: 123},
-  NE:   {mwmed: 3807,  pct_mlt_bruta: 72,  pct_mlt_armaz: 72},
-  N:    {mwmed: 18567, pct_mlt_bruta: 67,  pct_mlt_armaz: 99},
-};
-
-// ── ENA monthly history (% MLT bruta) ─────────────────────────────
-// Per-subsystem seasonality reflects natural inflow patterns:
-// SE/CO: peaks Nov-Apr (wet season), dry Jun-Oct
-// SUL: bimodal, peaks Jun-Aug (winter rains), driest Mar-May
-// NE: sharp peak Feb-Apr (São Francisco wet season), very dry Aug-Oct
-// N: peak Feb-May (Amazon basin), very dry Aug-Nov
-const ENA_MONTHLY = {
-  SECO: {
-    '2024':[75,82,85,90,80,70,65,60,55,60,70,78],
-    '2025':[85,90,95,95,85,75,70,65,60,75,90,100],
-    '2026':[105,110,95,90,84,null,null,null,null,null,null,null]
-  },
-  SUL: {
-    '2024':[95,70,60,50,60,120,200,180,130,110,85,70],
-    '2025':[90,65,55,60,80,140,220,200,150,110,80,65],
-    '2026':[70,60,65,95,117,null,null,null,null,null,null,null]
-  },
-  NE: {
-    '2024':[80,95,105,100,80,60,40,30,35,50,65,75],
-    '2025':[70,85,100,95,80,55,40,30,30,50,60,75],
-    '2026':[95,110,120,90,72,null,null,null,null,null,null,null]
-  },
-  N: {
-    '2024':[90,110,130,120,95,70,50,35,30,35,50,75],
-    '2025':[95,115,130,120,95,70,50,35,30,40,55,80],
-    '2026':[100,115,110,80,67,null,null,null,null,null,null,null]
-  },
-};
-
-// ENA MLT reference (long-term mean) by submarket × month, in MWmed
-// Calibrated so May 2026 pct × MLT ≈ IPDO actual MWmed value
-const ENA_MLT_MWMED = {
-  SECO: [65000, 60000, 55000, 45000, 37000, 28000, 23000, 20000, 22000, 27000, 38000, 52000],
-  SUL:  [7000,  7500,  7500,  8000,  8500,  10000, 11500, 11000, 10500, 10000, 9000,  7500],
-  NE:   [5500,  7500,  9000,  8500,  5300,  3500,  2800,  2400,  2200,  2300,  3200,  4500],
-  N:    [24000, 28000, 30000, 30000, 27700, 22000, 16000, 11000, 9000,  9500,  12000, 18000],
-};
+// ── Data containers (populated by loadData from data/ear_ena.json) ──
+let EAR_NOW = {};
+let EAR_MONTHLY = {};
+let ENA_NOW = {};
+let ENA_MWMED = {};        // monthly MWmed values per sub/year
+let ENA_PCT_MLT = {};      // monthly % MLT bruta per sub/year
+let DATA_GENERATED_AT = null;
 
 // Y-axis max per submarket (MWmed) — covers historical peaks with headroom
 const ENA_YAXIS = {
@@ -425,10 +352,35 @@ const ENA_YAXIS = {
 
 // Helper: derive MWmed and pct for a given submarket/year/monthIdx
 function enaPoint(sub, year, monthIdx) {
-  const pct = ENA_MONTHLY[sub][year][monthIdx];
-  if (pct === null || pct === undefined) return null;
-  const mwmed = Math.round(pct * ENA_MLT_MWMED[sub][monthIdx] / 100);
-  return { pct, mwmed };
+  if (!ENA_MWMED[sub] || !ENA_MWMED[sub][year]) return null;
+  const mwmed = ENA_MWMED[sub][year][monthIdx];
+  if (mwmed === null || mwmed === undefined) return null;
+  const pct = (ENA_PCT_MLT[sub] && ENA_PCT_MLT[sub][year])
+    ? ENA_PCT_MLT[sub][year][monthIdx]
+    : null;
+  return { mwmed, pct };
+}
+
+async function loadData() {
+  try {
+    const res = await fetch('../data/ear_ena.json', { cache: 'no-cache' });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const j = await res.json();
+    EAR_NOW       = j.ear_now || {};
+    EAR_MONTHLY   = j.ear_monthly_pct || {};
+    ENA_NOW       = j.ena_now || {};
+    ENA_MWMED     = j.ena_monthly_mwmed || {};
+    ENA_PCT_MLT   = j.ena_monthly_pct_mlt_bruta || {};
+    DATA_GENERATED_AT = j.generated_at_utc || null;
+    console.log('Data loaded:', DATA_GENERATED_AT);
+  } catch (e) {
+    console.error('Failed to load ear_ena.json:', e);
+    const statusEl = document.getElementById('data-status');
+    if (statusEl) {
+      statusEl.textContent = 'Data load failed';
+      statusEl.style.color = 'var(--danger)';
+    }
+  }
 }
 
 // ── Top reservoirs from IPDO sections 8.1-8.5 ─────────────────────
@@ -519,6 +471,7 @@ function setLang(lang) {
   renderEARMultiples();
   renderENAMultiples();
   renderReservoirTable();
+  if (typeof updateDataStatus === 'function') updateDataStatus();
   try { localStorage.setItem('lang', lang); } catch(e){}
 }
 
@@ -797,10 +750,22 @@ function renderReservoirTable() {
 }
 
 // ── init ──
-function init() {
+async function init() {
+  await loadData();
   let saved = 'EN';
   try { saved = localStorage.getItem('lang') || 'EN'; } catch(e){}
   setLang(saved);
+  updateDataStatus();
+}
+
+function updateDataStatus() {
+  const el = document.getElementById('data-status');
+  if (!el || !DATA_GENERATED_AT) return;
+  const d = new Date(DATA_GENERATED_AT);
+  const opts = { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit', timeZone: 'America/Sao_Paulo' };
+  const label = d.toLocaleString(currentLang === 'PT' ? 'pt-BR' : 'en-US', opts);
+  el.textContent = `ONS · ${label} BRT`;
+  el.style.color = '';
 }
 init();
 </script>
