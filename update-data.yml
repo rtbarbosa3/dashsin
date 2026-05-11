@@ -1,0 +1,44 @@
+name: update-data
+
+# Roda 1x/dia às 13h UTC = 10h BRT
+# Também pode ser disparado manualmente em Actions > update-data > Run workflow
+on:
+  schedule:
+    - cron: '0 13 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  fetch-and-commit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run ONS EAR/ENA pipeline
+        run: python pipelines/ons_ear_ena.py
+
+      - name: Commit and push data updates
+        run: |
+          git config user.name "dashsin-bot"
+          git config user.email "actions@github.com"
+          git add data/
+          if git diff --cached --quiet; then
+            echo "No data changes to commit."
+          else
+            git commit -m "data: refresh $(date -u +'%Y-%m-%d %H:%MZ')"
+            git push
+          fi
