@@ -344,10 +344,10 @@ let DATA_GENERATED_AT = null;
 
 // Y-axis max per submarket (MWmed) — covers historical peaks with headroom
 const ENA_YAXIS = {
-  SECO: { max: 75000, ticks: [25000, 50000, 75000] },
-  SUL:  { max: 30000, ticks: [10000, 20000, 30000] },
-  NE:   { max: 12000, ticks: [4000,  8000,  12000] },
-  N:    { max: 45000, ticks: [15000, 30000, 45000] },
+  SECO: { max: 90000, ticks: [30000, 60000, 90000] },
+  SUL:  { max: 36000, ticks: [12000, 24000, 36000] },
+  NE:   { max: 18000, ticks: [6000,  12000, 18000] },
+  N:    { max: 50000, ticks: [15000, 30000, 45000] },
 };
 
 // Helper: derive MWmed and pct for a given submarket/year/monthIdx
@@ -494,7 +494,8 @@ function renderKPIs() {
   const t = I18N[currentLang];
   const strip = document.querySelector('.kpi-strip');
   const cards = ['SECO','SUL','NE','N','SIN'].map(sub => {
-    const d = EAR_NOW[sub]; if (!d) return '';
+    const d = EAR_NOW[sub];
+    if (!d) return '';
     const label = sub === 'SIN' ? 'SIN' : SUB_LABELS[sub];
     return `
       <div class="kpi ${sub.toLowerCase()}">
@@ -531,11 +532,16 @@ function renderEARMultiples() {
 
   container.innerHTML = SUBS.map(sub => {
     const data = EAR_MONTHLY[sub];
+    if (!data) return '';
+    const now = EAR_NOW[sub];
     const yr24 = [], yr25 = [], yr26 = [];
     for (let m = 1; m <= 12; m++) {
-      if (data['2024'][m-1] !== null) yr24.push({x:xScale(m), y:yScale(data['2024'][m-1])});
-      if (data['2025'][m-1] !== null) yr25.push({x:xScale(m), y:yScale(data['2025'][m-1])});
-      if (data['2026'][m-1] !== null) yr26.push({x:xScale(m), y:yScale(data['2026'][m-1])});
+      const v24 = data['2024'] ? data['2024'][m-1] : null;
+      const v25 = data['2025'] ? data['2025'][m-1] : null;
+      const v26 = data['2026'] ? data['2026'][m-1] : null;
+      if (v24 !== null && v24 !== undefined) yr24.push({x:xScale(m), y:yScale(v24)});
+      if (v25 !== null && v25 !== undefined) yr25.push({x:xScale(m), y:yScale(v25)});
+      if (v26 !== null && v26 !== undefined) yr26.push({x:xScale(m), y:yScale(v26)});
     }
     const path = pts => pts.length ? pts.map((p,i) => `${i===0?'M':'L'} ${p.x.toFixed(1)} ${p.y.toFixed(1)}`).join(' ') : '';
 
@@ -558,7 +564,7 @@ function renderEARMultiples() {
       <div class="mini-chart">
         <div class="mini-chart-head">
           <span class="mc-name ${sub.toLowerCase()}">${SUB_LABELS[sub]} · ${SUB_FULL[sub]}</span>
-          <span class="mc-avg">${currentLang === 'PT' ? 'hoje' : 'now'}: <strong>${fmt(EAR_NOW[sub].pct,1)}%</strong></span>
+          <span class="mc-avg">${currentLang === 'PT' ? 'hoje' : 'now'}: <strong>${now ? fmt(now.pct,1)+'%' : '—'}</strong></span>
         </div>
         <svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none">
           ${grid}
@@ -620,15 +626,17 @@ function renderENAMultiples() {
     const dots = yr26.map(p => `<circle class="mc-dot-y26" cx="${p.x}" cy="${p.y}" r="2.5" />`).join('');
 
     // Current header: now MWmed (primary), pct MLT (secondary)
-    const now = ENA_NOW[sub];
-    const nowColor = now.pct_mlt_bruta >= 100 ? 'var(--ok)' : (now.pct_mlt_bruta >= 80 ? 'var(--warn)' : 'var(--danger)');
-    const mwmedFmt = fmtInt(now.mwmed);
+    const now = ENA_NOW[sub] || {};
+    const pctMlt = now.pct_mlt_bruta !== undefined ? now.pct_mlt_bruta : null;
+    const nowColor = pctMlt === null ? 'var(--text-dim)' : (pctMlt >= 100 ? 'var(--ok)' : (pctMlt >= 80 ? 'var(--warn)' : 'var(--danger)'));
+    const mwmedFmt = now.mwmed !== undefined ? fmtInt(now.mwmed) : '—';
+    const pctMltFmt = pctMlt !== null ? fmt(pctMlt, 0) + '% MLT' : '— MLT';
 
     return `
       <div class="mini-chart" data-sub="${sub}">
         <div class="mini-chart-head">
           <span class="mc-name ${sub.toLowerCase()}">${SUB_LABELS[sub]} · ${SUB_FULL[sub]}</span>
-          <span class="mc-avg">${currentLang === 'PT' ? 'hoje' : 'now'}: <strong style="color:${nowColor}">${mwmedFmt}</strong> MWmed · ${fmt(now.pct_mlt_bruta,0)}% MLT</span>
+          <span class="mc-avg">${currentLang === 'PT' ? 'hoje' : 'now'}: <strong style="color:${nowColor}">${mwmedFmt}</strong> MWmed · ${pctMltFmt}</span>
         </div>
         <svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none">
           ${grid}
