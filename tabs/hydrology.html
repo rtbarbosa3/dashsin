@@ -494,7 +494,7 @@ function renderKPIs() {
   const t = I18N[currentLang];
   const strip = document.querySelector('.kpi-strip');
   const cards = ['SECO','SUL','NE','N','SIN'].map(sub => {
-    const d = EAR_NOW[sub];
+    const d = EAR_NOW[sub]; if (!d) return '';
     const label = sub === 'SIN' ? 'SIN' : SUB_LABELS[sub];
     return `
       <div class="kpi ${sub.toLowerCase()}">
