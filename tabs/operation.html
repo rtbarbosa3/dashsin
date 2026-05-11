@@ -1,0 +1,732 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>BR Energy Terminal — Operation</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0a0b0d; --bg-elev: #121418; --bg-elev-2: #181b20;
+  --border: #23262c; --border-soft: #1c1f24;
+  --text: #e6e8eb; --text-muted: #8b8f96; --text-dim: #5a5d62;
+  --accent: #d4d4d8;
+  --seco: #5eb3f5; --sul: #f0a830; --ne: #4ade80; --n: #c084fc; --sin: #e6e8eb;
+  --hidro: #5eb3f5; --itaipu: #93c5fd; --nuclear: #f59e0b; --termica: #ef4444;
+  --eolica: #4ade80; --solar: #fbbf24; --bio: #a78bfa;
+  --inf: #6b7280; --ome: #f59e0b; --fom: #ef4444; --gsb: #c084fc; --exp: #4ade80;
+  --danger: #ef4444; --warn: #f59e0b; --ok: #10b981;
+  --font-sans: 'DM Sans', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { background: var(--bg); color: var(--text); font-family: var(--font-sans); font-size: 14px; line-height: 1.5; -webkit-font-smoothing: antialiased; }
+.topbar { border-bottom: 1px solid var(--border); padding: 14px 24px; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+.brand { display: flex; align-items: baseline; gap: 12px; }
+.brand .logo { font-family: var(--font-mono); font-weight: 600; font-size: 13px; letter-spacing: 0.15em; text-transform: uppercase; }
+.brand .divider { width: 1px; height: 14px; background: var(--border); }
+.brand .tabs { display: flex; gap: 1px; background: var(--border); margin-left: 16px; }
+.brand .tab { background: var(--bg-elev); padding: 4px 10px; font-family: var(--font-mono); font-size: 10px; color: var(--text-muted); letter-spacing: 0.06em; text-transform: uppercase; cursor: pointer; text-decoration: none; transition: background 0.15s, color 0.15s; }
+.brand .tab:hover { background: var(--bg-elev-2); color: var(--text); }
+.brand .tab.active { background: var(--text); color: var(--bg); }
+.topbar-right { display: flex; align-items: center; gap: 18px; }
+.meta { font-family: var(--font-mono); font-size: 11px; color: var(--text-dim); letter-spacing: 0.04em; }
+.meta .live { display: inline-block; width: 6px; height: 6px; background: var(--ok); border-radius: 50%; margin-right: 6px; animation: pulse 2s infinite; }
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.35} }
+.lang-toggle { display: flex; border: 1px solid var(--border); border-radius: 4px; overflow: hidden; font-family: var(--font-mono); font-size: 11px; }
+.lang-toggle button { background: transparent; color: var(--text-muted); border: none; padding: 5px 10px; cursor: pointer; letter-spacing: 0.04em; }
+.lang-toggle button.active { background: var(--text); color: var(--bg); }
+.subheader { padding: 22px 24px 6px; display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; flex-wrap: wrap; }
+.subheader h1 { font-size: 22px; font-weight: 600; letter-spacing: -0.01em; margin-bottom: 4px; }
+.subheader .subtitle { font-size: 13px; color: var(--text-muted); }
+.subheader .range { font-family: var(--font-mono); font-size: 11px; color: var(--text-dim); letter-spacing: 0.05em; text-transform: uppercase; text-align: right; }
+.subheader .range strong { color: var(--text); }
+.insights { margin: 16px 24px; border-left: 2px solid var(--warn); background: linear-gradient(90deg, rgba(245,158,11,0.06) 0%, transparent 60%); padding: 14px 18px; border-radius: 0 4px 4px 0; }
+.insights .label { font-family: var(--font-mono); font-size: 10px; color: var(--warn); letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 4px; }
+.insights p { font-size: 13px; line-height: 1.6; }
+.insights p + p { margin-top: 6px; }
+.insights strong { font-weight: 600; }
+.insights .v { font-family: var(--font-mono); color: var(--warn); font-weight: 600; }
+.insights .v.up { color: var(--danger); } .insights .v.down { color: var(--ok); }
+
+.kpi-strip { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: var(--border); margin: 0 24px; border: 1px solid var(--border); }
+.kpi { background: var(--bg-elev); padding: 18px; position: relative; }
+.kpi::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 2px; background: var(--accent); }
+.kpi.carga::before { background: var(--sin); }
+.kpi.renov::before { background: var(--eolica); }
+.kpi.termo::before { background: var(--termica); }
+.kpi.curt::before { background: var(--warn); }
+.kpi .header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 10px; }
+.kpi .name { font-family: var(--font-mono); font-size: 11px; color: var(--text-muted); letter-spacing: 0.08em; text-transform: uppercase; }
+.kpi .unit { font-family: var(--font-mono); font-size: 10px; color: var(--text-dim); }
+.kpi .value-row { display: flex; align-items: baseline; gap: 8px; margin-bottom: 8px; }
+.kpi .value { font-family: var(--font-mono); font-size: 26px; font-weight: 500; line-height: 1; }
+.kpi .value-label { font-family: var(--font-mono); font-size: 10px; color: var(--text-dim); }
+.kpi .detail { font-family: var(--font-mono); font-size: 10px; color: var(--text-muted); margin-top: 6px; padding-top: 8px; border-top: 1px solid var(--border-soft); }
+.kpi .detail strong { color: var(--text); font-weight: 500; }
+
+.main { padding: 20px 24px 40px; display: grid; grid-template-columns: 1fr; gap: 20px; }
+.section { background: var(--bg-elev); border: 1px solid var(--border); border-radius: 4px; padding: 20px 22px; }
+.section-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 18px; padding-bottom: 12px; border-bottom: 1px solid var(--border-soft); flex-wrap: wrap; gap: 8px; }
+.section-head h2 { font-size: 14px; font-weight: 600; letter-spacing: 0.03em; text-transform: uppercase; }
+.section-head .hint { font-family: var(--font-mono); font-size: 10px; color: var(--text-dim); letter-spacing: 0.05em; text-transform: uppercase; }
+.two-col { display: grid; grid-template-columns: 320px 1fr; gap: 22px; }
+@media (max-width: 920px) { .two-col { grid-template-columns: 1fr; } }
+
+/* mix donut + legend */
+.mix-donut-wrap { display: flex; flex-direction: column; align-items: center; }
+.mix-donut { width: 220px; height: 220px; position: relative; }
+.mix-donut svg { display: block; transform: rotate(-90deg); }
+.mix-center { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); text-align: center; }
+.mix-center .v { font-family: var(--font-mono); font-size: 22px; font-weight: 500; color: var(--text); }
+.mix-center .l { font-family: var(--font-mono); font-size: 10px; color: var(--text-dim); letter-spacing: 0.06em; text-transform: uppercase; margin-top: 2px; }
+.mix-legend { width: 100%; margin-top: 16px; display: flex; flex-direction: column; gap: 4px; font-family: var(--font-mono); font-size: 11px; }
+.mix-legend .row { display: flex; align-items: center; gap: 8px; justify-content: space-between; padding: 4px 0; border-bottom: 1px solid var(--border-soft); }
+.mix-legend .row:last-child { border-bottom: none; }
+.mix-legend .lbl { display: flex; align-items: center; gap: 8px; }
+.mix-legend .sw { width: 10px; height: 10px; border-radius: 2px; }
+.mix-legend .name { color: var(--text-muted); letter-spacing: 0.04em; }
+.mix-legend .val { color: var(--text); font-weight: 500; }
+.mix-legend .pct { color: var(--text-dim); margin-left: 6px; }
+
+/* hourly stacked area */
+#hourly-mix { display: block; width: 100%; height: 280px; }
+.area-hidro { fill: var(--hidro); opacity: 0.85; }
+.area-itaipu { fill: var(--itaipu); opacity: 0.85; }
+.area-nuclear { fill: var(--nuclear); opacity: 0.85; }
+.area-termica { fill: var(--termica); opacity: 0.85; }
+.area-eolica { fill: var(--eolica); opacity: 0.85; }
+.area-solar { fill: var(--solar); opacity: 0.85; }
+.line-carga { stroke: var(--text); stroke-width: 1.8; fill: none; stroke-dasharray: 3 3; }
+.axis-label { font-family: var(--font-mono); font-size: 10px; fill: var(--text-dim); letter-spacing: 0.04em; }
+.grid-line { stroke: var(--border-soft); stroke-width: 1; shape-rendering: crispEdges; }
+
+/* despacho térmico bar */
+.thermal-bars { display: flex; flex-direction: column; gap: 10px; margin-top: 6px; }
+.thermal-row { display: grid; grid-template-columns: 90px 1fr 90px; gap: 12px; align-items: center; }
+.thermal-row .razao { font-family: var(--font-mono); font-size: 11px; color: var(--text-muted); letter-spacing: 0.06em; text-transform: uppercase; }
+.thermal-row .razao .full { color: var(--text-dim); font-size: 9px; margin-top: 2px; display: block; }
+.thermal-row .bar-track { height: 22px; background: var(--bg); border-radius: 3px; overflow: hidden; position: relative; }
+.thermal-row .bar { height: 100%; border-radius: 3px; display: flex; align-items: center; padding-left: 8px; font-family: var(--font-mono); font-size: 10px; color: var(--bg); font-weight: 600; transition: width 0.4s; }
+.thermal-row.inf .bar { background: var(--inf); }
+.thermal-row.ome .bar { background: var(--ome); }
+.thermal-row.fom .bar { background: var(--fom); }
+.thermal-row.gsb .bar { background: var(--gsb); }
+.thermal-row.exp .bar { background: var(--exp); }
+.thermal-row .val { font-family: var(--font-mono); font-size: 12px; color: var(--text); text-align: right; }
+
+/* curtailment by sub */
+.curt-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; }
+@media (max-width: 760px) { .curt-grid { grid-template-columns: 1fr; } }
+.curt-card { background: var(--bg-elev-2); border: 1px solid var(--border-soft); border-radius: 4px; padding: 14px; }
+.curt-card .head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 10px; }
+.curt-card .name { font-family: var(--font-mono); font-size: 11px; color: var(--text); letter-spacing: 0.06em; text-transform: uppercase; font-weight: 600; }
+.curt-card .name::before { content: ''; display: inline-block; width: 10px; height: 2px; margin-right: 8px; vertical-align: middle; }
+.curt-card.eolica .name::before { background: var(--eolica); }
+.curt-card.solar .name::before { background: var(--solar); }
+.curt-card .total { font-family: var(--font-mono); font-size: 11px; color: var(--text-muted); }
+.curt-card .total strong { color: var(--text); }
+.curt-card .reasons { display: flex; flex-direction: column; gap: 6px; margin-top: 8px; }
+.curt-card .reason-row { display: grid; grid-template-columns: 60px 1fr 60px; gap: 8px; align-items: center; font-family: var(--font-mono); font-size: 10px; }
+.curt-card .reason-row .razao { color: var(--text-muted); letter-spacing: 0.06em; }
+.curt-card .reason-row .bar-track { height: 5px; background: var(--bg); border-radius: 2px; overflow: hidden; }
+.curt-card .reason-row .bar { height: 100%; border-radius: 2px; }
+.curt-card.eolica .reason-row .bar { background: var(--eolica); }
+.curt-card.solar .reason-row .bar { background: var(--solar); }
+.curt-card .reason-row .val { color: var(--text); text-align: right; }
+
+/* UTEs suspended */
+.utes-table { width: 100%; border-collapse: collapse; font-family: var(--font-mono); font-size: 12px; }
+.utes-table th { text-align: right; padding: 8px 10px; font-weight: 500; font-size: 10px; color: var(--text-dim); letter-spacing: 0.06em; text-transform: uppercase; border-bottom: 1px solid var(--border-soft); }
+.utes-table th:first-child, .utes-table th:nth-child(2), .utes-table th:nth-child(3) { text-align: left; }
+.utes-table td { padding: 10px; border-bottom: 1px solid var(--border-soft); text-align: right; }
+.utes-table td:first-child { color: var(--text); font-weight: 500; text-align: left; }
+.utes-table td:nth-child(2) { color: var(--text-muted); text-align: left; }
+.utes-table td:nth-child(3) { color: var(--text-muted); text-align: left; }
+.utes-table tr:last-child td { border-bottom: none; }
+.utes-table .sub-tag { display: inline-block; padding: 1px 5px; border-radius: 2px; font-size: 9px; font-weight: 500; letter-spacing: 0.04em; }
+.utes-table .sub-tag.seco { background: rgba(94,179,245,0.15); color: var(--seco); }
+.utes-table .sub-tag.sul { background: rgba(240,168,48,0.15); color: var(--sul); }
+.utes-table .sub-tag.ne { background: rgba(74,222,128,0.15); color: var(--ne); }
+.utes-table .sub-tag.n { background: rgba(192,132,252,0.15); color: var(--n); }
+
+/* intercâmbio diagram */
+.flow-diagram { padding: 20px; background: var(--bg-elev-2); border-radius: 6px; }
+.flow-diagram svg { display: block; width: 100%; height: 240px; }
+.flow-node { fill: var(--bg-elev); stroke: var(--border); stroke-width: 1; }
+.flow-node-text { font-family: var(--font-mono); font-size: 11px; fill: var(--text); font-weight: 600; letter-spacing: 0.04em; text-anchor: middle; }
+.flow-node-pct { font-family: var(--font-mono); font-size: 9px; fill: var(--text-muted); letter-spacing: 0.04em; text-anchor: middle; }
+.flow-line { fill: none; stroke-width: 2; }
+.flow-line-text { font-family: var(--font-mono); font-size: 10px; fill: var(--text); }
+
+.footer { padding: 18px 24px; border-top: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; font-family: var(--font-mono); font-size: 10px; color: var(--text-dim); letter-spacing: 0.04em; }
+
+@media (max-width: 880px) {
+  .kpi-strip { grid-template-columns: repeat(2, 1fr); margin: 0 16px; }
+  .topbar { padding: 12px 16px; flex-wrap: wrap; }
+  .brand .tabs { margin-left: 0; margin-top: 8px; }
+  .subheader { padding: 18px 16px 6px; }
+  .insights { margin: 14px 16px; }
+  .main { padding: 16px; }
+  .subheader h1 { font-size: 18px; }
+  .kpi .value { font-size: 22px; }
+}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="brand">
+    <span class="logo">BR ENERGY TERMINAL</span>
+    <span class="divider"></span>
+    <div class="tabs">
+      <a class="tab" href="market.html">Market</a>
+      <a class="tab" href="hydrology.html">Hydrology</a>
+      <a class="tab active" href="operation.html">Operation</a>
+      <a class="tab" href="climate.html">Climate</a>
+      <a class="tab" href="acl.html">ACL</a>
+    </div>
+  </div>
+  <div class="topbar-right">
+    <span class="meta"><span class="live"></span><span data-i18n="dataLag">ONS / IPDO 09 May 2026</span></span>
+    <div class="lang-toggle">
+      <button data-lang="EN" class="active">EN</button>
+      <button data-lang="PT">PT</button>
+    </div>
+  </div>
+</header>
+
+<div class="subheader">
+  <div>
+    <h1 data-i18n="pageTitle">Operation — load, generation mix & thermal dispatch</h1>
+    <div class="subtitle" data-i18n="pageSub">Daily snapshot of the SIN: who supplied today and why</div>
+  </div>
+  <div class="range">
+    <span data-i18n="period">Day</span>
+    <strong>Sat 09 May 2026</strong> · <span data-i18n="peakLabel">peak 18:27</span>
+  </div>
+</div>
+
+<section class="insights">
+  <div class="label" data-i18n="insightsLabel">Highlights · operational day</div>
+  <p data-i18n="insightLoad">
+    <strong>SIN load averaged 78,382 MWmed with a peak of 92,483 MW at 18:27.</strong>
+    Renewables (wind + solar + hydro + Itaipu) covered <span class="v up">90.1%</span>
+    of generation; thermal share was only <span class="v">7.4%</span> with an
+    additional <span class="v">2.6%</span> from nuclear.
+  </p>
+  <p data-i18n="insightCurt">
+    <strong>Wind/solar curtailment in NE peaked at 2,096 MW</strong> — driven mostly
+    by transmission constraints (<span class="v">62%</span> RFB) and reliability margin
+    (<span class="v">28%</span> CNF). Even with NE EAR at 95% and surplus inflow,
+    the NE→SE/CO transmission cap means renewable surplus has to be cut at source.
+  </p>
+  <p data-i18n="insightThermal">
+    <strong>Thermal dispatch was 5,776 MWmed</strong>, dominated by INF (inflexibility)
+    at 3,425 MWmed — must-run plants regardless of price. Discretionary
+    dispatch (OME/FOM) was 1,837 MWmed, mostly in SE/CO. <span class="v">11 UTEs</span>
+    remain with suspended operation by recent ANEEL orders.
+  </p>
+</section>
+
+<section class="kpi-strip"></section>
+
+<main class="main">
+
+  <div class="section">
+    <div class="section-head">
+      <h2 data-i18n="mixTitle">Generation mix — daily average & hourly profile</h2>
+      <div class="hint" data-i18n="mixHint">Donut: average MWmed · Area: stacked hourly profile vs load</div>
+    </div>
+    <div class="two-col">
+      <div class="mix-donut-wrap">
+        <div class="mix-donut" id="mix-donut"></div>
+        <div class="mix-legend" id="mix-legend"></div>
+      </div>
+      <div>
+        <svg id="hourly-mix" viewBox="0 0 800 280" preserveAspectRatio="none"></svg>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-head">
+      <h2 data-i18n="thermalTitle">Thermal dispatch · by reason</h2>
+      <div class="hint" data-i18n="thermalHint">MWmed · daily average</div>
+    </div>
+    <div class="thermal-bars" id="thermal-bars"></div>
+  </div>
+
+  <div class="section">
+    <div class="section-head">
+      <h2 data-i18n="curtTitle">Renewable curtailment · NE subsystem</h2>
+      <div class="hint" data-i18n="curtHint">Peak instant: 2,096 MW</div>
+    </div>
+    <div class="curt-grid" id="curt-grid"></div>
+  </div>
+
+  <div class="section">
+    <div class="section-head">
+      <h2 data-i18n="flowTitle">Interchanges · daily energy balance</h2>
+      <div class="hint" data-i18n="flowHint">MWmed · positive = export from origin</div>
+    </div>
+    <div class="flow-diagram">
+      <svg viewBox="0 0 800 240" preserveAspectRatio="xMidYMid meet" id="flow-svg"></svg>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-head">
+      <h2 data-i18n="utesTitle">Thermal plants · operation suspended by recent ANEEL orders</h2>
+      <div class="hint" data-i18n="utesHint">Per IPDO 09/05/2026</div>
+    </div>
+    <table class="utes-table" id="utes-table">
+      <thead>
+        <tr>
+          <th data-i18n="thName">Plant</th>
+          <th data-i18n="thFuel">Fuel</th>
+          <th data-i18n="thSub">Sub</th>
+          <th data-i18n="thCap">Cap MW</th>
+          <th data-i18n="thOrder">Order #</th>
+          <th data-i18n="thDate">Since</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
+
+</main>
+
+<footer class="footer">
+  <span><span data-i18n="source">Source</span>: IPDO 09/05/2026 · ONS Dados Abertos (Balanço de Energia, Despacho Térmico)</span>
+  <span><span data-i18n="updated">Updated</span>: D+1 morning · preliminary</span>
+</footer>
+
+<script>
+// ── Data from IPDO 09/05/2026 ──
+const MIX_DAILY = [
+  {key:'hidro',   name:'Hydro',     namePt:'Hidro',    mwmed: 42420, pct: 54.12, color:'var(--hidro)'},
+  {key:'eolica',  name:'Wind',      namePt:'Eólica',   mwmed: 13991, pct: 17.85, color:'var(--eolica)'},
+  {key:'solar',   name:'Solar',     namePt:'Solar',    mwmed:  9907, pct: 12.64, color:'var(--solar)'},
+  {key:'termica', name:'Thermal',   namePt:'Térmica',  mwmed:  5776, pct:  7.37, color:'var(--termica)'},
+  {key:'itaipu',  name:'Itaipu',    namePt:'Itaipu',   mwmed:  4295, pct:  5.48, color:'var(--itaipu)'},
+  {key:'nuclear', name:'Nuclear',   namePt:'Nuclear',  mwmed:  1999, pct:  2.55, color:'var(--nuclear)'},
+];
+const CARGA_TOTAL = 78382;
+const CARGA_PICO = 92483;
+
+// Hourly mix profile (24h) — typical Saturday profile, scaled to actual daily totals
+// Pattern: solar peaks midday, load peaks evening, wind higher at night
+const HOURLY_PROFILE = (() => {
+  // base shapes (relative 0-1 across 24h)
+  const solar = [0,0,0,0,0,0,0.05,0.25,0.55,0.80,0.92,0.96,0.95,0.88,0.72,0.50,0.25,0.08,0,0,0,0,0,0];
+  const wind  = [1.15,1.18,1.20,1.20,1.15,1.05,0.95,0.85,0.75,0.70,0.70,0.75,0.80,0.85,0.90,0.95,1.00,1.05,1.10,1.15,1.18,1.20,1.18,1.16];
+  const load  = [0.78,0.74,0.71,0.70,0.71,0.74,0.79,0.83,0.86,0.89,0.92,0.94,0.96,0.97,0.97,0.96,0.97,1.02,1.18,1.15,1.10,1.02,0.92,0.84];
+  // hidro / itaipu / nuclear / termica are more constant-ish, hidro picks up evening
+  const hidro = [0.85,0.82,0.80,0.78,0.78,0.80,0.85,0.90,0.95,1.00,1.02,1.05,1.06,1.08,1.10,1.12,1.15,1.25,1.40,1.32,1.20,1.10,1.00,0.92];
+  const itaipuShape = Array(24).fill(1);
+  const nuclearShape = Array(24).fill(1);
+  const termShape = [0.95,0.92,0.90,0.88,0.88,0.90,0.95,1.00,1.02,1.05,1.08,1.10,1.10,1.10,1.10,1.10,1.10,1.15,1.20,1.18,1.12,1.05,1.00,0.96];
+
+  const avgs = {
+    hidro: MIX_DAILY[0].mwmed, eolica: MIX_DAILY[1].mwmed, solar: MIX_DAILY[2].mwmed,
+    termica: MIX_DAILY[3].mwmed, itaipu: MIX_DAILY[4].mwmed, nuclear: MIX_DAILY[5].mwmed
+  };
+  const normalize = (arr) => { const m = arr.reduce((a,b)=>a+b,0)/24; return arr.map(v => v/m); };
+
+  const out = [];
+  for (let h = 0; h < 24; h++) {
+    out.push({
+      h,
+      hidro:   avgs.hidro   * normalize(hidro)[h],
+      itaipu:  avgs.itaipu  * normalize(itaipuShape)[h],
+      nuclear: avgs.nuclear * normalize(nuclearShape)[h],
+      termica: avgs.termica * normalize(termShape)[h],
+      eolica:  avgs.eolica  * normalize(wind)[h],
+      solar:   avgs.solar   * normalize(solar)[h],
+      carga:   CARGA_TOTAL  * normalize(load)[h],
+    });
+  }
+  return out;
+})();
+
+// Thermal dispatch by reason (IPDO breakdown, MWmed)
+const THERMAL_DISPATCH = [
+  {key:'inf', razao:'INF', full:'Inflexibility',          fullPt:'Inflexibilidade',                   mwmed: 3425},
+  {key:'ome', razao:'OME', full:'Merit order',             fullPt:'Ordem de mérito',                   mwmed: 1837},
+  {key:'fom', razao:'FOM', full:'Out-of-merit',            fullPt:'Fora da ordem de mérito',           mwmed:  286},
+  {key:'gsb', razao:'GSB', full:'Energetic safeguard',     fullPt:'Garantia energética/sistêmica',     mwmed:  152},
+  {key:'exp', razao:'EXP', full:'Export commitment',       fullPt:'Exportação',                        mwmed:   76},
+];
+
+// Curtailment NE — peak 2,096 MW, breakdown by source × reason
+const CURTAILMENT = {
+  eolica: { total_peak: 1488, total_avg: 612, reasons: [
+    {key:'rfb', razao:'RFB', mw: 922}, // confiabilidade
+    {key:'cnf', razao:'CNF', mw: 416},
+    {key:'er',  razao:'ER',  mw: 150},
+  ]},
+  solar: { total_peak: 608, total_avg: 240, reasons: [
+    {key:'rfb', razao:'RFB', mw: 380},
+    {key:'cnf', razao:'CNF', mw: 162},
+    {key:'er',  razao:'ER',  mw:  66},
+  ]},
+};
+
+// Interchanges (MWmed, positive = export from origin to destination)
+const FLOWS = [
+  {from:'NE', to:'SE', mw: 1850},
+  {from:'N',  to:'NE', mw: 2640},
+  {from:'N',  to:'SE', mw: 4120},
+  {from:'SE', to:'SUL', mw: 2210},
+  {from:'IT', to:'SE', mw: 4295}, // Itaipu 50Hz to SE
+];
+
+// UTEs with operation suspended (from IPDO list)
+const UTES_SUSPENDED = [
+  {name:'Linhares',        fuel:'Gás natural',  sub:'SECO', cap: 204, order:'D-2150/2025', date:'15/dez/2025'},
+  {name:'UTE Cuiabá G',    fuel:'Gás natural',  sub:'SECO', cap: 480, order:'D-2151/2025', date:'15/dez/2025'},
+  {name:'Camaçari',        fuel:'Óleo comb.',   sub:'NE',   cap: 347, order:'D-2174/2025', date:'22/dez/2025'},
+  {name:'Termoceará',      fuel:'Gás natural',  sub:'NE',   cap: 220, order:'D-2174/2025', date:'22/dez/2025'},
+  {name:'Termopará',       fuel:'Óleo comb.',   sub:'N',    cap: 196, order:'D-0142/2026', date:'18/fev/2026'},
+  {name:'Aparecida',       fuel:'Óleo comb.',   sub:'N',    cap: 169, order:'D-0142/2026', date:'18/fev/2026'},
+  {name:'Tambaqui',        fuel:'Óleo comb.',   sub:'N',    cap:  84, order:'D-0142/2026', date:'18/fev/2026'},
+  {name:'Cristiano Rocha', fuel:'Óleo comb.',   sub:'N',    cap:  83, order:'D-0142/2026', date:'18/fev/2026'},
+  {name:'Mauá Bloco 3',    fuel:'Gás natural',  sub:'N',    cap: 591, order:'D-0419/2026', date:'10/abr/2026'},
+  {name:'Suape II',        fuel:'Óleo comb.',   sub:'NE',   cap: 380, order:'D-0498/2026', date:'25/abr/2026'},
+  {name:'Pecém II',        fuel:'Carvão',       sub:'NE',   cap: 365, order:'D-0498/2026', date:'25/abr/2026'},
+];
+
+const I18N = {
+  EN: {
+    dataLag:'ONS / IPDO 09 May 2026',
+    pageTitle:'Operation — load, generation mix & thermal dispatch',
+    pageSub:'Daily snapshot of the SIN: who supplied today and why',
+    period:'Day', peakLabel:'peak 18:27',
+    insightsLabel:'Highlights · operational day',
+    insightLoad:'<strong>SIN load averaged 78,382 MWmed with a peak of 92,483 MW at 18:27.</strong> Renewables (wind + solar + hydro + Itaipu) covered <span class="v up">90.1%</span> of generation; thermal share was only <span class="v">7.4%</span> with an additional <span class="v">2.6%</span> from nuclear.',
+    insightCurt:'<strong>Wind/solar curtailment in NE peaked at 2,096 MW</strong> — driven mostly by transmission constraints (<span class="v">62%</span> RFB) and reliability margin (<span class="v">28%</span> CNF). Even with NE EAR at 95% and surplus inflow, the NE→SE/CO transmission cap means renewable surplus has to be cut at source.',
+    insightThermal:'<strong>Thermal dispatch was 5,776 MWmed</strong>, dominated by INF (inflexibility) at 3,425 MWmed — must-run plants regardless of price. Discretionary dispatch (OME/FOM) was 1,837 MWmed, mostly in SE/CO. <span class="v">11 UTEs</span> remain with suspended operation by recent ANEEL orders.',
+    mixTitle:'Generation mix — daily average & hourly profile',
+    mixHint:'Donut: average MWmed · Area: stacked hourly profile vs load',
+    thermalTitle:'Thermal dispatch · by reason',
+    thermalHint:'MWmed · daily average',
+    curtTitle:'Renewable curtailment · NE subsystem',
+    curtHint:'Peak instant: 2,096 MW',
+    flowTitle:'Interchanges · daily energy balance',
+    flowHint:'MWmed · positive = export from origin',
+    utesTitle:'Thermal plants · operation suspended by recent ANEEL orders',
+    utesHint:'Per IPDO 09/05/2026',
+    kpiCarga:'Load · avg', kpiCargaUnit:'MWmed',
+    kpiRenov:'Renewables', kpiRenovUnit:'% of mix',
+    kpiTermo:'Thermal', kpiTermoUnit:'MWmed',
+    kpiCurt:'NE curtailment', kpiCurtUnit:'peak MW',
+    kpiCargaDetail:'Peak <strong>92,483</strong> MW @ 18:27',
+    kpiRenovDetail:'Wind <strong>17.9%</strong> · Solar <strong>12.6%</strong>',
+    kpiTermoDetail:'INF <strong>59%</strong> · OME <strong>32%</strong>',
+    kpiCurtDetail:'Wind <strong>1,488</strong> · Solar <strong>608</strong>',
+    thName:'Plant', thFuel:'Fuel', thSub:'Sub', thCap:'Cap MW', thOrder:'Order #', thDate:'Since',
+    source:'Source', updated:'Updated',
+    legendCarga:'Load',
+  },
+  PT: {
+    dataLag:'ONS / IPDO 09 mai 2026',
+    pageTitle:'Operação — carga, mix de geração & despacho térmico',
+    pageSub:'Snapshot diário do SIN: quem atendeu hoje e por quê',
+    period:'Dia', peakLabel:'pico 18h27',
+    insightsLabel:'Destaques · dia operativo',
+    insightLoad:'<strong>Carga do SIN média de 78.382 MWmed com pico de 92.483 MW às 18h27.</strong> Renováveis (eólica + solar + hidro + Itaipu) cobriram <span class="v up">90,1%</span> da geração; térmica respondeu por apenas <span class="v">7,4%</span> e nuclear por <span class="v">2,6%</span>.',
+    insightCurt:'<strong>Curtailment eólico+solar no NE com pico de 2.096 MW</strong> — direcionado principalmente por restrições de transmissão (<span class="v">62%</span> RFB) e margem de confiabilidade (<span class="v">28%</span> CNF). Mesmo com EAR NE em 95% e afluência excedente, o limite de intercâmbio NE→SE/CO força o corte na fonte.',
+    insightThermal:'<strong>Despacho térmico de 5.776 MWmed</strong>, dominado por INF (inflexibilidade) com 3.425 MWmed — usinas must-run independente de preço. Despacho discricionário (OME/FOM) ficou em 1.837 MWmed, concentrado no SE/CO. <span class="v">11 UTEs</span> com operação suspensa por despachos ANEEL recentes.',
+    mixTitle:'Mix de geração — média diária & perfil horário',
+    mixHint:'Donut: MWmed médio · Área: perfil horário stacked vs carga',
+    thermalTitle:'Despacho térmico · por razão',
+    thermalHint:'MWmed · média diária',
+    curtTitle:'Curtailment renovável · submercado NE',
+    curtHint:'Pico instantâneo: 2.096 MW',
+    flowTitle:'Intercâmbios · balanço energético diário',
+    flowHint:'MWmed · positivo = exportação da origem',
+    utesTitle:'UTEs · operação suspensa por despachos ANEEL recentes',
+    utesHint:'Conforme IPDO 09/05/2026',
+    kpiCarga:'Carga · média', kpiCargaUnit:'MWmed',
+    kpiRenov:'Renováveis', kpiRenovUnit:'% do mix',
+    kpiTermo:'Térmica', kpiTermoUnit:'MWmed',
+    kpiCurt:'Curtailment NE', kpiCurtUnit:'pico MW',
+    kpiCargaDetail:'Pico <strong>92.483</strong> MW às 18h27',
+    kpiRenovDetail:'Eólica <strong>17,9%</strong> · Solar <strong>12,6%</strong>',
+    kpiTermoDetail:'INF <strong>59%</strong> · OME <strong>32%</strong>',
+    kpiCurtDetail:'Eólica <strong>1.488</strong> · Solar <strong>608</strong>',
+    thName:'Usina', thFuel:'Combustível', thSub:'Sub', thCap:'Cap MW', thOrder:'Despacho #', thDate:'Desde',
+    source:'Fonte', updated:'Atualizado',
+    legendCarga:'Carga',
+  }
+};
+
+let currentLang = 'EN';
+
+function setLang(lang) {
+  currentLang = lang;
+  document.documentElement.lang = lang.toLowerCase();
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const key = el.getAttribute('data-i18n');
+    if (I18N[lang][key]) el.innerHTML = I18N[lang][key];
+  });
+  document.querySelectorAll('.lang-toggle button').forEach(b => {
+    b.classList.toggle('active', b.dataset.lang === lang);
+  });
+  renderAll();
+  try { localStorage.setItem('lang', lang); } catch(e){}
+}
+document.querySelectorAll('.lang-toggle button').forEach(b => {
+  b.addEventListener('click', () => setLang(b.dataset.lang));
+});
+
+function fmt(n, decimals=1) {
+  if (n == null || isNaN(n)) return '—';
+  return n.toLocaleString(currentLang === 'PT' ? 'pt-BR' : 'en-US',
+    { minimumFractionDigits: decimals, maximumFractionDigits: decimals });
+}
+function fmtInt(n) {
+  if (n == null || isNaN(n)) return '—';
+  return Math.round(n).toLocaleString(currentLang === 'PT' ? 'pt-BR' : 'en-US');
+}
+
+// ── KPI strip ──
+function renderKPIs() {
+  const t = I18N[currentLang];
+  const renovPct = MIX_DAILY[0].pct + MIX_DAILY[1].pct + MIX_DAILY[2].pct + MIX_DAILY[4].pct;
+  const cards = [
+    {cls:'carga', name:t.kpiCarga, unit:t.kpiCargaUnit, value: fmtInt(CARGA_TOTAL), detail: t.kpiCargaDetail},
+    {cls:'renov', name:t.kpiRenov, unit:t.kpiRenovUnit, value: fmt(renovPct, 1) + '%', detail: t.kpiRenovDetail},
+    {cls:'termo', name:t.kpiTermo, unit:t.kpiTermoUnit, value: fmtInt(MIX_DAILY[3].mwmed), detail: t.kpiTermoDetail},
+    {cls:'curt',  name:t.kpiCurt,  unit:t.kpiCurtUnit,  value: '2,096', detail: t.kpiCurtDetail},
+  ];
+  document.querySelector('.kpi-strip').innerHTML = cards.map(c => `
+    <div class="kpi ${c.cls}">
+      <div class="header">
+        <span class="name">${c.name}</span>
+        <span class="unit">${c.unit}</span>
+      </div>
+      <div class="value-row">
+        <span class="value">${c.value}</span>
+      </div>
+      <div class="detail">${c.detail}</div>
+    </div>
+  `).join('');
+}
+
+// ── Donut chart ──
+function renderDonut() {
+  const t = I18N[currentLang];
+  const r = 90, cx = 110, cy = 110, sw = 22;
+  const total = MIX_DAILY.reduce((s,d) => s + d.mwmed, 0);
+  let acc = 0;
+  const C = 2 * Math.PI * r;
+  const segs = MIX_DAILY.map(d => {
+    const frac = d.mwmed / total;
+    const dash = frac * C;
+    const offset = -acc * C;
+    acc += frac;
+    return `<circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="${d.color}" stroke-width="${sw}"
+      stroke-dasharray="${dash} ${C-dash}" stroke-dashoffset="${offset}" />`;
+  }).join('');
+  document.getElementById('mix-donut').innerHTML = `
+    <svg viewBox="0 0 220 220">
+      <circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="var(--border-soft)" stroke-width="${sw}" />
+      ${segs}
+    </svg>
+    <div class="mix-center">
+      <div class="v">${fmtInt(total/1000)}k</div>
+      <div class="l">MWmed</div>
+    </div>
+  `;
+  document.getElementById('mix-legend').innerHTML = MIX_DAILY.map(d => `
+    <div class="row">
+      <span class="lbl"><span class="sw" style="background:${d.color}"></span><span class="name">${currentLang==='PT'?d.namePt:d.name}</span></span>
+      <span><span class="val">${fmtInt(d.mwmed)}</span><span class="pct">${fmt(d.pct,1)}%</span></span>
+    </div>
+  `).join('');
+}
+
+// ── Hourly stacked area + load line ──
+function renderHourly() {
+  const t = I18N[currentLang];
+  const svg = document.getElementById('hourly-mix');
+  const W = 800, H = 280, padL = 50, padR = 12, padT = 12, padB = 30;
+  const innerW = W - padL - padR, innerH = H - padT - padB;
+  const xScale = h => padL + (h/23)*innerW;
+
+  // Find max for y scale (max of carga since stack equals roughly carga)
+  const maxY = Math.max(...HOURLY_PROFILE.map(d => d.carga)) * 1.05;
+  const yScale = v => padT + innerH - (v/maxY)*innerH;
+
+  // Build stacked areas (in stack order)
+  const stackKeys = ['hidro','itaipu','nuclear','termica','eolica','solar'];
+  const stacks = HOURLY_PROFILE.map(d => {
+    const s = {};
+    let acc = 0;
+    for (const k of stackKeys) { s[k+'_bot'] = acc; acc += d[k]; s[k+'_top'] = acc; }
+    s.h = d.h; s.carga = d.carga;
+    return s;
+  });
+
+  const areaPath = (key) => {
+    const top = stacks.map((s,i) => `${i===0?'M':'L'} ${xScale(s.h)} ${yScale(s[key+'_top'])}`).join(' ');
+    const bot = stacks.slice().reverse().map(s => `L ${xScale(s.h)} ${yScale(s[key+'_bot'])}`).join(' ');
+    return top + ' ' + bot + ' Z';
+  };
+
+  // grid + axes
+  let html = '';
+  const yTicks = [0, 20000, 40000, 60000, 80000, 100000];
+  yTicks.forEach(yt => {
+    if (yt > maxY) return;
+    html += `<line class="grid-line" x1="${padL}" x2="${W-padR}" y1="${yScale(yt)}" y2="${yScale(yt)}" />`;
+    html += `<text class="axis-label" x="${padL-6}" y="${yScale(yt)+3}" text-anchor="end">${yt/1000}k</text>`;
+  });
+  [0,4,8,12,16,20,23].forEach(h => {
+    const x = xScale(h);
+    html += `<text class="axis-label" x="${x}" y="${H-padB+15}" text-anchor="middle">${String(h).padStart(2,'0')}h</text>`;
+  });
+
+  // areas
+  stackKeys.forEach(k => {
+    html += `<path class="area-${k}" d="${areaPath(k)}" />`;
+  });
+
+  // load line (dashed)
+  const loadPath = stacks.map((s,i) => `${i===0?'M':'L'} ${xScale(s.h)} ${yScale(s.carga)}`).join(' ');
+  html += `<path class="line-carga" d="${loadPath}" />`;
+
+  // legend top-right
+  let legX = W - padR - 320;
+  let legY = padT + 8;
+  const legend = stackKeys.map((k,i) => {
+    const item = MIX_DAILY.find(m => m.key === k);
+    if (!item) return '';
+    const x = legX + (i % 3) * 110;
+    const y = legY + Math.floor(i/3) * 14;
+    return `<rect x="${x}" y="${y-7}" width="9" height="9" fill="${item.color}" opacity="0.85"/>
+            <text x="${x+13}" y="${y}" class="axis-label" style="fill:var(--text-muted)">${currentLang==='PT'?item.namePt:item.name}</text>`;
+  }).join('');
+  html += legend;
+  html += `<line x1="${legX}" y1="${legY+35}" x2="${legX+18}" y2="${legY+35}" stroke="var(--text)" stroke-width="1.8" stroke-dasharray="3 3"/>
+           <text x="${legX+24}" y="${legY+38}" class="axis-label" style="fill:var(--text-muted)">${t.legendCarga}</text>`;
+
+  svg.innerHTML = html;
+}
+
+// ── Thermal dispatch bars ──
+function renderThermal() {
+  const max = Math.max(...THERMAL_DISPATCH.map(t => t.mwmed));
+  document.getElementById('thermal-bars').innerHTML = THERMAL_DISPATCH.map(t => {
+    const pct = (t.mwmed / max) * 100;
+    const full = currentLang === 'PT' ? t.fullPt : t.full;
+    return `
+      <div class="thermal-row ${t.key}">
+        <div class="razao">${t.razao}<span class="full">${full}</span></div>
+        <div class="bar-track"><div class="bar" style="width: ${pct}%">${fmtInt(t.mwmed)}</div></div>
+        <div class="val">${fmt(t.mwmed/THERMAL_DISPATCH.reduce((s,x)=>s+x.mwmed,0)*100, 0)}%</div>
+      </div>
+    `;
+  }).join('');
+}
+
+// ── Curtailment cards ──
+function renderCurtailment() {
+  const t = I18N[currentLang];
+  const container = document.getElementById('curt-grid');
+  container.innerHTML = ['eolica','solar'].map(src => {
+    const d = CURTAILMENT[src];
+    const name = src === 'eolica' ? (currentLang==='PT'?'Eólica':'Wind') : (currentLang==='PT'?'Solar':'Solar');
+    const max = Math.max(...d.reasons.map(r => r.mw));
+    return `
+      <div class="curt-card ${src}">
+        <div class="head">
+          <span class="name">${name}</span>
+          <span class="total">${currentLang==='PT'?'pico':'peak'} <strong>${fmtInt(d.total_peak)} MW</strong> · ${currentLang==='PT'?'média':'avg'} ${fmtInt(d.total_avg)}</span>
+        </div>
+        <div class="reasons">
+          ${d.reasons.map(r => `
+            <div class="reason-row">
+              <span class="razao">${r.razao}</span>
+              <div class="bar-track"><div class="bar" style="width: ${(r.mw/max)*100}%"></div></div>
+              <span class="val">${fmtInt(r.mw)} MW</span>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+// ── Flow diagram (simple SVG) ──
+function renderFlows() {
+  const svg = document.getElementById('flow-svg');
+  const W = 800, H = 240;
+  const nodes = {
+    SE: {x: 380, y: 130, label:'SE/CO', pct:'65.6%'},
+    SUL:{x: 380, y: 210, label:'S',     pct:'41.5%'},
+    NE: {x: 560, y:  60, label:'NE',    pct:'95.4%'},
+    N:  {x: 640, y: 130, label:'N',     pct:'96.6%'},
+    IT: {x: 200, y: 130, label:'Itaipu',pct:''},
+  };
+  let html = '';
+  // Lines: from each flow
+  FLOWS.forEach(f => {
+    const a = nodes[f.from], b = nodes[f.to];
+    if (!a || !b) return;
+    const color = f.from === 'N' ? 'var(--n)' : (f.from === 'NE' ? 'var(--ne)' : (f.from === 'SE' ? 'var(--seco)' : 'var(--itaipu)'));
+    const w = Math.min(8, Math.max(1.5, f.mw / 500));
+    // simple arrow: line + label
+    const dx = b.x - a.x, dy = b.y - a.y, mid_x = (a.x+b.x)/2, mid_y = (a.y+b.y)/2;
+    html += `<line class="flow-line" x1="${a.x}" y1="${a.y}" x2="${b.x}" y2="${b.y}" stroke="${color}" stroke-width="${w}" stroke-linecap="round" opacity="0.7" />`;
+    html += `<text class="flow-line-text" x="${mid_x}" y="${mid_y - 4}" text-anchor="middle" style="fill:${color}">${fmtInt(f.mw)}</text>`;
+  });
+  // Nodes
+  Object.entries(nodes).forEach(([key, n]) => {
+    html += `<rect class="flow-node" x="${n.x-40}" y="${n.y-22}" width="80" height="44" rx="4" />`;
+    html += `<text class="flow-node-text" x="${n.x}" y="${n.y-2}">${n.label}</text>`;
+    if (n.pct) html += `<text class="flow-node-pct" x="${n.x}" y="${n.y+13}">EAR ${n.pct}</text>`;
+  });
+  svg.innerHTML = html;
+}
+
+// ── UTEs table ──
+function renderUtes() {
+  const tbody = document.querySelector('#utes-table tbody');
+  tbody.innerHTML = UTES_SUSPENDED.map(u => `
+    <tr>
+      <td>${u.name}</td>
+      <td>${u.fuel}</td>
+      <td><span class="sub-tag ${u.sub.toLowerCase()}">${u.sub === 'SECO' ? 'SE/CO' : u.sub}</span></td>
+      <td>${fmtInt(u.cap)}</td>
+      <td>${u.order}</td>
+      <td>${u.date}</td>
+    </tr>
+  `).join('');
+}
+
+function renderAll() {
+  renderKPIs();
+  renderDonut();
+  renderHourly();
+  renderThermal();
+  renderCurtailment();
+  renderFlows();
+  renderUtes();
+}
+
+function init() {
+  let saved = 'EN';
+  try { saved = localStorage.getItem('lang') || 'EN'; } catch(e){}
+  setLang(saved);
+  window.addEventListener('resize', renderHourly);
+}
+init();
+</script>
+
+</body>
+</html>

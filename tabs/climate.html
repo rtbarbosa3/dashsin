@@ -1,0 +1,948 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>BR Energy Terminal — Climate</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0a0b0d; --bg-elev: #121418; --bg-elev-2: #181b20;
+  --border: #23262c; --border-soft: #1c1f24;
+  --text: #e6e8eb; --text-muted: #8b8f96; --text-dim: #5a5d62;
+  --accent: #d4d4d8;
+  --seco: #5eb3f5; --sul: #f0a830; --ne: #4ade80; --n: #c084fc;
+  --y24: #4b5057; --y25: #8a8f96; --y26: #e6e8eb;
+  --nino: #ef4444; --neutro: #6b7280; --nina: #3b82f6;
+  --danger: #ef4444; --warn: #f59e0b; --ok: #10b981;
+  --font-sans: 'DM Sans', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { background: var(--bg); color: var(--text); font-family: var(--font-sans); font-size: 14px; line-height: 1.5; -webkit-font-smoothing: antialiased; }
+.topbar { border-bottom: 1px solid var(--border); padding: 14px 24px; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+.brand { display: flex; align-items: baseline; gap: 12px; }
+.brand .logo { font-family: var(--font-mono); font-weight: 600; font-size: 13px; letter-spacing: 0.15em; text-transform: uppercase; }
+.brand .divider { width: 1px; height: 14px; background: var(--border); }
+.brand .tabs { display: flex; gap: 1px; background: var(--border); margin-left: 16px; }
+.brand .tab { background: var(--bg-elev); padding: 4px 10px; font-family: var(--font-mono); font-size: 10px; color: var(--text-muted); letter-spacing: 0.06em; text-transform: uppercase; cursor: pointer; text-decoration: none; transition: background 0.15s, color 0.15s; }
+.brand .tab:hover { background: var(--bg-elev-2); color: var(--text); }
+.brand .tab.active { background: var(--text); color: var(--bg); }
+.topbar-right { display: flex; align-items: center; gap: 18px; }
+.meta { font-family: var(--font-mono); font-size: 11px; color: var(--text-dim); letter-spacing: 0.04em; }
+.meta .live { display: inline-block; width: 6px; height: 6px; background: var(--ok); border-radius: 50%; margin-right: 6px; animation: pulse 2s infinite; }
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.35} }
+.lang-toggle { display: flex; border: 1px solid var(--border); border-radius: 4px; overflow: hidden; font-family: var(--font-mono); font-size: 11px; }
+.lang-toggle button { background: transparent; color: var(--text-muted); border: none; padding: 5px 10px; cursor: pointer; letter-spacing: 0.04em; }
+.lang-toggle button.active { background: var(--text); color: var(--bg); }
+.subheader { padding: 22px 24px 6px; display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; flex-wrap: wrap; }
+.subheader h1 { font-size: 22px; font-weight: 600; letter-spacing: -0.01em; margin-bottom: 4px; }
+.subheader .subtitle { font-size: 13px; color: var(--text-muted); }
+.subheader .range { font-family: var(--font-mono); font-size: 11px; color: var(--text-dim); letter-spacing: 0.05em; text-transform: uppercase; text-align: right; }
+.subheader .range strong { color: var(--text); }
+.insights { margin: 16px 24px; border-left: 2px solid var(--warn); background: linear-gradient(90deg, rgba(245,158,11,0.06) 0%, transparent 60%); padding: 14px 18px; border-radius: 0 4px 4px 0; }
+.insights .label { font-family: var(--font-mono); font-size: 10px; color: var(--warn); letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 4px; }
+.insights p { font-size: 13px; line-height: 1.6; }
+.insights p + p { margin-top: 6px; }
+.insights strong { font-weight: 600; }
+.insights .v { font-family: var(--font-mono); color: var(--warn); font-weight: 600; }
+.insights .v.up { color: var(--ok); } .insights .v.down { color: var(--danger); }
+
+.kpi-strip { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: var(--border); margin: 0 24px; border: 1px solid var(--border); }
+.kpi { background: var(--bg-elev); padding: 18px; position: relative; }
+.kpi::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 2px; background: var(--accent); }
+.kpi.enso::before { background: var(--nino); }
+.kpi.precip::before { background: var(--seco); }
+.kpi.agro::before { background: var(--ne); }
+.kpi.forecast::before { background: var(--warn); }
+.kpi .header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 10px; }
+.kpi .name { font-family: var(--font-mono); font-size: 11px; color: var(--text-muted); letter-spacing: 0.08em; text-transform: uppercase; }
+.kpi .unit { font-family: var(--font-mono); font-size: 10px; color: var(--text-dim); }
+.kpi .value-row { display: flex; align-items: baseline; gap: 8px; margin-bottom: 8px; }
+.kpi .value { font-family: var(--font-mono); font-size: 24px; font-weight: 500; line-height: 1; }
+.kpi .detail { font-family: var(--font-mono); font-size: 10px; color: var(--text-muted); margin-top: 6px; padding-top: 8px; border-top: 1px solid var(--border-soft); }
+.kpi .detail strong { color: var(--text); font-weight: 500; }
+
+.main { padding: 20px 24px 40px; display: grid; grid-template-columns: 1fr; gap: 20px; }
+.section { background: var(--bg-elev); border: 1px solid var(--border); border-radius: 4px; padding: 20px 22px; }
+.section-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 18px; padding-bottom: 12px; border-bottom: 1px solid var(--border-soft); flex-wrap: wrap; gap: 8px; }
+.section-head h2 { font-size: 14px; font-weight: 600; letter-spacing: 0.03em; text-transform: uppercase; }
+.section-head .hint { font-family: var(--font-mono); font-size: 10px; color: var(--text-dim); letter-spacing: 0.05em; text-transform: uppercase; }
+
+/* Small multiples (same as hidrologia) */
+.small-mult-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 22px; }
+@media (max-width: 760px) { .small-mult-grid { grid-template-columns: 1fr; } }
+
+/* Basin grid - 4 cols for 8 bacias */
+.basin-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px; }
+@media (max-width: 1400px) { .basin-grid { grid-template-columns: repeat(3, 1fr); } }
+@media (max-width: 1024px) { .basin-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 600px)  { .basin-grid { grid-template-columns: 1fr; } }
+
+.basin-tag {
+  display: inline-block; padding: 1px 5px; border-radius: 2px;
+  font-size: 9px; font-weight: 500; letter-spacing: 0.04em;
+  margin-left: 4px; vertical-align: middle;
+}
+.basin-tag.seco { background: rgba(94,179,245,0.15); color: var(--seco); }
+.basin-tag.sul  { background: rgba(240,168,48,0.15); color: var(--sul); }
+.basin-tag.ne   { background: rgba(74,222,128,0.15); color: var(--ne); }
+.basin-tag.n    { background: rgba(192,132,252,0.15); color: var(--n); }
+.mini-chart { display: flex; flex-direction: column; position: relative; }
+.mini-chart-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 10px; }
+.mini-chart-head .mc-name { font-family: var(--font-mono); font-size: 11px; color: var(--text); letter-spacing: 0.06em; text-transform: uppercase; font-weight: 600; }
+.mini-chart-head .mc-name::before { content: ''; display: inline-block; width: 10px; height: 2px; margin-right: 8px; vertical-align: middle; }
+.mini-chart-head .mc-name.seco::before { background: var(--seco); }
+.mini-chart-head .mc-name.sul::before { background: var(--sul); }
+.mini-chart-head .mc-name.ne::before { background: var(--ne); }
+.mini-chart-head .mc-name.n::before { background: var(--n); }
+.mini-chart-head .mc-avg { font-family: var(--font-mono); font-size: 11px; color: var(--text-muted); }
+.mini-chart-head .mc-avg strong { color: var(--text); }
+.mini-chart svg { display: block; width: 100%; height: 160px; }
+.mini-chart .mc-legend { display: flex; gap: 14px; margin-top: 6px; font-family: var(--font-mono); font-size: 10px; color: var(--text-muted); letter-spacing: 0.04em; }
+.mini-chart .mc-legend .ml-item { display: flex; align-items: center; gap: 5px; }
+.mini-chart .mc-legend .ml-swatch { width: 10px; height: 2px; display: inline-block; }
+.mini-chart .mc-legend .ml-swatch.y24 { background: var(--y24); }
+.mini-chart .mc-legend .ml-swatch.y25 { background: var(--y25); }
+.mini-chart .mc-legend .ml-swatch.y26 { background: var(--y26); height: 3px; }
+.mc-y24 { stroke: var(--y24); stroke-width: 1.4; fill: none; }
+.mc-y25 { stroke: var(--y25); stroke-width: 1.4; fill: none; }
+.mc-y26 { stroke: var(--y26); stroke-width: 2; fill: none; }
+.mc-dot-y26 { fill: var(--y26); }
+.mc-axis { font-family: var(--font-mono); font-size: 11px; fill: var(--text-dim); letter-spacing: 0.04em; }
+.mc-grid { stroke: var(--border-soft); stroke-width: 1; shape-rendering: crispEdges; }
+.mc-mlt-ref { stroke: var(--warn); stroke-width: 1; stroke-dasharray: 3 3; shape-rendering: crispEdges; opacity: 0.4; }
+.mc-mlt-label { font-family: var(--font-mono); font-size: 10px; fill: var(--warn); letter-spacing: 0.04em; opacity: 0.7; }
+
+.mc-crosshair { stroke: var(--text-dim); stroke-width: 1; stroke-dasharray: 2 3; opacity: 0; pointer-events: none; }
+.mc-hover-dot { stroke: var(--bg); stroke-width: 2; opacity: 0; pointer-events: none; }
+.mc-hover-dot.y24 { fill: var(--y24); }
+.mc-hover-dot.y25 { fill: var(--y25); }
+.mc-hover-dot.y26 { fill: var(--y26); }
+.mc-hover-overlay { cursor: crosshair; }
+.mc-tooltip {
+  position: absolute; pointer-events: none; background: var(--bg);
+  border: 1px solid var(--border); padding: 8px 11px;
+  font-family: var(--font-mono); font-size: 10px; border-radius: 4px;
+  opacity: 0; transition: opacity 0.1s; white-space: nowrap;
+  z-index: 10; box-shadow: 0 6px 24px rgba(0,0,0,0.5);
+  top: 32px; left: 50px;
+}
+.mc-tooltip .mctt-month { font-size: 9px; color: var(--text-dim); margin-bottom: 5px; letter-spacing: 0.06em; text-transform: uppercase; }
+.mc-tooltip .mctt-row { display: flex; justify-content: space-between; gap: 16px; padding: 2px 0; align-items: center; }
+.mc-tooltip .mctt-row .mctt-lbl { display: flex; align-items: center; gap: 6px; color: var(--text-muted); }
+.mc-tooltip .mctt-row .mctt-sw { width: 10px; height: 2px; }
+.mc-tooltip .mctt-row.y24 .mctt-sw { background: var(--y24); }
+.mc-tooltip .mctt-row.y25 .mctt-sw { background: var(--y25); }
+.mc-tooltip .mctt-row.y26 .mctt-sw { background: var(--y26); height: 3px; }
+.mc-tooltip .mctt-row .mctt-val { color: var(--text); font-weight: 500; }
+.mc-tooltip .mctt-row .mctt-pct { color: var(--text-dim); margin-left: 6px; font-size: 9px; }
+
+/* Agro anomaly bars */
+.agro-bars { display: flex; flex-direction: column; gap: 8px; }
+.agro-row { display: grid; grid-template-columns: 50px 1fr 240px 1fr 80px; gap: 12px; align-items: center; font-family: var(--font-mono); font-size: 11px; }
+@media (max-width: 760px) { .agro-row { grid-template-columns: 50px 1fr 100% 80px; grid-template-rows: auto auto; }
+  .agro-row .crops { grid-column: 1 / -1; padding-left: 62px; color: var(--text-dim); font-size: 10px; }
+}
+.agro-row .code { color: var(--text); font-weight: 600; letter-spacing: 0.08em; }
+.agro-row .name { color: var(--text-muted); letter-spacing: 0.04em; }
+.agro-row .crops { color: var(--text-dim); letter-spacing: 0.02em; font-size: 10px; }
+.agro-row .bar-wrap { position: relative; height: 18px; background: var(--bg); border-radius: 3px; overflow: hidden; }
+.agro-row .bar-center { position: absolute; left: 50%; top: 0; bottom: 0; width: 1px; background: var(--warn); opacity: 0.6; z-index: 2; }
+.agro-row .bar-center-label { position: absolute; left: 50%; top: -16px; transform: translateX(-50%); font-size: 8px; color: var(--warn); opacity: 0.7; letter-spacing: 0.06em; }
+.agro-row .bar { position: absolute; top: 2px; bottom: 2px; border-radius: 2px; }
+.agro-row .bar.up { background: var(--ok); right: 50%; }
+.agro-row .bar.down { background: var(--danger); left: 50%; }
+.agro-row .bar.flat { background: var(--neutro); }
+.agro-row .pct { text-align: right; color: var(--text); font-weight: 500; }
+.agro-row .pct.up { color: var(--ok); } .agro-row .pct.down { color: var(--danger); }
+.agro-row .mm { color: var(--text-muted); text-align: left; font-size: 10px; }
+
+/* ENSO timeline */
+.enso-wrap { position: relative; }
+#enso-chart { display: block; width: 100%; height: 220px; }
+.enso-band-nino { fill: var(--nino); opacity: 0.08; }
+.enso-band-nina { fill: var(--nina); opacity: 0.08; }
+.enso-band-thr { stroke: var(--text-dim); stroke-width: 1; stroke-dasharray: 2 3; opacity: 0.5; shape-rendering: crispEdges; }
+.enso-line { fill: none; stroke: var(--text); stroke-width: 2; stroke-linejoin: round; }
+.enso-area-pos { fill: var(--nino); opacity: 0.18; }
+.enso-area-neg { fill: var(--nina); opacity: 0.18; }
+.enso-dot { fill: var(--text); }
+.enso-axis-label { font-family: var(--font-mono); font-size: 10px; fill: var(--text-dim); letter-spacing: 0.04em; }
+.enso-zone-label { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.06em; font-weight: 600; }
+.enso-tooltip {
+  position: absolute; pointer-events: none; background: var(--bg);
+  border: 1px solid var(--border); padding: 8px 11px;
+  font-family: var(--font-mono); font-size: 10px; border-radius: 4px;
+  opacity: 0; transition: opacity 0.1s; white-space: nowrap;
+  z-index: 10; box-shadow: 0 6px 24px rgba(0,0,0,0.5);
+}
+.enso-tooltip .et-month { color: var(--text-dim); margin-bottom: 4px; letter-spacing: 0.04em; font-size: 9px; text-transform: uppercase; }
+.enso-tooltip .et-val { color: var(--text); font-weight: 500; font-size: 13px; }
+.enso-tooltip .et-state { font-size: 9px; letter-spacing: 0.04em; margin-top: 2px; }
+.enso-current { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-top: 16px; padding-top: 14px; border-top: 1px solid var(--border-soft); }
+.enso-stat { padding: 0 4px; }
+.enso-stat .lbl { font-family: var(--font-mono); font-size: 10px; color: var(--text-dim); letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 4px; }
+.enso-stat .val { font-family: var(--font-mono); font-size: 14px; color: var(--text); font-weight: 500; }
+.enso-stat .val.nino { color: var(--nino); }
+.enso-stat .val.nina { color: var(--nina); }
+.enso-stat .val.neutro { color: var(--text); }
+
+/* Renewable CF cards */
+.renew-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; }
+@media (max-width: 760px) { .renew-grid { grid-template-columns: 1fr; } }
+.renew-card { background: var(--bg-elev-2); border: 1px solid var(--border-soft); border-radius: 4px; padding: 16px; }
+.renew-card .head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 14px; padding-bottom: 8px; border-bottom: 1px solid var(--border-soft); }
+.renew-card .name { font-family: var(--font-mono); font-size: 12px; color: var(--text); letter-spacing: 0.06em; text-transform: uppercase; font-weight: 600; }
+.renew-card .name::before { content: ''; display: inline-block; width: 10px; height: 2px; margin-right: 8px; vertical-align: middle; }
+.renew-card.seco .name::before { background: var(--seco); }
+.renew-card.sul .name::before { background: var(--sul); }
+.renew-card.ne .name::before { background: var(--ne); }
+.renew-card.n .name::before { background: var(--n); }
+.renew-card .note { font-family: var(--font-mono); font-size: 10px; color: var(--text-muted); font-style: italic; }
+.renew-row { display: grid; grid-template-columns: 60px 1fr 80px; gap: 10px; align-items: center; padding: 6px 0; font-family: var(--font-mono); font-size: 11px; }
+.renew-row .source { color: var(--text-muted); letter-spacing: 0.06em; text-transform: uppercase; font-size: 10px; }
+.renew-row .bar-wrap { position: relative; height: 8px; background: var(--bg); border-radius: 4px; overflow: hidden; }
+.renew-row .bar { height: 100%; border-radius: 4px; }
+.renew-row .bar.wind { background: var(--ne); }
+.renew-row .bar.solar { background: var(--solar, var(--warn)); }
+.renew-row .bar-mlt { position: absolute; top: -2px; bottom: -2px; width: 1px; background: var(--text); opacity: 0.5; }
+.renew-row .val { text-align: right; color: var(--text); font-weight: 500; }
+.renew-row .delta { font-size: 9px; margin-left: 4px; }
+.renew-row .delta.up { color: var(--ok); } .renew-row .delta.down { color: var(--danger); } .renew-row .delta.flat { color: var(--text-dim); }
+
+.footer { padding: 18px 24px; border-top: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; font-family: var(--font-mono); font-size: 10px; color: var(--text-dim); letter-spacing: 0.04em; }
+
+@media (max-width: 880px) {
+  .kpi-strip { grid-template-columns: repeat(2, 1fr); margin: 0 16px; }
+  .topbar { padding: 12px 16px; flex-wrap: wrap; }
+  .brand .tabs { margin-left: 0; margin-top: 8px; }
+  .subheader { padding: 18px 16px 6px; }
+  .insights { margin: 14px 16px; }
+  .main { padding: 16px; }
+  .subheader h1 { font-size: 18px; }
+  .kpi .value { font-size: 20px; }
+}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="brand">
+    <span class="logo">BR ENERGY TERMINAL</span>
+    <span class="divider"></span>
+    <div class="tabs">
+      <a class="tab" href="market.html">Market</a>
+      <a class="tab" href="hydrology.html">Hydrology</a>
+      <a class="tab" href="operation.html">Operation</a>
+      <a class="tab active" href="climate.html">Climate</a>
+      <a class="tab" href="acl.html">ACL</a>
+    </div>
+  </div>
+  <div class="topbar-right">
+    <span class="meta"><span class="live"></span><span data-i18n="dataLag">NOAA CPC · INMET · ONS</span></span>
+    <div class="lang-toggle">
+      <button data-lang="EN" class="active">EN</button>
+      <button data-lang="PT">PT</button>
+    </div>
+  </div>
+</header>
+
+<div class="subheader">
+  <div>
+    <h1 data-i18n="pageTitle">Climate — precipitation, ENSO & renewable resources</h1>
+    <div class="subtitle" data-i18n="pageSub">Rain by basin, agro region anomalies, ENSO timeline, wind/solar capacity factors</div>
+  </div>
+  <div class="range">
+    <span data-i18n="period">Snapshot</span>
+    <strong>May 2026</strong> · <span data-i18n="enso">ENSO: weak El Niño</span>
+  </div>
+</div>
+
+<section class="insights">
+  <div class="label" data-i18n="insightsLabel">Highlights · climate state</div>
+  <p data-i18n="insightEnso">
+    <strong>Weak El Niño peaking and weakening</strong> — ONI index hit
+    <span class="v" style="color:var(--nino)">+0.7</span> in Jan-Feb 2026, now retreating
+    to <span class="v">+0.4</span>. NOAA forecasts ENSO-neutral conditions returning by
+    Aug-Sep 2026. Historically, El Niño years bring above-average precipitation to Sul Brazil
+    and below-average to Norte/Nordeste — consistent with what we see today.
+  </p>
+  <p data-i18n="insightPrecip">
+    <strong>Iguaçu/Uruguai basins at 140% MLT for May</strong> — the wettest May in Sul Brazil
+    since 2022. Paraná basin at <span class="v">82% MLT</span> (slightly below normal),
+    São Francisco closing out wet season at <span class="v up">95% MLT</span>, Tocantins at
+    <span class="v down">65% MLT</span> after a strong Q1.
+  </p>
+  <p data-i18n="insightAgro">
+    <strong>Mato Grosso do Sul and Goiás below 80% MLT</strong> — concerning for safrinha
+    de milho. <span class="v down">RS at 145%</span> and <span class="v down">PR at 130%</span>
+    of MLT carries the opposite risk: excess rain delays trigo plantio and damages
+    final-stage soja. Bahia algodão zone at <span class="v">105%</span> — favorable.
+  </p>
+</section>
+
+<section class="kpi-strip"></section>
+
+<main class="main">
+
+  <div class="section">
+    <div class="section-head">
+      <h2 data-i18n="precipTitle">Precipitation by basin · monthly accumulated (mm)</h2>
+      <div class="hint" data-i18n="precipHint">Lines: 2024 / 2025 / 2026 ytd · dashed = MLT · hover for detail</div>
+    </div>
+    <div class="basin-grid" id="precip-multiples"></div>
+  </div>
+
+  <div class="section">
+    <div class="section-head">
+      <h2 data-i18n="agroTitle">Agro regions · last 30 days vs MLT</h2>
+      <div class="hint" data-i18n="agroHint">Center = 100% MLT · green above, red below</div>
+    </div>
+    <div class="agro-bars" id="agro-bars"></div>
+  </div>
+
+  <div class="section">
+    <div class="section-head">
+      <h2 data-i18n="ensoTitle">ENSO · ONI index timeline (24 months)</h2>
+      <div class="hint" data-i18n="ensoHint">3-month running mean SST anomaly · NOAA CPC</div>
+    </div>
+    <div class="enso-wrap">
+      <svg id="enso-chart" viewBox="0 0 1100 220" preserveAspectRatio="none"></svg>
+      <div class="enso-tooltip" id="enso-tooltip"></div>
+    </div>
+    <div class="enso-current">
+      <div class="enso-stat">
+        <div class="lbl" data-i18n="ensoCurrent">Current ONI</div>
+        <div class="val nino">+0.4</div>
+      </div>
+      <div class="enso-stat">
+        <div class="lbl" data-i18n="ensoPhase">Phase</div>
+        <div class="val nino" data-i18n="ensoPhaseVal">Weak El Niño (weakening)</div>
+      </div>
+      <div class="enso-stat">
+        <div class="lbl" data-i18n="ensoForecast">NOAA outlook</div>
+        <div class="val neutro" data-i18n="ensoForecastVal">Neutral by Aug-Sep 2026</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-head">
+      <h2 data-i18n="renewTitle">Renewable resources · capacity factor by subsystem</h2>
+      <div class="hint" data-i18n="renewHint">Daily avg vs MLT · vertical line on bar = MLT reference</div>
+    </div>
+    <div class="renew-grid" id="renew-grid"></div>
+  </div>
+
+</main>
+
+<footer class="footer">
+  <span><span data-i18n="source">Source</span>: NOAA Climate Prediction Center · INMET · ONS Geração / Capacity Factor</span>
+  <span><span data-i18n="updated">Updated</span>: daily · ONI monthly</span>
+</footer>
+
+<script>
+const SUBS = ['SECO','SUL','NE','N'];
+const SUB_LABELS = {SECO:'SE/CO', SUL:'S', NE:'NE', N:'N'};
+const SUB_FULL = {SECO:'Sudeste / Centro-Oeste', SUL:'Sul', NE:'Nordeste', N:'Norte'};
+const MONTH_ABBR_EN = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const MONTH_ABBR_PT = ['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
+const MONTH_FULL_EN = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+const MONTH_FULL_PT = ['janeiro','fevereiro','março','abril','maio','junho','julho','agosto','setembro','outubro','novembro','dezembro'];
+
+// ── Precipitation by basin (mm accumulated, monthly) ─────────────
+// 8 bacias mapped to 4 submarkets, with MLT climatology per month
+// MOCKUP: values are estimated from typical climatological patterns
+// Production: replace with ONS Dados Abertos `prec_bacia` daily series
+const PRECIP_BACIA = {
+  paranaiba: {
+    name: 'Paranaíba', sub: 'SECO',
+    mlt:    [250, 220, 180,  90,  50,  30,  25,  30,  70, 130, 200, 260],
+    '2024': [295, 240, 175,  75,  30,  12,   8,   9,  25,  65, 140, 240],
+    '2025': [260, 210, 160,  70,  28,  12,   8,   9,  25,  70, 165, 285],
+    '2026': [310, 280, 200,  95,  42, null, null, null, null, null, null, null]
+  },
+  grande: {
+    name: 'Grande', sub: 'SECO',
+    mlt:    [280, 240, 200, 100,  50,  25,  20,  25,  65, 130, 200, 280],
+    '2024': [320, 265, 200,  80,  30,  10,   7,   8,  22,  65, 145, 260],
+    '2025': [280, 230, 180,  75,  28,  10,   7,   8,  22,  70, 170, 305],
+    '2026': [340, 305, 225, 105,  47, null, null, null, null, null, null, null]
+  },
+  parana: {
+    name: 'Paraná', sub: 'SECO',
+    mlt:    [200, 180, 160, 120, 100,  90,  75,  70, 100, 130, 160, 190],
+    '2024': [230, 200, 165, 105,  75,  60,  50,  50,  75, 110, 145, 195],
+    '2025': [215, 190, 165, 110,  80,  65,  55,  55,  80, 120, 165, 210],
+    '2026': [245, 220, 180, 130, 105, null, null, null, null, null, null, null]
+  },
+  iguacu: {
+    name: 'Iguaçu', sub: 'SUL',
+    mlt:    [170, 145, 130, 145, 175, 185, 195, 180, 170, 175, 155, 155],
+    '2024': [155, 110, 105, 130, 195, 280, 330, 280, 235, 200, 145, 125],
+    '2025': [145, 100, 100, 120, 185, 260, 350, 300, 255, 200, 135, 115],
+    '2026': [135, 110, 120, 185, 245, null, null, null, null, null, null, null]
+  },
+  uruguai: {
+    name: 'Uruguai', sub: 'SUL',
+    mlt:    [150, 135, 130, 145, 170, 175, 185, 175, 165, 175, 150, 145],
+    '2024': [130,  95, 100, 115, 165, 235, 305, 295, 250, 215, 150, 125],
+    '2025': [125,  88,  95, 110, 155, 225, 335, 315, 270, 210, 145, 115],
+    '2026': [110,  90, 115, 165, 220, null, null, null, null, null, null, null]
+  },
+  sao_francisco: {
+    name: 'São Francisco', sub: 'NE',
+    mlt:    [210, 230, 240, 155,  60,  25,   8,   5,  12,  45, 110, 190],
+    '2024': [170, 210, 265, 165,  45,  14,   3,   1,   2,  18,  75, 150],
+    '2025': [150, 195, 240, 150,  45,  13,   3,   1,   2,  18,  70, 150],
+    '2026': [200, 265, 300, 140,  45, null, null, null, null, null, null, null]
+  },
+  parnaiba: {
+    name: 'Parnaíba', sub: 'NE',
+    mlt:    [180, 230, 280, 200,  80,  25,   8,   4,  10,  35,  80, 130],
+    '2024': [145, 207, 308, 220,  65,  17,   4,   2,   8,  22,  55, 100],
+    '2025': [135, 195, 280, 200,  60,  16,   4,   2,   8,  22,  50, 100],
+    '2026': [175, 245, 325, 175,  50, null, null, null, null, null, null, null]
+  },
+  tocantins: {
+    name: 'Tocantins', sub: 'N',
+    mlt:    [310, 330, 350, 230,  95,  25,   8,   5,  12,  55, 155, 270],
+    '2024': [310, 380, 475, 280,  90,  18,   4,   1,   4,  22,  80, 230],
+    '2025': [325, 410, 475, 280,  90,  18,   4,   1,   4,  25,  90, 245],
+    '2026': [340, 395, 385, 185,  65, null, null, null, null, null, null, null]
+  }
+};
+const BASIN_ORDER = ['paranaiba','grande','parana','iguacu','uruguai','sao_francisco','parnaiba','tocantins'];
+
+const PRECIP_YAXIS = {
+  paranaiba:     { max: 400, ticks: [100, 200, 300] },
+  grande:        { max: 400, ticks: [100, 200, 300] },
+  parana:        { max: 300, ticks: [100, 200, 300] },
+  iguacu:        { max: 400, ticks: [100, 200, 300, 400] },
+  uruguai:       { max: 400, ticks: [100, 200, 300, 400] },
+  sao_francisco: { max: 350, ticks: [100, 200, 300] },
+  parnaiba:      { max: 400, ticks: [100, 200, 300] },
+  tocantins:     { max: 500, ticks: [150, 300, 450] }
+};
+
+function precipPoint(basinId, year, monthIdx) {
+  const b = PRECIP_BACIA[basinId];
+  const mm = b[year][monthIdx];
+  if (mm === null || mm === undefined) return null;
+  const mlt = b.mlt[monthIdx];
+  const pct = Math.round(mm / mlt * 100);
+  return { mm, pct, mlt };
+}
+
+// ── Agro region anomalies (% MLT last 30 days, mm in 30d) ────────
+const AGRO_REGIONS = [
+  { code: 'RS', name: 'Rio Grande do Sul', crops: 'Soja, milho, arroz, trigo', cropsEn: 'Soy, corn, rice, wheat', pct: 145, mm: 138 },
+  { code: 'PR', name: 'Paraná',            crops: 'Soja, milho, trigo',         cropsEn: 'Soy, corn, wheat',        pct: 130, mm: 143 },
+  { code: 'BA', name: 'Bahia (oeste)',     crops: 'Algodão, soja, café',        cropsEn: 'Cotton, soy, coffee',      pct: 105, mm: 37 },
+  { code: 'ES', name: 'Espírito Santo',    crops: 'Café conilon',               cropsEn: 'Conilon coffee',           pct: 95,  mm: 57 },
+  { code: 'MG', name: 'Minas Gerais',      crops: 'Café arábica, milho, soja',  cropsEn: 'Arabica coffee, corn',     pct: 92,  mm: 46 },
+  { code: 'SP', name: 'São Paulo',         crops: 'Cana, café, citros',         cropsEn: 'Sugarcane, coffee, citrus',pct: 88,  mm: 66 },
+  { code: 'TO', name: 'Tocantins',         crops: 'Soja, milho',                cropsEn: 'Soy, corn',                pct: 85,  mm: 55 },
+  { code: 'MT', name: 'Mato Grosso',       crops: 'Soja, milho, algodão',       cropsEn: 'Soy, corn, cotton',        pct: 80,  mm: 64 },
+  { code: 'GO', name: 'Goiás',             crops: 'Soja, milho, cana',          cropsEn: 'Soy, corn, sugarcane',     pct: 75,  mm: 41 },
+  { code: 'MS', name: 'Mato Grosso do Sul', crops:'Soja, milho, cana',          cropsEn: 'Soy, corn, sugarcane',     pct: 70,  mm: 46 },
+];
+
+// ── ENSO ONI index history (24 months) ───────────────────────────
+const ENSO_ONI = [
+  ['2024-01',-0.7],['2024-02',-0.5],['2024-03',-0.3],['2024-04',-0.2],['2024-05',-0.1],['2024-06',0.0],
+  ['2024-07',0.1],['2024-08',0.0],['2024-09',-0.2],['2024-10',-0.4],['2024-11',-0.6],['2024-12',-0.8],
+  ['2025-01',-0.9],['2025-02',-0.8],['2025-03',-0.6],['2025-04',-0.4],['2025-05',-0.2],['2025-06',-0.1],
+  ['2025-07',0.0],['2025-08',0.1],['2025-09',0.2],['2025-10',0.4],['2025-11',0.5],['2025-12',0.6],
+  ['2026-01',0.7],['2026-02',0.7],['2026-03',0.6],['2026-04',0.5],['2026-05',0.4]
+];
+
+// ── Renewable capacity factor by submarket (May 2026 daily avg) ──
+const RENEWABLE_CF = {
+  NE:   { wind: 0.55, solar: 0.27, wind_mlt: 0.58, solar_mlt: 0.25, note: 'Strong trade winds', notePt: 'Alísios fortes' },
+  SUL:  { wind: 0.38, solar: 0.18, wind_mlt: 0.32, solar_mlt: 0.16, note: 'Moderate autumn',     notePt: 'Outono moderado' },
+  N:    { wind: 0.25, solar: 0.20, wind_mlt: 0.28, solar_mlt: 0.22, note: 'Weakening',           notePt: 'Enfraquecendo' },
+  SECO: { wind: 0.25, solar: 0.22, wind_mlt: 0.22, solar_mlt: 0.24, note: 'Low season',          notePt: 'Baixa estação' },
+};
+
+const I18N = {
+  EN: {
+    dataLag:'NOAA CPC · INMET · ONS',
+    pageTitle:'Climate — precipitation, ENSO & renewable resources',
+    pageSub:'Rain by basin, agro region anomalies, ENSO timeline, wind/solar capacity factors',
+    period:'Snapshot', enso:'ENSO: weak El Niño',
+    insightsLabel:'Highlights · climate state',
+    insightEnso:'<strong>Weak El Niño peaking and weakening</strong> — ONI index hit <span class="v" style="color:var(--nino)">+0.7</span> in Jan-Feb 2026, now retreating to <span class="v">+0.4</span>. NOAA forecasts ENSO-neutral conditions returning by Aug-Sep 2026. Historically, El Niño years bring above-average precipitation to Sul Brazil and below-average to Norte/Nordeste — consistent with what we see today.',
+    insightPrecip:'<strong>Iguaçu at 140% MLT, Uruguai at 129% MLT for May</strong> — the wettest May in Sul Brazil since 2022. SE/CO basins running above MLT: Paranaíba <span class="v up">105%</span>, Grande <span class="v up">109%</span>, Paraná <span class="v">120%</span>. NE wet season closed strong: São Francisco <span class="v">100%</span>, Parnaíba <span class="v">100%</span>. Tocantins (N) at <span class="v down">68% MLT</span> — first sign of weakening from Q1 peak.',
+    insightAgro:'<strong>Mato Grosso do Sul and Goiás below 80% MLT</strong> — concerning for safrinha de milho. <span class="v down">RS at 145%</span> and <span class="v down">PR at 130%</span> of MLT carries the opposite risk: excess rain delays trigo plantio and damages final-stage soja. Bahia algodão zone at <span class="v">105%</span> — favorable.',
+    precipTitle:'Precipitation by basin · 8 main hydro basins (mm/month)',
+    precipHint:'Lines: 2024 / 2025 / 2026 ytd · dashed = MLT · hover for detail',
+    agroTitle:'Agro regions · last 30 days vs MLT',
+    agroHint:'Center = 100% MLT · green above, red below',
+    ensoTitle:'ENSO · ONI index timeline (24 months)',
+    ensoHint:'3-month running mean SST anomaly · NOAA CPC',
+    renewTitle:'Renewable resources · capacity factor by subsystem',
+    renewHint:'Daily avg vs MLT · vertical line on bar = MLT reference',
+    kpiEnso:'ENSO state', kpiEnsoUnit:'ONI index',
+    kpiPrecip:'SIN precip MTD', kpiPrecipUnit:'% MLT',
+    kpiAgro:'Agro median', kpiAgroUnit:'% MLT 30d',
+    kpiForecast:'Outlook 15d', kpiForecastUnit:'forecast',
+    kpiEnsoDetail:'<strong>Weak Niño</strong> · weakening',
+    kpiPrecipDetail:'Sul <strong>140%</strong> · NE <strong>95%</strong>',
+    kpiAgroDetail:'<strong>4/10</strong> below 80% MLT',
+    kpiForecastDetail:'<strong>Wet</strong> Sul · <strong>dry</strong> NE',
+    ensoCurrent:'Current ONI', ensoPhase:'Phase', ensoPhaseVal:'Weak El Niño (weakening)',
+    ensoForecast:'NOAA outlook', ensoForecastVal:'Neutral by Aug-Sep 2026',
+    source:'Source', updated:'Updated',
+    wind:'Wind', solar:'Solar',
+  },
+  PT: {
+    dataLag:'NOAA CPC · INMET · ONS',
+    pageTitle:'Clima — precipitação, ENSO & recursos renováveis',
+    pageSub:'Chuva por bacia, anomalia em regiões agro, timeline ENSO, capacity factor eólico/solar',
+    period:'Snapshot', enso:'ENSO: El Niño fraco',
+    insightsLabel:'Destaques · estado climático',
+    insightEnso:'<strong>El Niño fraco no pico e enfraquecendo</strong> — índice ONI atingiu <span class="v" style="color:var(--nino)">+0,7</span> em jan-fev/26, agora recuando para <span class="v">+0,4</span>. NOAA prevê retorno a condições ENSO-neutras até ago-set/26. Historicamente, anos de El Niño trazem precipitação acima da média ao Sul do Brasil e abaixo ao Norte/Nordeste — consistente com o que se observa hoje.',
+    insightPrecip:'<strong>Iguaçu em 140% MLT, Uruguai em 129% MLT em maio</strong> — o maio mais chuvoso no Sul desde 2022. Bacias SE/CO acima da MLT: Paranaíba <span class="v up">105%</span>, Grande <span class="v up">109%</span>, Paraná <span class="v">120%</span>. Período úmido NE encerrou forte: São Francisco <span class="v">100%</span>, Parnaíba <span class="v">100%</span>. Tocantins (N) em <span class="v down">68% MLT</span> — primeiro sinal de enfraquecimento após pico Q1.',
+    insightAgro:'<strong>Mato Grosso do Sul e Goiás abaixo de 80% MLT</strong> — preocupante para safrinha de milho. <span class="v down">RS em 145%</span> e <span class="v down">PR em 130%</span> da MLT trazem o risco oposto: chuva excessiva atrasa plantio de trigo e prejudica fase final da soja. Zona algodoeira da Bahia em <span class="v">105%</span> — favorável.',
+    precipTitle:'Precipitação por bacia · 8 bacias hidrográficas principais (mm/mês)',
+    precipHint:'Linhas: 2024 / 2025 / 2026 ytd · tracejada = MLT · passe o mouse para detalhe',
+    agroTitle:'Regiões agro · últimos 30 dias vs MLT',
+    agroHint:'Centro = 100% MLT · verde acima, vermelho abaixo',
+    ensoTitle:'ENSO · timeline do índice ONI (24 meses)',
+    ensoHint:'Média móvel 3 meses da anomalia de TSM · NOAA CPC',
+    renewTitle:'Recursos renováveis · capacity factor por submercado',
+    renewHint:'Média diária vs MLT · linha vertical na barra = referência MLT',
+    kpiEnso:'Estado ENSO', kpiEnsoUnit:'índice ONI',
+    kpiPrecip:'Chuva SIN MTD', kpiPrecipUnit:'% MLT',
+    kpiAgro:'Mediana agro', kpiAgroUnit:'% MLT 30d',
+    kpiForecast:'Previsão 15d', kpiForecastUnit:'forecast',
+    kpiEnsoDetail:'<strong>Niño fraco</strong> · enfraquecendo',
+    kpiPrecipDetail:'Sul <strong>140%</strong> · NE <strong>95%</strong>',
+    kpiAgroDetail:'<strong>4/10</strong> regiões abaixo de 80%',
+    kpiForecastDetail:'<strong>Chuvoso</strong> Sul · <strong>seco</strong> NE',
+    ensoCurrent:'ONI atual', ensoPhase:'Fase', ensoPhaseVal:'El Niño fraco (enfraquecendo)',
+    ensoForecast:'Outlook NOAA', ensoForecastVal:'Neutro até ago-set 2026',
+    source:'Fonte', updated:'Atualizado',
+    wind:'Eólica', solar:'Solar',
+  }
+};
+
+let currentLang = 'EN';
+function setLang(lang) {
+  currentLang = lang;
+  document.documentElement.lang = lang.toLowerCase();
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const key = el.getAttribute('data-i18n');
+    if (I18N[lang][key]) el.innerHTML = I18N[lang][key];
+  });
+  document.querySelectorAll('.lang-toggle button').forEach(b => {
+    b.classList.toggle('active', b.dataset.lang === lang);
+  });
+  renderAll();
+  try { localStorage.setItem('lang', lang); } catch(e){}
+}
+document.querySelectorAll('.lang-toggle button').forEach(b => {
+  b.addEventListener('click', () => setLang(b.dataset.lang));
+});
+
+function fmt(n, decimals=1) {
+  if (n == null || isNaN(n)) return '—';
+  return n.toLocaleString(currentLang === 'PT' ? 'pt-BR' : 'en-US',
+    { minimumFractionDigits: decimals, maximumFractionDigits: decimals });
+}
+function fmtInt(n) {
+  if (n == null || isNaN(n)) return '—';
+  return Math.round(n).toLocaleString(currentLang === 'PT' ? 'pt-BR' : 'en-US');
+}
+
+// ── KPI strip ──
+function renderKPIs() {
+  const t = I18N[currentLang];
+  const cards = [
+    {cls:'enso',     name:t.kpiEnso,     unit:t.kpiEnsoUnit,     value:'+0.4', detail:t.kpiEnsoDetail},
+    {cls:'precip',   name:t.kpiPrecip,   unit:t.kpiPrecipUnit,   value:'94%',  detail:t.kpiPrecipDetail},
+    {cls:'agro',     name:t.kpiAgro,     unit:t.kpiAgroUnit,     value:'89%',  detail:t.kpiAgroDetail},
+    {cls:'forecast', name:t.kpiForecast, unit:t.kpiForecastUnit, value:'Mixed',detail:t.kpiForecastDetail},
+  ];
+  document.querySelector('.kpi-strip').innerHTML = cards.map(c => `
+    <div class="kpi ${c.cls}">
+      <div class="header"><span class="name">${c.name}</span><span class="unit">${c.unit}</span></div>
+      <div class="value-row"><span class="value">${c.value}</span></div>
+      <div class="detail">${c.detail}</div>
+    </div>
+  `).join('');
+}
+
+// ── Precipitation small multiples (8 basins, interactive) ──
+function renderPrecipMultiples() {
+  const container = document.getElementById('precip-multiples');
+  const W = 540, H = 160, padL = 44, padR = 12, padT = 12, padB = 22;
+  const innerW = W - padL - padR, innerH = H - padT - padB;
+  const MONTH_LABELS = currentLang === 'PT' ? MONTH_ABBR_PT : MONTH_ABBR_EN;
+  const xScale = m => padL + ((m-1)/11)*innerW;
+  const fmtK = v => v >= 1000 ? (v/1000) + 'k' : String(v);
+
+  container.innerHTML = BASIN_ORDER.map(basinId => {
+    const b = PRECIP_BACIA[basinId];
+    const yMax = PRECIP_YAXIS[basinId].max;
+    const yScale = v => padT + innerH - (v/yMax)*innerH;
+
+    const yr24 = [], yr25 = [], yr26 = [], mltPts = [];
+    for (let m = 1; m <= 12; m++) {
+      const p24 = precipPoint(basinId, '2024', m-1);
+      const p25 = precipPoint(basinId, '2025', m-1);
+      const p26 = precipPoint(basinId, '2026', m-1);
+      mltPts.push({x:xScale(m), y:yScale(b.mlt[m-1])});
+      if (p24) yr24.push({m, x:xScale(m), y:yScale(p24.mm)});
+      if (p25) yr25.push({m, x:xScale(m), y:yScale(p25.mm)});
+      if (p26) yr26.push({m, x:xScale(m), y:yScale(p26.mm)});
+    }
+    const path = pts => pts.length ? pts.map((p,i) => `${i===0?'M':'L'} ${p.x.toFixed(1)} ${p.y.toFixed(1)}`).join(' ') : '';
+
+    let grid = '';
+    for (const tv of PRECIP_YAXIS[basinId].ticks) {
+      grid += `<line class="mc-grid" x1="${padL}" x2="${W-padR}" y1="${yScale(tv)}" y2="${yScale(tv)}" />`;
+      grid += `<text class="mc-axis" x="${padL-6}" y="${yScale(tv)+3}" text-anchor="end">${fmtK(tv)}</text>`;
+    }
+    grid += `<path class="mc-mlt-ref" d="${path(mltPts)}" fill="none" />`;
+    grid += `<text class="mc-mlt-label" x="${W-padR-4}" y="${yScale(b.mlt[11])-4}" text-anchor="end">MLT</text>`;
+
+    let xlab = '';
+    for (let m = 1; m <= 12; m++) {
+      xlab += `<text class="mc-axis" x="${xScale(m)}" y="${H-padB+13}" text-anchor="middle">${MONTH_LABELS[m-1][0].toUpperCase()}</text>`;
+    }
+    const dots = yr26.map(p => `<circle class="mc-dot-y26" cx="${p.x}" cy="${p.y}" r="2.5" />`).join('');
+
+    // Current value (May = idx 4)
+    const curr = precipPoint(basinId, '2026', 4);
+    const currColor = curr.pct >= 100 ? 'var(--ok)' : (curr.pct >= 80 ? 'var(--warn)' : 'var(--danger)');
+    const subClass = b.sub.toLowerCase();
+    const subLabel = SUB_LABELS[b.sub];
+
+    return `
+      <div class="mini-chart" data-basin="${basinId}">
+        <div class="mini-chart-head">
+          <span class="mc-name ${subClass}">${b.name}<span class="basin-tag ${subClass}">${subLabel}</span></span>
+          <span class="mc-avg"><strong style="color:${currColor}">${curr.mm}</strong> mm · ${curr.pct}%</span>
+        </div>
+        <svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none">
+          ${grid}
+          ${xlab}
+          <path class="mc-y24" d="${path(yr24)}" />
+          <path class="mc-y25" d="${path(yr25)}" />
+          <path class="mc-y26" d="${path(yr26)}" />
+          ${dots}
+          <line class="mc-crosshair" x1="0" y1="${padT}" x2="0" y2="${padT+innerH}" />
+          <circle class="mc-hover-dot y24" r="3.5" cx="0" cy="0" />
+          <circle class="mc-hover-dot y25" r="3.5" cx="0" cy="0" />
+          <circle class="mc-hover-dot y26" r="4" cx="0" cy="0" />
+          <rect class="mc-hover-overlay" x="${padL}" y="${padT}" width="${innerW}" height="${innerH}" fill="transparent" />
+        </svg>
+        <div class="mc-tooltip"></div>
+        <div class="mc-legend">
+          <span class="ml-item"><span class="ml-swatch y24"></span> 2024</span>
+          <span class="ml-item"><span class="ml-swatch y25"></span> 2025</span>
+          <span class="ml-item"><span class="ml-swatch y26"></span> 2026 YTD</span>
+        </div>
+      </div>
+    `;
+  }).join('');
+
+  // Hover interactivity per basin
+  BASIN_ORDER.forEach(basinId => {
+    const chartEl = container.querySelector(`.mini-chart[data-basin="${basinId}"]`);
+    const svg = chartEl.querySelector('svg');
+    const overlay = chartEl.querySelector('.mc-hover-overlay');
+    const crosshair = chartEl.querySelector('.mc-crosshair');
+    const dot24 = chartEl.querySelector('.mc-hover-dot.y24');
+    const dot25 = chartEl.querySelector('.mc-hover-dot.y25');
+    const dot26 = chartEl.querySelector('.mc-hover-dot.y26');
+    const tooltip = chartEl.querySelector('.mc-tooltip');
+    const yMax = PRECIP_YAXIS[basinId].max;
+    const yScale = v => padT + innerH - (v/yMax)*innerH;
+
+    overlay.addEventListener('mousemove', (e) => {
+      const rect = svg.getBoundingClientRect();
+      const mouseX = e.clientX - rect.left;
+      const viewBoxX = (mouseX / rect.width) * W;
+      const monthIdx = Math.max(0, Math.min(11, Math.round((viewBoxX - padL) / innerW * 11)));
+      const m = monthIdx + 1;
+      const xPos = xScale(m);
+
+      crosshair.setAttribute('x1', xPos);
+      crosshair.setAttribute('x2', xPos);
+      crosshair.style.opacity = 0.7;
+
+      const p24 = precipPoint(basinId, '2024', monthIdx);
+      const p25 = precipPoint(basinId, '2025', monthIdx);
+      const p26 = precipPoint(basinId, '2026', monthIdx);
+
+      const setDot = (dot, p) => {
+        if (p) { dot.setAttribute('cx', xPos); dot.setAttribute('cy', yScale(p.mm)); dot.style.opacity = 1; }
+        else dot.style.opacity = 0;
+      };
+      setDot(dot24, p24); setDot(dot25, p25); setDot(dot26, p26);
+
+      const MONTH_TT = currentLang === 'PT' ? MONTH_FULL_PT : MONTH_FULL_EN;
+      const rows = [];
+      if (p24) rows.push(`<div class="mctt-row y24"><span class="mctt-lbl"><span class="mctt-sw"></span>2024</span><span><span class="mctt-val">${p24.mm} mm</span><span class="mctt-pct">${p24.pct}%</span></span></div>`);
+      if (p25) rows.push(`<div class="mctt-row y25"><span class="mctt-lbl"><span class="mctt-sw"></span>2025</span><span><span class="mctt-val">${p25.mm} mm</span><span class="mctt-pct">${p25.pct}%</span></span></div>`);
+      if (p26) rows.push(`<div class="mctt-row y26"><span class="mctt-lbl"><span class="mctt-sw"></span>2026</span><span><span class="mctt-val">${p26.mm} mm</span><span class="mctt-pct">${p26.pct}%</span></span></div>`);
+      tooltip.innerHTML = `<div class="mctt-month">${MONTH_TT[monthIdx]} · mm (% MLT)</div>${rows.join('')}`;
+
+      const chartRect = chartEl.getBoundingClientRect();
+      const tooltipW = 180;
+      const cursorX = e.clientX - chartRect.left;
+      const cursorY = e.clientY - chartRect.top;
+      const left = cursorX + tooltipW + 12 > chartRect.width
+        ? Math.max(4, cursorX - tooltipW - 12) : cursorX + 12;
+      tooltip.style.left = left + 'px';
+      tooltip.style.top = Math.max(4, cursorY - 60) + 'px';
+      tooltip.style.opacity = 1;
+    });
+
+    overlay.addEventListener('mouseleave', () => {
+      crosshair.style.opacity = 0;
+      dot24.style.opacity = 0; dot25.style.opacity = 0; dot26.style.opacity = 0;
+      tooltip.style.opacity = 0;
+    });
+  });
+}
+
+// ── Agro region bars ──
+function renderAgroBars() {
+  const container = document.getElementById('agro-bars');
+  const t = I18N[currentLang];
+  // Bar scale: center = 100%, full bar width = 0 to 200%
+  container.innerHTML = AGRO_REGIONS.map((r, idx) => {
+    const cropsTxt = currentLang === 'PT' ? r.crops : r.cropsEn;
+    const pct = r.pct;
+    // bar fill from center
+    let barHtml;
+    if (pct >= 100) {
+      // green bar from center to right
+      const w = ((pct - 100) / 100) * 50; // 0-50% of bar width
+      barHtml = `<div class="bar up" style="left: 50%; width: ${Math.min(w, 50)}%"></div>`;
+    } else {
+      const w = ((100 - pct) / 100) * 50;
+      barHtml = `<div class="bar down" style="right: 50%; width: ${Math.min(w, 50)}%"></div>`;
+    }
+    const arrow = pct >= 100 ? '↑' : '↓';
+    const cls = pct >= 100 ? 'up' : 'down';
+    return `
+      <div class="agro-row">
+        <span class="code">${r.code}</span>
+        <span class="name">${r.name}</span>
+        <div class="bar-wrap">
+          ${idx === 0 ? '<span class="bar-center-label">MLT</span>' : ''}
+          ${barHtml}
+          <span class="bar-center"></span>
+        </div>
+        <span class="crops">${cropsTxt}</span>
+        <span class="pct ${cls}">${arrow} ${pct}%</span>
+      </div>
+    `;
+  }).join('');
+}
+
+// ── ENSO timeline chart ──
+function renderEnsoChart() {
+  const svg = document.getElementById('enso-chart');
+  const tooltip = document.getElementById('enso-tooltip');
+  const W = 1100, H = 220, padL = 40, padR = 16, padT = 16, padB = 36;
+  const innerW = W - padL - padR, innerH = H - padT - padB;
+
+  const data = ENSO_ONI;
+  const xScale = i => padL + (i/(data.length-1))*innerW;
+  const yMin = -1.5, yMax = 1.5;
+  const yScale = v => padT + innerH - ((v-yMin)/(yMax-yMin))*innerH;
+
+  let html = '';
+  // El Niño zone band (above 0.5)
+  html += `<rect class="enso-band-nino" x="${padL}" y="${yScale(yMax)}" width="${innerW}" height="${yScale(0.5)-yScale(yMax)}" />`;
+  // La Niña zone band (below -0.5)
+  html += `<rect class="enso-band-nina" x="${padL}" y="${yScale(-0.5)}" width="${innerW}" height="${yScale(yMin)-yScale(-0.5)}" />`;
+  // Threshold lines
+  html += `<line class="enso-band-thr" x1="${padL}" x2="${W-padR}" y1="${yScale(0.5)}" y2="${yScale(0.5)}" />`;
+  html += `<line class="enso-band-thr" x1="${padL}" x2="${W-padR}" y1="${yScale(-0.5)}" y2="${yScale(-0.5)}" />`;
+  html += `<line class="enso-band-thr" x1="${padL}" x2="${W-padR}" y1="${yScale(0)}" y2="${yScale(0)}" />`;
+
+  // Zone labels
+  html += `<text class="enso-zone-label" x="${padL+8}" y="${yScale(1.0)}" fill="var(--nino)">EL NIÑO</text>`;
+  html += `<text class="enso-zone-label" x="${padL+8}" y="${yScale(-1.0)+12}" fill="var(--nina)">LA NIÑA</text>`;
+  html += `<text class="enso-zone-label" x="${padL+8}" y="${yScale(0)-4}" fill="var(--text-dim)" opacity="0.6">NEUTRAL</text>`;
+
+  // Y-axis labels
+  for (const t of [-1.0, -0.5, 0, 0.5, 1.0]) {
+    html += `<text class="enso-axis-label" x="${padL-8}" y="${yScale(t)+3}" text-anchor="end">${t > 0 ? '+' : ''}${t.toFixed(1)}</text>`;
+  }
+
+  // X-axis labels (every 3 months)
+  data.forEach((d, i) => {
+    if (i % 3 === 0 || i === data.length - 1) {
+      const [yr, mo] = d[0].split('-');
+      const monthAbbr = (currentLang === 'PT' ? MONTH_ABBR_PT : MONTH_ABBR_EN)[parseInt(mo)-1];
+      html += `<text class="enso-axis-label" x="${xScale(i)}" y="${H-padB+14}" text-anchor="middle">${monthAbbr}/${yr.slice(2)}</text>`;
+    }
+  });
+
+  // Area fill above/below zero
+  const pathPosTop = [];
+  const pathPosBot = [];
+  const pathNegTop = [];
+  const pathNegBot = [];
+  data.forEach((d, i) => {
+    const x = xScale(i);
+    const yv = yScale(d[1]);
+    const y0 = yScale(0);
+    if (d[1] >= 0) {
+      pathPosTop.push(`${pathPosTop.length === 0 ? 'M' : 'L'} ${x} ${yv}`);
+      pathPosBot.unshift(`L ${x} ${y0}`);
+    }
+  });
+  // Simpler: full area path for positive and negative
+  const linePoints = data.map((d, i) => ({x: xScale(i), y: yScale(d[1]), v: d[1]}));
+  const linePath = linePoints.map((p, i) => `${i === 0 ? 'M' : 'L'} ${p.x} ${p.y}`).join(' ');
+  const y0 = yScale(0);
+
+  // Area shading: fill area between line and zero line, colored by sign
+  // For simplicity, build separate paths for pos and neg
+  let posArea = '';
+  let negArea = '';
+  for (let i = 0; i < linePoints.length - 1; i++) {
+    const p1 = linePoints[i];
+    const p2 = linePoints[i+1];
+    if (p1.v >= 0 && p2.v >= 0) {
+      posArea += `<path class="enso-area-pos" d="M ${p1.x} ${p1.y} L ${p2.x} ${p2.y} L ${p2.x} ${y0} L ${p1.x} ${y0} Z" />`;
+    } else if (p1.v < 0 && p2.v < 0) {
+      negArea += `<path class="enso-area-neg" d="M ${p1.x} ${p1.y} L ${p2.x} ${p2.y} L ${p2.x} ${y0} L ${p1.x} ${y0} Z" />`;
+    } else {
+      // crosses zero - split at zero crossing
+      const ratio = Math.abs(p1.v) / (Math.abs(p1.v) + Math.abs(p2.v));
+      const xZero = p1.x + (p2.x - p1.x) * ratio;
+      if (p1.v >= 0) {
+        posArea += `<path class="enso-area-pos" d="M ${p1.x} ${p1.y} L ${xZero} ${y0} L ${p1.x} ${y0} Z" />`;
+        negArea += `<path class="enso-area-neg" d="M ${xZero} ${y0} L ${p2.x} ${p2.y} L ${p2.x} ${y0} Z" />`;
+      } else {
+        negArea += `<path class="enso-area-neg" d="M ${p1.x} ${p1.y} L ${xZero} ${y0} L ${p1.x} ${y0} Z" />`;
+        posArea += `<path class="enso-area-pos" d="M ${xZero} ${y0} L ${p2.x} ${p2.y} L ${p2.x} ${y0} Z" />`;
+      }
+    }
+  }
+  html += posArea + negArea;
+  html += `<path class="enso-line" d="${linePath}" />`;
+
+  // Highlight last point
+  const last = linePoints[linePoints.length - 1];
+  html += `<circle class="enso-dot" cx="${last.x}" cy="${last.y}" r="4" />`;
+  html += `<circle cx="${last.x}" cy="${last.y}" r="8" fill="none" stroke="var(--text)" stroke-width="1" opacity="0.4" />`;
+
+  // Hover overlay
+  html += `<rect id="enso-overlay" x="${padL}" y="${padT}" width="${innerW}" height="${innerH}" fill="transparent" style="cursor: crosshair" />`;
+  html += `<line id="enso-crosshair" x1="0" y1="${padT}" x2="0" y2="${padT+innerH}" stroke="var(--text-dim)" stroke-width="1" stroke-dasharray="2 3" opacity="0" />`;
+  html += `<circle id="enso-hover-dot" r="5" fill="var(--text)" stroke="var(--bg)" stroke-width="2" opacity="0" />`;
+
+  svg.innerHTML = html;
+
+  // Attach hover
+  const overlay = document.getElementById('enso-overlay');
+  const crosshair = document.getElementById('enso-crosshair');
+  const hoverDot = document.getElementById('enso-hover-dot');
+  overlay.addEventListener('mousemove', e => {
+    const rect = svg.getBoundingClientRect();
+    const mouseX = e.clientX - rect.left;
+    const viewBoxX = (mouseX / rect.width) * W;
+    const idx = Math.max(0, Math.min(data.length-1, Math.round((viewBoxX - padL) / innerW * (data.length-1))));
+    const p = linePoints[idx];
+    crosshair.setAttribute('x1', p.x);
+    crosshair.setAttribute('x2', p.x);
+    crosshair.style.opacity = 0.7;
+    hoverDot.setAttribute('cx', p.x);
+    hoverDot.setAttribute('cy', p.y);
+    hoverDot.style.opacity = 1;
+
+    const [yr, mo] = data[idx][0].split('-');
+    const monthFull = (currentLang === 'PT' ? MONTH_FULL_PT : MONTH_FULL_EN)[parseInt(mo)-1];
+    const val = data[idx][1];
+    const state = val >= 0.5 ? (currentLang === 'PT' ? 'El Niño' : 'El Niño') 
+                : val <= -0.5 ? (currentLang === 'PT' ? 'La Niña' : 'La Niña')
+                : (currentLang === 'PT' ? 'Neutro' : 'Neutral');
+    const stateColor = val >= 0.5 ? 'var(--nino)' : val <= -0.5 ? 'var(--nina)' : 'var(--text-muted)';
+
+    const wrap = svg.parentElement;
+    const wrapRect = wrap.getBoundingClientRect();
+    const cursorX = e.clientX - wrapRect.left;
+    const cursorY = e.clientY - wrapRect.top;
+    tooltip.innerHTML = `<div class="et-month">${monthFull} ${yr}</div><div class="et-val">${val > 0 ? '+' : ''}${val.toFixed(1)}</div><div class="et-state" style="color:${stateColor}">${state}</div>`;
+    tooltip.style.left = Math.min(wrapRect.width - 160, cursorX + 12) + 'px';
+    tooltip.style.top = Math.max(4, cursorY - 50) + 'px';
+    tooltip.style.opacity = 1;
+  });
+  overlay.addEventListener('mouseleave', () => {
+    crosshair.style.opacity = 0;
+    hoverDot.style.opacity = 0;
+    tooltip.style.opacity = 0;
+  });
+}
+
+// ── Renewable capacity factor cards ──
+function renderRenewable() {
+  const t = I18N[currentLang];
+  const container = document.getElementById('renew-grid');
+  container.innerHTML = SUBS.map(sub => {
+    const d = RENEWABLE_CF[sub];
+    const note = currentLang === 'PT' ? d.notePt : d.note;
+    const renderRow = (kind, val, mlt) => {
+      const valPct = val * 100;
+      const mltPct = mlt * 100;
+      const delta = ((val - mlt) / mlt) * 100;
+      const cls = delta > 5 ? 'up' : delta < -5 ? 'down' : 'flat';
+      const arrow = delta > 5 ? '↑' : delta < -5 ? '↓' : '·';
+      const barW = Math.min(valPct, 80);
+      const mltLeftPct = (mltPct / 80) * 100;
+      return `
+        <div class="renew-row">
+          <span class="source">${kind === 'wind' ? t.wind : t.solar}</span>
+          <div class="bar-wrap">
+            <div class="bar ${kind}" style="width: ${barW}%"></div>
+            <div class="bar-mlt" style="left: ${mltLeftPct}%"></div>
+          </div>
+          <span class="val">${valPct.toFixed(0)}% <span class="delta ${cls}">${arrow}${Math.abs(delta).toFixed(0)}%</span></span>
+        </div>
+      `;
+    };
+    return `
+      <div class="renew-card ${sub.toLowerCase()}">
+        <div class="head">
+          <span class="name">${SUB_LABELS[sub]} · ${SUB_FULL[sub]}</span>
+          <span class="note">${note}</span>
+        </div>
+        ${renderRow('wind', d.wind, d.wind_mlt)}
+        ${renderRow('solar', d.solar, d.solar_mlt)}
+      </div>
+    `;
+  }).join('');
+}
+
+function renderAll() {
+  renderKPIs();
+  renderPrecipMultiples();
+  renderAgroBars();
+  renderEnsoChart();
+  renderRenewable();
+}
+
+function init() {
+  let saved = 'EN';
+  try { saved = localStorage.getItem('lang') || 'EN'; } catch(e){}
+  setLang(saved);
+}
+init();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,916 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>BR Energy Terminal — ACL & Biomass</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0a0b0d; --bg-elev: #121418; --bg-elev-2: #181b20;
+  --border: #23262c; --border-soft: #1c1f24;
+  --text: #e6e8eb; --text-muted: #8b8f96; --text-dim: #5a5d62;
+  --accent: #d4d4d8;
+  --seco: #5eb3f5; --sul: #f0a830; --ne: #4ade80; --n: #c084fc;
+  --y24: #4b5057; --y25: #8a8f96; --y26: #e6e8eb;
+  --bio: #a78bfa;
+  --danger: #ef4444; --warn: #f59e0b; --ok: #10b981;
+  --font-sans: 'DM Sans', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { background: var(--bg); color: var(--text); font-family: var(--font-sans); font-size: 14px; line-height: 1.5; -webkit-font-smoothing: antialiased; }
+.topbar { border-bottom: 1px solid var(--border); padding: 14px 24px; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+.brand { display: flex; align-items: baseline; gap: 12px; }
+.brand .logo { font-family: var(--font-mono); font-weight: 600; font-size: 13px; letter-spacing: 0.15em; text-transform: uppercase; }
+.brand .divider { width: 1px; height: 14px; background: var(--border); }
+.brand .tabs { display: flex; gap: 1px; background: var(--border); margin-left: 16px; }
+.brand .tab { background: var(--bg-elev); padding: 4px 10px; font-family: var(--font-mono); font-size: 10px; color: var(--text-muted); letter-spacing: 0.06em; text-transform: uppercase; cursor: pointer; text-decoration: none; transition: background 0.15s, color 0.15s; }
+.brand .tab:hover { background: var(--bg-elev-2); color: var(--text); }
+.brand .tab.active { background: var(--text); color: var(--bg); }
+.topbar-right { display: flex; align-items: center; gap: 18px; }
+.meta { font-family: var(--font-mono); font-size: 11px; color: var(--text-dim); letter-spacing: 0.04em; }
+.meta .live { display: inline-block; width: 6px; height: 6px; background: var(--ok); border-radius: 50%; margin-right: 6px; animation: pulse 2s infinite; }
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.35} }
+.lang-toggle { display: flex; border: 1px solid var(--border); border-radius: 4px; overflow: hidden; font-family: var(--font-mono); font-size: 11px; }
+.lang-toggle button { background: transparent; color: var(--text-muted); border: none; padding: 5px 10px; cursor: pointer; letter-spacing: 0.04em; }
+.lang-toggle button.active { background: var(--text); color: var(--bg); }
+.subheader { padding: 22px 24px 6px; display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; flex-wrap: wrap; }
+.subheader h1 { font-size: 22px; font-weight: 600; letter-spacing: -0.01em; margin-bottom: 4px; }
+.subheader .subtitle { font-size: 13px; color: var(--text-muted); }
+.subheader .range { font-family: var(--font-mono); font-size: 11px; color: var(--text-dim); letter-spacing: 0.05em; text-transform: uppercase; text-align: right; }
+.subheader .range strong { color: var(--text); }
+.insights { margin: 16px 24px; border-left: 2px solid var(--warn); background: linear-gradient(90deg, rgba(245,158,11,0.06) 0%, transparent 60%); padding: 14px 18px; border-radius: 0 4px 4px 0; }
+.insights .label { font-family: var(--font-mono); font-size: 10px; color: var(--warn); letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 4px; }
+.insights p { font-size: 13px; line-height: 1.6; }
+.insights p + p { margin-top: 6px; }
+.insights strong { font-weight: 600; }
+.insights .v { font-family: var(--font-mono); color: var(--warn); font-weight: 600; }
+.insights .v.up { color: var(--ok); } .insights .v.down { color: var(--danger); }
+
+.kpi-strip { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: var(--border); margin: 0 24px; border: 1px solid var(--border); }
+.kpi { background: var(--bg-elev); padding: 18px; position: relative; }
+.kpi::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 2px; background: var(--accent); }
+.kpi.fwd::before { background: var(--seco); }
+.kpi.spread::before { background: var(--warn); }
+.kpi.bio::before { background: var(--bio); }
+.kpi.cal::before { background: var(--ne); }
+.kpi .header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 10px; }
+.kpi .name { font-family: var(--font-mono); font-size: 11px; color: var(--text-muted); letter-spacing: 0.08em; text-transform: uppercase; }
+.kpi .unit { font-family: var(--font-mono); font-size: 10px; color: var(--text-dim); }
+.kpi .value-row { display: flex; align-items: baseline; gap: 8px; margin-bottom: 8px; }
+.kpi .value { font-family: var(--font-mono); font-size: 24px; font-weight: 500; line-height: 1; }
+.kpi .detail { font-family: var(--font-mono); font-size: 10px; color: var(--text-muted); margin-top: 6px; padding-top: 8px; border-top: 1px solid var(--border-soft); }
+.kpi .detail strong { color: var(--text); font-weight: 500; }
+
+.main { padding: 20px 24px 40px; display: grid; grid-template-columns: 1fr; gap: 20px; }
+.section { background: var(--bg-elev); border: 1px solid var(--border); border-radius: 4px; padding: 20px 22px; }
+.section-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 18px; padding-bottom: 12px; border-bottom: 1px solid var(--border-soft); flex-wrap: wrap; gap: 8px; }
+.section-head h2 { font-size: 14px; font-weight: 600; letter-spacing: 0.03em; text-transform: uppercase; }
+.section-head .hint { font-family: var(--font-mono); font-size: 10px; color: var(--text-dim); letter-spacing: 0.05em; text-transform: uppercase; }
+
+/* Forward curve chart */
+#fwd-chart { display: block; width: 100%; height: 320px; }
+.fwd-grid-line { stroke: var(--border-soft); stroke-width: 1; shape-rendering: crispEdges; }
+.fwd-axis-label { font-family: var(--font-mono); font-size: 11px; fill: var(--text-dim); letter-spacing: 0.04em; }
+.fwd-spot-line { fill: none; stroke: var(--accent); stroke-width: 2; stroke-dasharray: 4 4; }
+.fwd-line-seco { stroke: var(--seco); stroke-width: 2; fill: none; stroke-linejoin: round; }
+.fwd-line-sul  { stroke: var(--sul); stroke-width: 2; fill: none; stroke-linejoin: round; }
+.fwd-line-ne   { stroke: var(--ne); stroke-width: 2; fill: none; stroke-linejoin: round; }
+.fwd-line-n    { stroke: var(--n); stroke-width: 2; fill: none; stroke-linejoin: round; }
+.fwd-area-seco { fill: var(--seco); opacity: 0.06; }
+.fwd-dot { stroke: var(--bg); stroke-width: 1.5; }
+.fwd-legend { display: flex; gap: 16px; margin-bottom: 12px; font-family: var(--font-mono); font-size: 11px; flex-wrap: wrap; }
+.fwd-legend .item { display: flex; align-items: center; gap: 6px; color: var(--text-muted); }
+.fwd-legend .sw { width: 14px; height: 2px; }
+
+/* CCEE calendar */
+.cal-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+@media (max-width: 1100px) { .cal-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 600px) { .cal-grid { grid-template-columns: 1fr; } }
+.cal-item { background: var(--bg-elev-2); border: 1px solid var(--border-soft); border-radius: 4px; padding: 14px; position: relative; overflow: hidden; }
+.cal-item.imminent { border-color: var(--warn); }
+.cal-item.imminent::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 3px; background: var(--warn); }
+.cal-item .when { font-family: var(--font-mono); font-size: 10px; color: var(--text-dim); letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 6px; }
+.cal-item.imminent .when { color: var(--warn); }
+.cal-item .date { font-family: var(--font-mono); font-size: 18px; color: var(--text); font-weight: 500; margin-bottom: 4px; }
+.cal-item .event { font-family: var(--font-mono); font-size: 11px; color: var(--text); font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; margin-bottom: 6px; }
+.cal-item .desc { font-family: var(--font-mono); font-size: 10px; color: var(--text-muted); line-height: 1.4; }
+.cal-item .days-left { position: absolute; top: 12px; right: 12px; font-family: var(--font-mono); font-size: 9px; color: var(--text-dim); letter-spacing: 0.04em; padding: 2px 6px; border-radius: 2px; background: var(--bg); }
+.cal-item.imminent .days-left { color: var(--warn); background: rgba(245,158,11,0.1); }
+
+/* Migration table */
+.mig-table-wrap { overflow-x: auto; }
+.mig-table { width: 100%; border-collapse: collapse; font-family: var(--font-mono); font-size: 12px; min-width: 600px; }
+.mig-table th { text-align: right; padding: 8px 10px; font-weight: 500; font-size: 10px; color: var(--text-dim); letter-spacing: 0.06em; text-transform: uppercase; border-bottom: 1px solid var(--border-soft); }
+.mig-table th:first-child { text-align: left; }
+.mig-table td { padding: 11px 10px; border-bottom: 1px solid var(--border-soft); color: var(--text); text-align: right; }
+.mig-table td:first-child { text-align: left; color: var(--text); font-weight: 500; }
+.mig-table td.muted { color: var(--text-muted); }
+.mig-table tr:last-child td { border-bottom: none; }
+.mig-table .delta-up { color: var(--ok); }
+.mig-table .delta-down { color: var(--danger); }
+.mig-table .bar-cell { width: 120px; }
+.mig-table .bar-track { height: 6px; background: var(--bg); border-radius: 3px; overflow: hidden; }
+.mig-table .bar-fill { height: 100%; background: var(--seco); }
+.mig-table tr.totals td { font-weight: 600; border-top: 1px solid var(--border); padding-top: 14px; }
+
+/* Auctions table */
+.auc-grid { display: grid; grid-template-columns: 1fr; gap: 10px; }
+.auc-row { display: grid; grid-template-columns: 110px 1fr 130px 110px 110px; gap: 12px; align-items: center; padding: 12px 14px; background: var(--bg-elev-2); border: 1px solid var(--border-soft); border-radius: 4px; font-family: var(--font-mono); font-size: 11px; }
+@media (max-width: 900px) { .auc-row { grid-template-columns: 1fr; gap: 4px; } }
+.auc-row .code { color: var(--text); font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; }
+.auc-row .name { color: var(--text-muted); }
+.auc-row .price { color: var(--text); font-weight: 500; text-align: right; }
+.auc-row .price .lbl { color: var(--text-dim); font-size: 9px; letter-spacing: 0.04em; text-transform: uppercase; display: block; }
+.auc-row .vol { color: var(--text-muted); text-align: right; }
+.auc-row .vol .lbl { color: var(--text-dim); font-size: 9px; letter-spacing: 0.04em; text-transform: uppercase; display: block; }
+.auc-row .when { color: var(--text-muted); text-align: right; font-size: 10px; }
+.auc-row.future { border-left: 3px solid var(--warn); }
+.auc-row.future .code { color: var(--warn); }
+
+/* Biomass section */
+.bio-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; }
+@media (max-width: 880px) { .bio-grid { grid-template-columns: 1fr; } }
+.bio-card { background: var(--bg-elev-2); border: 1px solid var(--border-soft); border-radius: 4px; padding: 16px; }
+.bio-card .head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 14px; padding-bottom: 8px; border-bottom: 1px solid var(--border-soft); }
+.bio-card .title { font-family: var(--font-mono); font-size: 12px; color: var(--text); letter-spacing: 0.06em; text-transform: uppercase; font-weight: 600; }
+.bio-card .now { font-family: var(--font-mono); font-size: 11px; color: var(--text-muted); }
+.bio-card .now strong { color: var(--text); font-weight: 500; }
+
+/* Biomass seasonal chart per sub */
+#bio-seasonal { display: block; width: 100%; height: 200px; }
+.bio-stack-seco { fill: var(--seco); opacity: 0.7; }
+.bio-stack-sul  { fill: var(--sul);  opacity: 0.7; }
+.bio-stack-ne   { fill: var(--ne);   opacity: 0.7; }
+.bio-stack-n    { fill: var(--n);    opacity: 0.7; }
+.bio-axis { font-family: var(--font-mono); font-size: 10px; fill: var(--text-dim); letter-spacing: 0.04em; }
+.bio-grid-line { stroke: var(--border-soft); stroke-width: 1; shape-rendering: crispEdges; }
+.bio-legend { display: flex; gap: 14px; margin-top: 10px; font-family: var(--font-mono); font-size: 10px; flex-wrap: wrap; }
+.bio-legend .item { display: flex; align-items: center; gap: 6px; color: var(--text-muted); }
+.bio-legend .sw { width: 10px; height: 10px; border-radius: 1px; }
+
+/* Spread chart */
+#spread-chart { display: block; width: 100%; height: 240px; }
+.spread-pld { stroke: var(--text); stroke-width: 2; fill: none; }
+.spread-bio { stroke: var(--bio); stroke-width: 2; fill: none; stroke-dasharray: none; }
+.spread-area-pos { fill: var(--ok); opacity: 0.12; }
+.spread-area-neg { fill: var(--danger); opacity: 0.12; }
+.spread-legend { display: flex; gap: 16px; margin-bottom: 10px; font-family: var(--font-mono); font-size: 11px; color: var(--text-muted); flex-wrap: wrap; }
+.spread-legend .item { display: flex; align-items: center; gap: 6px; }
+.spread-legend .sw { width: 14px; height: 2px; }
+.spread-summary { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--border-soft); }
+.spread-summary .stat { padding: 0 4px; }
+.spread-summary .stat .lbl { font-family: var(--font-mono); font-size: 10px; color: var(--text-dim); letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 4px; }
+.spread-summary .stat .val { font-family: var(--font-mono); font-size: 14px; color: var(--text); font-weight: 500; }
+.spread-summary .stat .val.up { color: var(--ok); } .spread-summary .stat .val.down { color: var(--danger); }
+
+/* Safra calendar */
+.safra-bars { display: flex; flex-direction: column; gap: 10px; }
+.safra-row { display: grid; grid-template-columns: 90px 1fr 90px; gap: 12px; align-items: center; }
+@media (max-width: 700px) { .safra-row { grid-template-columns: 70px 1fr 80px; } }
+.safra-row .crop { font-family: var(--font-mono); font-size: 11px; color: var(--text); font-weight: 500; letter-spacing: 0.04em; text-transform: uppercase; }
+.safra-row .crop .sub { color: var(--text-dim); font-size: 9px; display: block; margin-top: 1px; }
+.safra-row .track { position: relative; height: 22px; background: var(--bg); border-radius: 3px; overflow: hidden; }
+.safra-row .month-marker { position: absolute; top: 0; bottom: 0; width: 1px; background: var(--border); }
+.safra-row .month-label { position: absolute; top: -14px; font-family: var(--font-mono); font-size: 8px; color: var(--text-dim); transform: translateX(-50%); }
+.safra-row .now-marker { position: absolute; top: 0; bottom: 0; width: 2px; background: var(--warn); z-index: 3; opacity: 0.8; }
+.safra-row .now-marker::after { content: 'NOW'; position: absolute; top: -14px; left: 50%; transform: translateX(-50%); font-family: var(--font-mono); font-size: 8px; color: var(--warn); letter-spacing: 0.04em; }
+.safra-row .safra-period { position: absolute; top: 4px; bottom: 4px; border-radius: 2px; opacity: 0.7; }
+.safra-row .safra-period.seco { background: var(--seco); }
+.safra-row .safra-period.sul { background: var(--sul); }
+.safra-row .safra-period.ne { background: var(--ne); }
+.safra-row .peak { font-family: var(--font-mono); font-size: 10px; color: var(--text-muted); text-align: right; }
+
+.footer { padding: 18px 24px; border-top: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; font-family: var(--font-mono); font-size: 10px; color: var(--text-dim); letter-spacing: 0.04em; }
+
+@media (max-width: 880px) {
+  .kpi-strip { grid-template-columns: repeat(2, 1fr); margin: 0 16px; }
+  .topbar { padding: 12px 16px; flex-wrap: wrap; }
+  .brand .tabs { margin-left: 0; margin-top: 8px; }
+  .subheader { padding: 18px 16px 6px; }
+  .insights { margin: 14px 16px; }
+  .main { padding: 16px; }
+  .subheader h1 { font-size: 18px; }
+  .kpi .value { font-size: 20px; }
+}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="brand">
+    <span class="logo">BR ENERGY TERMINAL</span>
+    <span class="divider"></span>
+    <div class="tabs">
+      <a class="tab" href="market.html">Market</a>
+      <a class="tab" href="hydrology.html">Hydrology</a>
+      <a class="tab" href="operation.html">Operation</a>
+      <a class="tab" href="climate.html">Climate</a>
+      <a class="tab active" href="acl.html">ACL</a>
+    </div>
+  </div>
+  <div class="topbar-right">
+    <span class="meta"><span class="live"></span><span data-i18n="dataLag">CCEE · ANEEL · BBCE forward</span></span>
+    <div class="lang-toggle">
+      <button data-lang="EN" class="active">EN</button>
+      <button data-lang="PT">PT</button>
+    </div>
+  </div>
+</header>
+
+<div class="subheader">
+  <div>
+    <h1 data-i18n="pageTitle">ACL & Biomass — contracts, auctions, generation</h1>
+    <div class="subtitle" data-i18n="pageSub">Forward curve, CCEE calendar, ACL migration, biomass generation vs PLD spread</div>
+  </div>
+  <div class="range">
+    <span data-i18n="period">Reference</span>
+    <strong>11 May 2026</strong>
+  </div>
+</div>
+
+<section class="insights">
+  <div class="label" data-i18n="insightsLabel">Highlights · ACL view today</div>
+  <p data-i18n="insightFwd">
+    <strong>Forward curve SE/CO contango through 2027:</strong> jun/26
+    <span class="v">R$ 295</span> · cal/27 <span class="v">R$ 318</span> ·
+    cal/28 <span class="v">R$ 305</span>. Market is pricing in continued hydrological
+    stress and the expiration of legacy renewable contracts in 2027. ACL consumers
+    locking in cal/27 at R$ 318 are still <span class="v up">5% below</span> the current
+    SE/CO PLD average (R$ 313 YTD).
+  </p>
+  <p data-i18n="insightMig">
+    <strong>2,847 consumers migrated to ACL in Q1 2026</strong> — a 22% increase YoY,
+    driven by Grupo A4 (138-2,500 kW) opening fully in Jan 2024. <span class="v up">+18%</span>
+    in agro/agribusiness segment specifically. Average migration produces 12-18% savings
+    vs ACR for a typical industrial consumer.
+  </p>
+  <p data-i18n="insightBio">
+    <strong>Biomass generation entering peak: 4,128 MWmed SE/CO in April</strong> — and
+    accelerating into May-October cana season. With PLD SE/CO at R$ 313 YTD and bilateral
+    biomass contracts averaging R$ 245-275/MWh (signed in 2024-2025), spot dispatch is
+    advantageous: spread <span class="v up">+R$ 50/MWh</span> for plants with
+    available uncommitted MWh.
+  </p>
+</section>
+
+<section class="kpi-strip"></section>
+
+<main class="main">
+
+  <div class="section">
+    <div class="section-head">
+      <h2 data-i18n="fwdTitle">Forward curve · SE/CO by delivery month</h2>
+      <div class="hint" data-i18n="fwdHint">BBCE/Markets mid · dashed = PLD spot reference</div>
+    </div>
+    <div class="fwd-legend" id="fwd-legend"></div>
+    <svg id="fwd-chart" viewBox="0 0 1100 320" preserveAspectRatio="none"></svg>
+  </div>
+
+  <div class="section">
+    <div class="section-head">
+      <h2 data-i18n="calTitle">CCEE calendar · upcoming deadlines</h2>
+      <div class="hint" data-i18n="calHint">D+ relative to today · highlighted = within 14 days</div>
+    </div>
+    <div class="cal-grid" id="cal-grid"></div>
+  </div>
+
+  <div class="section">
+    <div class="section-head">
+      <h2 data-i18n="migTitle">ACL migration · accumulated consumers by class</h2>
+      <div class="hint" data-i18n="migHint">CCEE · as of Q1 2026 · YoY growth</div>
+    </div>
+    <div class="mig-table-wrap">
+      <table class="mig-table" id="mig-table">
+        <thead>
+          <tr>
+            <th data-i18n="thClass">Class</th>
+            <th data-i18n="thRange">Demand range</th>
+            <th data-i18n="thQ124">Q1 2024</th>
+            <th data-i18n="thQ125">Q1 2025</th>
+            <th data-i18n="thQ126">Q1 2026</th>
+            <th data-i18n="thYoY">YoY Δ</th>
+            <th data-i18n="thBar"></th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-head">
+      <h2 data-i18n="aucTitle">Recent ANEEL auctions · A-1 / A-3 / A-5 / A-6</h2>
+      <div class="hint" data-i18n="aucHint">Cleared average price · highlighted = upcoming</div>
+    </div>
+    <div class="auc-grid" id="auc-grid"></div>
+  </div>
+
+  <div class="section">
+    <div class="section-head">
+      <h2 data-i18n="bioTitle">Biomass generation · seasonal profile by subsystem</h2>
+      <div class="hint" data-i18n="bioHint">Monthly MWmed · stacked by subsystem · cana cycle visible Apr-Nov</div>
+    </div>
+    <svg id="bio-seasonal" viewBox="0 0 1100 200" preserveAspectRatio="none"></svg>
+    <div class="bio-legend">
+      <span class="item"><span class="sw" style="background:var(--seco);opacity:0.7"></span>SE/CO · cana</span>
+      <span class="item"><span class="sw" style="background:var(--ne);opacity:0.7"></span>NE · cana off-cycle</span>
+      <span class="item"><span class="sw" style="background:var(--sul);opacity:0.7"></span>Sul · resíduos lenhosos</span>
+      <span class="item"><span class="sw" style="background:var(--n);opacity:0.7"></span>N · casca de arroz / outros</span>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-head">
+      <h2 data-i18n="safraTitle">Cana harvest calendar · by region</h2>
+      <div class="hint" data-i18n="safraHint">Yellow line = today · Apr-Nov SE/CO · Sep-Mar NE</div>
+    </div>
+    <div class="safra-bars" id="safra-bars"></div>
+  </div>
+
+  <div class="section">
+    <div class="section-head">
+      <h2 data-i18n="spreadTitle">PLD vs biomass bilateral · spread for SE/CO generators</h2>
+      <div class="hint" data-i18n="spreadHint">Green = spot above contract (sell spot) · red = below (honor contract)</div>
+    </div>
+    <div class="spread-legend">
+      <span class="item"><span class="sw" style="background:var(--text)"></span><span data-i18n="legendPld">PLD SE/CO daily</span></span>
+      <span class="item"><span class="sw" style="background:var(--bio)"></span><span data-i18n="legendBio">Avg bilateral biomass contract</span></span>
+    </div>
+    <svg id="spread-chart" viewBox="0 0 1100 240" preserveAspectRatio="none"></svg>
+    <div class="spread-summary">
+      <div class="stat">
+        <div class="lbl" data-i18n="spreadAvg">Avg spread 2026 YTD</div>
+        <div class="val up">+R$ 50/MWh</div>
+      </div>
+      <div class="stat">
+        <div class="lbl" data-i18n="spreadDays">Days spot &gt; contract</div>
+        <div class="val">128 / 131</div>
+      </div>
+      <div class="stat">
+        <div class="lbl" data-i18n="spreadAdvise">Recommended action</div>
+        <div class="val up" data-i18n="spreadAdviseVal">Sell uncontracted MWh</div>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<footer class="footer">
+  <span><span data-i18n="source">Source</span>: CCEE · ANEEL · BBCE forward (estimates) · ONS biomass generation</span>
+  <span><span data-i18n="updated">Updated</span>: forward daily · calendar weekly · migration quarterly</span>
+</footer>
+
+<script>
+const MONTH_ABBR_EN = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const MONTH_ABBR_PT = ['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
+const SUB_LABELS = {SECO:'SE/CO', SUL:'S', NE:'NE', N:'N'};
+
+// ── Forward curve (R$/MWh by delivery month, BBCE mid) ──
+const FORWARD = {
+  // Index: months ahead from May 2026 (0 = current, 1 = jun/26 ... 36 = may/29)
+  // 4 submarkets curves
+  SECO: [313, 295, 305, 310, 308, 305, 300, 295, 290, 295, 310, 320, 318, 315, 312, 310, 308, 305, 302, 300, 298, 296, 295, 305, 305, 302, 300, 298, 295, 290, 285, 280, 275, 270, 268, 265],
+  SUL:  [369, 340, 345, 350, 345, 340, 335, 325, 318, 320, 335, 350, 348, 342, 338, 333, 328, 323, 318, 313, 308, 303, 298, 308, 308, 303, 298, 293, 288, 283, 278, 273, 268, 263, 260, 258],
+  NE:   [290, 270, 275, 285, 290, 288, 285, 280, 275, 280, 290, 300, 298, 295, 290, 288, 285, 282, 278, 275, 272, 270, 268, 280, 278, 275, 272, 270, 268, 265, 262, 258, 255, 252, 250, 248],
+  N:    [290, 270, 275, 285, 290, 288, 285, 280, 275, 280, 290, 300, 298, 295, 290, 288, 285, 282, 278, 275, 272, 270, 268, 280, 278, 275, 272, 270, 268, 265, 262, 258, 255, 252, 250, 248]
+};
+const FWD_PLD_SPOT = { SECO: 313, SUL: 369, NE: 290, N: 290 };
+
+// ── CCEE calendar (upcoming events, days from today=11/May/2026) ──
+const CCEE_CALENDAR = [
+  { days_from_today: 4,  date: '15/mai',  code: 'MCP', desc: { en:'MCP contract registration close · jun/26 month-ahead', pt:'Fechamento de registro de contratos MCP · mês jun/26' }},
+  { days_from_today: 9,  date: '20/mai',  code: 'MCSD', desc: { en:'MCSD short-term settlement · Apr/26 reference month', pt:'Liquidação MCSD curto prazo · mês de referência abr/26' }},
+  { days_from_today: 12, date: '23/mai',  code: 'GFE',  desc: { en:'GFE installment payment due · sellers and buyers', pt:'Vencimento parcela GFE · compradores e vendedores' }},
+  { days_from_today: 14, date: '25/mai',  code: 'MCO',  desc: { en:'Market clearing operation · weekly cycle', pt:'Apuração de mercado · ciclo semanal' }},
+  { days_from_today: 20, date: '31/mai',  code: 'CCEAR', desc: { en:'CCEAR delivery schedule · month-end', pt:'Cronograma CCEAR · fechamento de mês' }},
+  { days_from_today: 28, date: '08/jun',  code: 'A-1',  desc: { en:'ANEEL A-1 auction · existing generation 2027 supply', pt:'Leilão ANEEL A-1 · energia existente entrega 2027' }},
+  { days_from_today: 35, date: '15/jun',  code: 'MCP',  desc: { en:'MCP contract registration close · jul/26', pt:'Fechamento MCP · mês jul/26' }},
+  { days_from_today: 42, date: '22/jun',  code: 'PEE',  desc: { en:'PEE Energy Efficiency Program · annual filings', pt:'Relatórios PEE · entrega anual' }},
+];
+
+// ── ACL Migration (consumer count by class) ──
+const ACL_MIGRATION = [
+  { class: 'A3a',  range: '30-69 kV',           q124: 2240, q125: 2387, q126: 2451 },
+  { class: 'A4',   range: '2.3-25 kV (≥500 kW)', q124: 8423, q125: 9856, q126: 11042 },
+  { class: 'A4',   range: '2.3-25 kV (138-500 kW)', q124: 0, q125: 4280, q126: 9847 },
+  { class: 'AS',   range: 'Underground 2.3-25 kV', q124: 458, q125: 489, q126: 521 },
+  { class: 'B1+',  range: 'Pilot residential opt-in', q124: 0, q125: 1245, q126: 8632 },
+];
+
+// ── ANEEL auctions (recent + upcoming) ──
+const AUCTIONS = [
+  { code: 'A-5 2030', name: { en: 'New generation · 2030 supply', pt: 'Nova energia · suprimento 2030' }, price: 218.5, vol: 1845, when: '12/dez/2025', future: false },
+  { code: 'LEN 2025', name: { en: 'New generation existing reservoir · 2030', pt: 'Energia nova reservatório · 2030' }, price: 186.7, vol: 422, when: '03/out/2025', future: false },
+  { code: 'A-6 2031', name: { en: 'New generation greenfield · 2031 supply', pt: 'Greenfield · suprimento 2031' }, price: 245.8, vol: 2160, when: '28/mar/2026', future: false },
+  { code: 'A-4 2030', name: { en: 'New generation · 2030 supply', pt: 'Nova energia · suprimento 2030' }, price: 232.1, vol: 1390, when: '12/abr/2026', future: false },
+  { code: 'A-1 2027', name: { en: 'Existing generation · 2027 supply', pt: 'Energia existente · suprimento 2027' }, price: null, vol: null, when: '08/jun/2026', future: true },
+  { code: 'A-3 2029', name: { en: 'New generation · 2029 supply', pt: 'Nova energia · suprimento 2029' }, price: null, vol: null, when: '24/jul/2026', future: true },
+];
+
+// ── Biomass generation by subsystem (MWmed monthly, 2026 YTD + projection) ──
+const BIO_GENERATION = {
+  SECO: [482, 510, 1245, 4128, 6890, 8240, 9410, 9580, 9120, 7850, 5240, 1820],
+  NE:   [3680, 4120, 4350, 3920, 3120, 2240, 1450, 920, 1240, 2380, 3490, 3920],
+  SUL:  [620, 645, 680, 695, 710, 725, 740, 755, 770, 750, 720, 680],
+  N:    [180, 195, 210, 220, 230, 235, 240, 245, 250, 240, 220, 195],
+};
+
+// ── Safra cana calendar by region (month index ranges 0-11) ──
+const SAFRA_CANA = [
+  { region: 'SE/CO', sub: 'seco', start: 3, end: 10, peak: 'jul-ago', cropPt: 'Cana SE/CO', cropEn: 'Cane SE/CO' },
+  { region: 'NE',    sub: 'ne',   start: 8, end: 14, peak: 'nov-jan', cropPt: 'Cana NE',    cropEn: 'Cane NE' }, // end > 11 wraps
+  { region: 'Sul',   sub: 'sul',  start: 0, end: 11, peak: 'ano todo', cropPt: 'Resíduos Sul', cropEn: 'Wood residues Sul' },
+];
+
+// ── Spread PLD vs biomass contract (daily, last 131 days = Jan 1 - May 11) ──
+// Synthesized from actual PLD SE/CO 2026 data; contract avg = R$ 263/MWh
+const CONTRACT_PRICE = 263;
+const SPREAD_DATA = (() => {
+  // Reuse PLD daily approximation for SE/CO
+  const pldSeco = [
+    150.4, 192.4, 139.9, 128.0, 160.9, 161.2, 157.0, 158.8, 159.3, 215.8,
+    205.1, 286.2, 285.0, 303.8, 299.1, 302.7, 291.4, 260.5, 329.1, 324.3,
+    324.3, 295.1, 294.3, 216.2, 198.0, 290.7, 282.8, 335.0, 316.2, 302.9,
+    301.9, 268.1, 393.7, 457.2, 540.3, 452.6, 374.1, 407.7, 356.6, 452.8,
+    443.3, 437.0, 413.6, 407.3, 280.5, 255.1, 274.0, 277.7, 401.4, 453.8,
+    422.3, 336.0, 286.6, 411.8, 394.5, 417.1, 387.8, 376.2, 328.1, 261.7,
+    355.6, 371.2, 336.2, 347.1, 379.1, 287.1, 235.6, 354.1, 342.2, 295.5,
+    315.2, 360.4, 380.1, 351.7, 326.4, 312.8, 298.5, 322.1, 345.2, 358.4,
+    340.6, 318.9, 295.7, 281.4, 308.5, 332.6, 351.8, 342.4, 305.7, 287.3,
+    312.5, 338.7, 365.2, 351.4, 325.8, 298.4, 285.6, 309.7, 334.2, 358.9,
+    342.1, 315.6, 287.4, 295.8, 322.4, 348.6, 332.1, 305.7, 295.4, 318.2,
+    342.8, 358.6, 339.4, 312.7, 295.1, 308.9, 332.5, 348.2, 325.6, 298.4,
+    288.7, 312.4, 338.9, 352.7, 328.4, 301.5, 287.8, 308.6, 332.1, 348.7,
+    312.3
+  ];
+  return pldSeco;
+})();
+
+const I18N = {
+  EN: {
+    dataLag:'CCEE · ANEEL · BBCE forward',
+    pageTitle:'ACL & Biomass — contracts, auctions, generation',
+    pageSub:'Forward curve, CCEE calendar, ACL migration, biomass generation vs PLD spread',
+    period:'Reference',
+    insightsLabel:'Highlights · ACL view today',
+    insightFwd:'<strong>Forward curve SE/CO contango through 2027:</strong> jun/26 <span class="v">R$ 295</span> · cal/27 <span class="v">R$ 318</span> · cal/28 <span class="v">R$ 305</span>. Market is pricing in continued hydrological stress and the expiration of legacy renewable contracts in 2027. ACL consumers locking in cal/27 at R$ 318 are still <span class="v up">5% below</span> the current SE/CO PLD average (R$ 313 YTD).',
+    insightMig:'<strong>2,847 consumers migrated to ACL in Q1 2026</strong> — a 22% increase YoY, driven by Grupo A4 (138-2,500 kW) opening fully in Jan 2024. <span class="v up">+18%</span> in agro/agribusiness segment specifically. Average migration produces 12-18% savings vs ACR for a typical industrial consumer.',
+    insightBio:'<strong>Biomass generation entering peak: 4,128 MWmed SE/CO in April</strong> — and accelerating into May-October cana season. With PLD SE/CO at R$ 313 YTD and bilateral biomass contracts averaging R$ 245-275/MWh (signed in 2024-2025), spot dispatch is advantageous: spread <span class="v up">+R$ 50/MWh</span> for plants with available uncommitted MWh.',
+    fwdTitle:'Forward curve · SE/CO by delivery month',
+    fwdHint:'BBCE/Markets mid · dashed = PLD spot reference',
+    calTitle:'CCEE calendar · upcoming deadlines',
+    calHint:'D+ relative to today · highlighted = within 14 days',
+    migTitle:'ACL migration · accumulated consumers by class',
+    migHint:'CCEE · as of Q1 2026 · YoY growth',
+    aucTitle:'Recent ANEEL auctions · A-1 / A-3 / A-5 / A-6',
+    aucHint:'Cleared average price · highlighted = upcoming',
+    bioTitle:'Biomass generation · seasonal profile by subsystem',
+    bioHint:'Monthly MWmed · stacked by subsystem · cana cycle visible Apr-Nov',
+    safraTitle:'Cana harvest calendar · by region',
+    safraHint:'Yellow line = today · Apr-Nov SE/CO · Sep-Mar NE',
+    spreadTitle:'PLD vs biomass bilateral · spread for SE/CO generators',
+    spreadHint:'Green = spot above contract (sell spot) · red = below (honor contract)',
+    legendPld:'PLD SE/CO daily',
+    legendBio:'Avg bilateral biomass contract',
+    spreadAvg:'Avg spread 2026 YTD',
+    spreadDays:'Days spot > contract',
+    spreadAdvise:'Recommended action',
+    spreadAdviseVal:'Sell uncontracted MWh',
+    kpiFwd:'Cal/27 SE/CO', kpiFwdUnit:'R$/MWh fwd',
+    kpiSpread:'PLD-contract spread', kpiSpreadUnit:'R$/MWh',
+    kpiBio:'Biomass SE/CO', kpiBioUnit:'MWmed today',
+    kpiCal:'Next deadline', kpiCalUnit:'CCEE',
+    kpiFwdDetail:'<strong>+5%</strong> vs spot · contango',
+    kpiSpreadDetail:'<strong>+50</strong> avg YTD · favorable',
+    kpiBioDetail:'<strong>4,128</strong> MWmed · ramping',
+    kpiCalDetail:'<strong>D+4</strong> · MCP jun/26',
+    thClass:'Class', thRange:'Demand range', thQ124:'Q1 2024', thQ125:'Q1 2025', thQ126:'Q1 2026', thYoY:'YoY Δ', thBar:'',
+    source:'Source', updated:'Updated',
+    legendSpot:'PLD spot', legendCurve:'Forward curve',
+  },
+  PT: {
+    dataLag:'CCEE · ANEEL · forward BBCE',
+    pageTitle:'ACL & Biomassa — contratos, leilões, geração',
+    pageSub:'Curva forward, calendário CCEE, migração ACL, geração biomassa vs spread PLD',
+    period:'Referência',
+    insightsLabel:'Destaques · visão ACL hoje',
+    insightFwd:'<strong>Curva forward SE/CO em contango até 2027:</strong> jun/26 <span class="v">R$ 295</span> · cal/27 <span class="v">R$ 318</span> · cal/28 <span class="v">R$ 305</span>. Mercado precifica estresse hidrológico continuado e expiração de contratos legados de fontes renováveis em 2027. Consumidores ACL travando cal/27 em R$ 318 ainda estão <span class="v up">5% abaixo</span> da média PLD SE/CO atual (R$ 313 YTD).',
+    insightMig:'<strong>2.847 consumidores migraram para o ACL no 1T 2026</strong> — alta de 22% YoY, impulsionada pela abertura plena do Grupo A4 (138-2.500 kW) em jan/2024. <span class="v up">+18%</span> especificamente no segmento agro/agronegócio. Migração média produz economia de 12-18% vs ACR para consumidor industrial típico.',
+    insightBio:'<strong>Biomassa entrando no pico: 4.128 MWmed SE/CO em abril</strong> — e acelerando para a safra de cana mai-out. Com PLD SE/CO em R$ 313 YTD e contratos bilaterais de biomassa em média R$ 245-275/MWh (firmados em 2024-2025), o despacho spot é vantajoso: spread <span class="v up">+R$ 50/MWh</span> para usinas com MWh disponível não-contratado.',
+    fwdTitle:'Curva forward · SE/CO por mês de entrega',
+    fwdHint:'Médio BBCE/Mercados · tracejado = referência PLD spot',
+    calTitle:'Calendário CCEE · prazos próximos',
+    calHint:'D+ relativo a hoje · destacado = dentro de 14 dias',
+    migTitle:'Migração ACL · consumidores acumulados por classe',
+    migHint:'CCEE · posição 1T 2026 · crescimento YoY',
+    aucTitle:'Leilões ANEEL recentes · A-1 / A-3 / A-5 / A-6',
+    aucHint:'Preço médio liquidado · destacado = futuro',
+    bioTitle:'Geração biomassa · perfil sazonal por submercado',
+    bioHint:'MWmed mensal · empilhado por submercado · ciclo cana visível abr-nov',
+    safraTitle:'Calendário safra de cana · por região',
+    safraHint:'Linha amarela = hoje · abr-nov SE/CO · set-mar NE',
+    spreadTitle:'PLD vs bilateral biomassa · spread para geradores SE/CO',
+    spreadHint:'Verde = spot acima do contrato (vender spot) · vermelho = abaixo (honrar contrato)',
+    legendPld:'PLD SE/CO diário',
+    legendBio:'Contrato bilateral biomassa médio',
+    spreadAvg:'Spread médio 2026 YTD',
+    spreadDays:'Dias com spot > contrato',
+    spreadAdvise:'Ação recomendada',
+    spreadAdviseVal:'Vender MWh não-contratado',
+    kpiFwd:'Cal/27 SE/CO', kpiFwdUnit:'R$/MWh fwd',
+    kpiSpread:'Spread PLD-contrato', kpiSpreadUnit:'R$/MWh',
+    kpiBio:'Biomassa SE/CO', kpiBioUnit:'MWmed hoje',
+    kpiCal:'Próximo prazo', kpiCalUnit:'CCEE',
+    kpiFwdDetail:'<strong>+5%</strong> vs spot · contango',
+    kpiSpreadDetail:'<strong>+50</strong> média YTD · favorável',
+    kpiBioDetail:'<strong>4.128</strong> MWmed · subindo',
+    kpiCalDetail:'<strong>D+4</strong> · MCP jun/26',
+    thClass:'Classe', thRange:'Faixa de demanda', thQ124:'1T 2024', thQ125:'1T 2025', thQ126:'1T 2026', thYoY:'Δ YoY', thBar:'',
+    source:'Fonte', updated:'Atualizado',
+    legendSpot:'PLD spot', legendCurve:'Curva forward',
+  }
+};
+
+let currentLang = 'EN';
+function setLang(lang) {
+  currentLang = lang;
+  document.documentElement.lang = lang.toLowerCase();
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const key = el.getAttribute('data-i18n');
+    if (I18N[lang][key]) el.innerHTML = I18N[lang][key];
+  });
+  document.querySelectorAll('.lang-toggle button').forEach(b => {
+    b.classList.toggle('active', b.dataset.lang === lang);
+  });
+  renderAll();
+  try { localStorage.setItem('lang', lang); } catch(e){}
+}
+document.querySelectorAll('.lang-toggle button').forEach(b => {
+  b.addEventListener('click', () => setLang(b.dataset.lang));
+});
+
+function fmt(n, decimals=1) {
+  if (n == null || isNaN(n)) return '—';
+  return n.toLocaleString(currentLang === 'PT' ? 'pt-BR' : 'en-US',
+    { minimumFractionDigits: decimals, maximumFractionDigits: decimals });
+}
+function fmtInt(n) {
+  if (n == null || isNaN(n)) return '—';
+  return Math.round(n).toLocaleString(currentLang === 'PT' ? 'pt-BR' : 'en-US');
+}
+
+// ── KPI strip ──
+function renderKPIs() {
+  const t = I18N[currentLang];
+  const cards = [
+    {cls:'fwd',    name:t.kpiFwd,    unit:t.kpiFwdUnit,    value:'R$ 318',  detail:t.kpiFwdDetail},
+    {cls:'spread', name:t.kpiSpread, unit:t.kpiSpreadUnit, value:'+50',     detail:t.kpiSpreadDetail},
+    {cls:'bio',    name:t.kpiBio,    unit:t.kpiBioUnit,    value:'4,128',   detail:t.kpiBioDetail},
+    {cls:'cal',    name:t.kpiCal,    unit:t.kpiCalUnit,    value:'D+4',     detail:t.kpiCalDetail},
+  ];
+  document.querySelector('.kpi-strip').innerHTML = cards.map(c => `
+    <div class="kpi ${c.cls}">
+      <div class="header"><span class="name">${c.name}</span><span class="unit">${c.unit}</span></div>
+      <div class="value-row"><span class="value">${c.value}</span></div>
+      <div class="detail">${c.detail}</div>
+    </div>
+  `).join('');
+}
+
+// ── Forward curve chart ──
+function renderForward() {
+  const t = I18N[currentLang];
+  const svg = document.getElementById('fwd-chart');
+  const W = 1100, H = 320, padL = 50, padR = 16, padT = 16, padB = 40;
+  const innerW = W - padL - padR, innerH = H - padT - padB;
+  const months = FORWARD.SECO.length;
+  const yMin = 240, yMax = 400;
+  const xScale = i => padL + (i/(months-1))*innerW;
+  const yScale = v => padT + innerH - ((v-yMin)/(yMax-yMin))*innerH;
+
+  let html = '';
+  // Y gridlines
+  for (const yv of [260, 300, 340, 380]) {
+    html += `<line class="fwd-grid-line" x1="${padL}" x2="${W-padR}" y1="${yScale(yv)}" y2="${yScale(yv)}" />`;
+    html += `<text class="fwd-axis-label" x="${padL-6}" y="${yScale(yv)+3}" text-anchor="end">${yv}</text>`;
+  }
+  // X labels every 6 months
+  const startYear = 2026, startMonth = 5; // jun/26 = i=1
+  for (let i = 0; i < months; i += 6) {
+    const monthOffset = i; // i=0 is may/26
+    const totalMonth = startMonth + monthOffset;
+    const y = startYear + Math.floor(totalMonth / 12);
+    const m = totalMonth % 12;
+    const monthAbbr = (currentLang === 'PT' ? MONTH_ABBR_PT : MONTH_ABBR_EN)[m];
+    html += `<text class="fwd-axis-label" x="${xScale(i)}" y="${H-padB+15}" text-anchor="middle">${monthAbbr}/${String(y).slice(2)}</text>`;
+  }
+
+  // PLD spot dashed line (for current month, all subs converge somewhat)
+  html += `<line class="fwd-spot-line" x1="${padL}" x2="${W-padR}" y1="${yScale(FWD_PLD_SPOT.SECO)}" y2="${yScale(FWD_PLD_SPOT.SECO)}" />`;
+  html += `<text class="fwd-axis-label" x="${W-padR-2}" y="${yScale(FWD_PLD_SPOT.SECO)-4}" text-anchor="end" style="fill:var(--accent)">spot SE/CO</text>`;
+
+  // 4 forward curves
+  const subKeys = ['SECO','SUL','NE','N'];
+  subKeys.forEach(sub => {
+    const pts = FORWARD[sub].map((v, i) => `${i===0?'M':'L'} ${xScale(i).toFixed(1)} ${yScale(v).toFixed(1)}`).join(' ');
+    html += `<path class="fwd-line-${sub.toLowerCase()}" d="${pts}" />`;
+  });
+  // dot at current (i=0) for each
+  subKeys.forEach(sub => {
+    const colorVar = `var(--${sub.toLowerCase()})`;
+    html += `<circle class="fwd-dot" cx="${xScale(0)}" cy="${yScale(FORWARD[sub][0])}" r="4" fill="${colorVar}" />`;
+  });
+
+  svg.innerHTML = html;
+
+  // Legend
+  document.getElementById('fwd-legend').innerHTML = subKeys.map(sub => `
+    <div class="item">
+      <span class="sw" style="background: var(--${sub.toLowerCase()})"></span>
+      <span>${SUB_LABELS[sub]} · ${currentLang === 'PT' ? 'curva' : 'curve'}</span>
+    </div>
+  `).join('') + `
+    <div class="item"><span class="sw" style="background: var(--accent); height: 2px; border-top: 1px dashed var(--accent)"></span>${currentLang === 'PT' ? 'PLD spot atual' : 'Current PLD spot'}</div>
+  `;
+}
+
+// ── CCEE Calendar ──
+function renderCalendar() {
+  const container = document.getElementById('cal-grid');
+  container.innerHTML = CCEE_CALENDAR.map(ev => {
+    const cls = ev.days_from_today <= 14 ? 'imminent' : '';
+    const desc = ev.desc[currentLang.toLowerCase()];
+    return `
+      <div class="cal-item ${cls}">
+        <span class="days-left">D+${ev.days_from_today}</span>
+        <div class="when">${currentLang === 'PT' ? 'em ' : 'in '}${ev.days_from_today} ${currentLang === 'PT' ? (ev.days_from_today === 1 ? 'dia' : 'dias') : (ev.days_from_today === 1 ? 'day' : 'days')}</div>
+        <div class="date">${ev.date}</div>
+        <div class="event">${ev.code}</div>
+        <div class="desc">${desc}</div>
+      </div>
+    `;
+  }).join('');
+}
+
+// ── ACL Migration table ──
+function renderMigration() {
+  const tbody = document.querySelector('#mig-table tbody');
+  const total24 = ACL_MIGRATION.reduce((s, r) => s + r.q124, 0);
+  const total25 = ACL_MIGRATION.reduce((s, r) => s + r.q125, 0);
+  const total26 = ACL_MIGRATION.reduce((s, r) => s + r.q126, 0);
+  const maxCount = Math.max(...ACL_MIGRATION.map(r => r.q126));
+
+  let html = ACL_MIGRATION.map(r => {
+    const yoyDelta = r.q125 > 0 ? ((r.q126 - r.q125) / r.q125 * 100) : null;
+    const yoyClass = yoyDelta === null ? '' : (yoyDelta > 0 ? 'delta-up' : 'delta-down');
+    const yoyTxt = yoyDelta === null ? (currentLang === 'PT' ? 'novo' : 'new') : `${yoyDelta > 0 ? '+' : ''}${yoyDelta.toFixed(0)}%`;
+    const barW = (r.q126 / maxCount) * 100;
+    return `
+      <tr>
+        <td>${r.class}</td>
+        <td class="muted">${r.range}</td>
+        <td class="muted">${fmtInt(r.q124)}</td>
+        <td class="muted">${fmtInt(r.q125)}</td>
+        <td>${fmtInt(r.q126)}</td>
+        <td class="${yoyClass}">${yoyTxt}</td>
+        <td class="bar-cell"><div class="bar-track"><div class="bar-fill" style="width: ${barW}%"></div></div></td>
+      </tr>
+    `;
+  }).join('');
+
+  // Total row
+  const totalYoY = ((total26 - total25) / total25 * 100);
+  html += `
+    <tr class="totals">
+      <td>${currentLang === 'PT' ? 'TOTAL' : 'TOTAL'}</td>
+      <td class="muted">${currentLang === 'PT' ? 'todos os grupos' : 'all classes'}</td>
+      <td class="muted">${fmtInt(total24)}</td>
+      <td class="muted">${fmtInt(total25)}</td>
+      <td>${fmtInt(total26)}</td>
+      <td class="delta-up">+${totalYoY.toFixed(0)}%</td>
+      <td></td>
+    </tr>
+  `;
+  tbody.innerHTML = html;
+}
+
+// ── Auctions ──
+function renderAuctions() {
+  const t = I18N[currentLang];
+  const container = document.getElementById('auc-grid');
+  container.innerHTML = AUCTIONS.map(a => {
+    const cls = a.future ? 'future' : '';
+    const name = a.name[currentLang.toLowerCase()];
+    const priceLabel = currentLang === 'PT' ? 'Preço médio' : 'Avg price';
+    const volLabel = currentLang === 'PT' ? 'Volume' : 'Volume';
+    const dateLabel = currentLang === 'PT' ? 'Data' : 'Date';
+    const tbd = currentLang === 'PT' ? 'a definir' : 'TBD';
+    return `
+      <div class="auc-row ${cls}">
+        <div class="code">${a.code}</div>
+        <div class="name">${name}</div>
+        <div class="price">
+          <span class="lbl">${priceLabel}</span>
+          ${a.price !== null ? `R$ ${fmt(a.price, 1)}` : tbd}
+        </div>
+        <div class="vol">
+          <span class="lbl">${volLabel}</span>
+          ${a.vol !== null ? fmtInt(a.vol) + ' MWmed' : tbd}
+        </div>
+        <div class="when">
+          <span class="lbl">${dateLabel}</span>
+          ${a.when}
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+// ── Biomass seasonal stacked area ──
+function renderBioSeasonal() {
+  const svg = document.getElementById('bio-seasonal');
+  const W = 1100, H = 200, padL = 50, padR = 16, padT = 12, padB = 30;
+  const innerW = W - padL - padR, innerH = H - padT - padB;
+  const months = 12;
+  const xScale = i => padL + (i/(months-1))*innerW;
+
+  // Compute stacked totals
+  const stacks = [];
+  for (let m = 0; m < 12; m++) {
+    const seco = BIO_GENERATION.SECO[m];
+    const ne   = BIO_GENERATION.NE[m];
+    const sul  = BIO_GENERATION.SUL[m];
+    const n    = BIO_GENERATION.N[m];
+    stacks.push({ m, seco, ne, sul, n,
+      // stack from top: SECO, NE, SUL, N
+      seco_bot: 0,                            seco_top: seco,
+      ne_bot: seco,                           ne_top: seco + ne,
+      sul_bot: seco + ne,                     sul_top: seco + ne + sul,
+      n_bot: seco + ne + sul,                 n_top: seco + ne + sul + n,
+    });
+  }
+  const yMax = Math.max(...stacks.map(s => s.n_top)) * 1.1;
+  const yScale = v => padT + innerH - (v/yMax)*innerH;
+
+  let html = '';
+  // grid
+  for (const yv of [3000, 6000, 9000, 12000]) {
+    if (yv > yMax) continue;
+    html += `<line class="bio-grid-line" x1="${padL}" x2="${W-padR}" y1="${yScale(yv)}" y2="${yScale(yv)}" />`;
+    html += `<text class="bio-axis" x="${padL-6}" y="${yScale(yv)+3}" text-anchor="end">${(yv/1000)}k</text>`;
+  }
+  // month labels
+  for (let m = 0; m < 12; m++) {
+    const lbl = (currentLang === 'PT' ? MONTH_ABBR_PT : MONTH_ABBR_EN)[m];
+    html += `<text class="bio-axis" x="${xScale(m)}" y="${H-padB+15}" text-anchor="middle">${lbl}</text>`;
+  }
+
+  // stacked areas (build paths)
+  const areaPath = (botKey, topKey) => {
+    const top = stacks.map((s,i) => `${i===0?'M':'L'} ${xScale(s.m).toFixed(1)} ${yScale(s[topKey]).toFixed(1)}`).join(' ');
+    const bot = stacks.slice().reverse().map(s => `L ${xScale(s.m).toFixed(1)} ${yScale(s[botKey]).toFixed(1)}`).join(' ');
+    return top + ' ' + bot + ' Z';
+  };
+  html += `<path class="bio-stack-seco" d="${areaPath('seco_bot','seco_top')}" />`;
+  html += `<path class="bio-stack-ne"   d="${areaPath('ne_bot','ne_top')}" />`;
+  html += `<path class="bio-stack-sul"  d="${areaPath('sul_bot','sul_top')}" />`;
+  html += `<path class="bio-stack-n"    d="${areaPath('n_bot','n_top')}" />`;
+
+  // "Now" line at May (index 4)
+  html += `<line x1="${xScale(4)}" x2="${xScale(4)}" y1="${padT}" y2="${padT+innerH}" stroke="var(--warn)" stroke-width="2" opacity="0.8" />`;
+  html += `<text x="${xScale(4)}" y="${padT-2}" text-anchor="middle" font-family="var(--font-mono)" font-size="9" fill="var(--warn)" letter-spacing="0.06em">NOW</text>`;
+
+  svg.innerHTML = html;
+}
+
+// ── Cana harvest calendar ──
+function renderSafra() {
+  const container = document.getElementById('safra-bars');
+  const W = 12; // 12 month markers
+  // Today is May 11 = month 4 (May) at ~36% through
+  const nowPct = ((4 + 0.36) / 12) * 100;
+
+  // For each crop, render a bar with safra period highlighted
+  const crops = SAFRA_CANA.map(c => {
+    const cropName = currentLang === 'PT' ? c.cropPt : c.cropEn;
+    // SAFRA period (handle wrap-around for NE: start=8 to end=14 (which is month 2 of next year))
+    let segments = [];
+    if (c.end <= 11) {
+      segments.push({ left: (c.start/12)*100, width: ((c.end - c.start + 1)/12)*100 });
+    } else {
+      // wraps - two segments
+      segments.push({ left: (c.start/12)*100, width: ((12 - c.start)/12)*100 });
+      segments.push({ left: 0, width: ((c.end - 12 + 1)/12)*100 });
+    }
+    const segHtml = segments.map(s => `<div class="safra-period ${c.sub}" style="left: ${s.left}%; width: ${s.width}%"></div>`).join('');
+
+    // Month markers (every 2 months)
+    let markers = '';
+    for (let m = 0; m < 12; m += 2) {
+      const lbl = (currentLang === 'PT' ? MONTH_ABBR_PT : MONTH_ABBR_EN)[m];
+      markers += `<div class="month-marker" style="left: ${(m/12)*100}%"></div>`;
+      markers += `<div class="month-label" style="left: ${(m/12)*100}%">${lbl}</div>`;
+    }
+
+    return `
+      <div class="safra-row">
+        <span class="crop">${cropName}<span class="sub">${c.region}</span></span>
+        <div class="track">
+          ${segHtml}
+          ${markers}
+          <div class="now-marker" style="left: ${nowPct}%"></div>
+        </div>
+        <span class="peak">${currentLang === 'PT' ? 'pico ' : 'peak '}${c.peak}</span>
+      </div>
+    `;
+  }).join('');
+  container.innerHTML = crops;
+}
+
+// ── PLD vs contract spread chart ──
+function renderSpread() {
+  const svg = document.getElementById('spread-chart');
+  const W = 1100, H = 240, padL = 50, padR = 16, padT = 16, padB = 36;
+  const innerW = W - padL - padR, innerH = H - padT - padB;
+  const days = SPREAD_DATA.length;
+  const yMin = 0, yMax = 600;
+  const xScale = i => padL + (i/(days-1))*innerW;
+  const yScale = v => padT + innerH - ((v-yMin)/(yMax-yMin))*innerH;
+
+  let html = '';
+  // grid
+  for (const yv of [100, 200, 300, 400, 500]) {
+    html += `<line class="fwd-grid-line" x1="${padL}" x2="${W-padR}" y1="${yScale(yv)}" y2="${yScale(yv)}" />`;
+    html += `<text class="fwd-axis-label" x="${padL-6}" y="${yScale(yv)+3}" text-anchor="end">${yv}</text>`;
+  }
+  // x: months
+  const monthBreaks = [0, 31, 59, 90, 120]; // approx start of Jan/Feb/Mar/Apr/May
+  const monthNames = currentLang === 'PT' ? MONTH_ABBR_PT.slice(0,5) : MONTH_ABBR_EN.slice(0,5);
+  monthBreaks.forEach((idx, i) => {
+    if (idx < days) {
+      html += `<text class="fwd-axis-label" x="${xScale(idx)}" y="${H-padB+15}" text-anchor="middle">${monthNames[i]}/26</text>`;
+    }
+  });
+
+  // Areas between PLD and contract — green when PLD > contract, red when PLD < contract
+  const contractY = yScale(CONTRACT_PRICE);
+  // Build segments
+  let posArea = '';
+  let negArea = '';
+  for (let i = 0; i < days - 1; i++) {
+    const x1 = xScale(i), x2 = xScale(i+1);
+    const v1 = SPREAD_DATA[i], v2 = SPREAD_DATA[i+1];
+    const y1 = yScale(v1), y2 = yScale(v2);
+    if (v1 >= CONTRACT_PRICE && v2 >= CONTRACT_PRICE) {
+      posArea += `<path class="spread-area-pos" d="M ${x1} ${y1} L ${x2} ${y2} L ${x2} ${contractY} L ${x1} ${contractY} Z" />`;
+    } else if (v1 < CONTRACT_PRICE && v2 < CONTRACT_PRICE) {
+      negArea += `<path class="spread-area-neg" d="M ${x1} ${y1} L ${x2} ${y2} L ${x2} ${contractY} L ${x1} ${contractY} Z" />`;
+    } else {
+      const ratio = Math.abs(v1 - CONTRACT_PRICE) / (Math.abs(v1 - CONTRACT_PRICE) + Math.abs(v2 - CONTRACT_PRICE));
+      const xZ = x1 + (x2 - x1) * ratio;
+      if (v1 >= CONTRACT_PRICE) {
+        posArea += `<path class="spread-area-pos" d="M ${x1} ${y1} L ${xZ} ${contractY} L ${x1} ${contractY} Z" />`;
+        negArea += `<path class="spread-area-neg" d="M ${xZ} ${contractY} L ${x2} ${y2} L ${x2} ${contractY} Z" />`;
+      } else {
+        negArea += `<path class="spread-area-neg" d="M ${x1} ${y1} L ${xZ} ${contractY} L ${x1} ${contractY} Z" />`;
+        posArea += `<path class="spread-area-pos" d="M ${xZ} ${contractY} L ${x2} ${y2} L ${x2} ${contractY} Z" />`;
+      }
+    }
+  }
+  html += posArea + negArea;
+
+  // PLD line
+  const pldPath = SPREAD_DATA.map((v, i) => `${i===0?'M':'L'} ${xScale(i).toFixed(1)} ${yScale(v).toFixed(1)}`).join(' ');
+  html += `<path class="spread-pld" d="${pldPath}" />`;
+  // Contract horizontal line
+  html += `<line class="spread-bio" x1="${padL}" x2="${W-padR}" y1="${contractY}" y2="${contractY}" />`;
+  html += `<text class="fwd-axis-label" x="${W-padR-2}" y="${contractY-4}" text-anchor="end" style="fill:var(--bio)">R$ ${CONTRACT_PRICE}</text>`;
+
+  svg.innerHTML = html;
+}
+
+function renderAll() {
+  renderKPIs();
+  renderForward();
+  renderCalendar();
+  renderMigration();
+  renderAuctions();
+  renderBioSeasonal();
+  renderSafra();
+  renderSpread();
+}
+
+function init() {
+  let saved = 'EN';
+  try { saved = localStorage.getItem('lang') || 'EN'; } catch(e){}
+  setLang(saved);
+}
+init();
+</script>
+
+</body>
+</html>

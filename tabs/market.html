@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>BR Energy Terminal — PLD Monitor</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0a0b0d;
+  --bg-elev: #121418;
+  --bg-elev-2: #181b20;
+  --border: #23262c;
+  --border-soft: #1c1f24;
+  --text: #e6e8eb;
+  --text-muted: #8b8f96;
+  --text-dim: #5a5d62;
+  --accent: #d4d4d8;
+  --seco: #5eb3f5;
+  --sul:  #f0a830;
+  --ne:   #4ade80;
+  --n:    #c084fc;
+  --y24:  #4b5057;
+  --y25:  #8a8f96;
+  --y26:  #e6e8eb;
+  --danger: #ef4444;
+  --warn: #f59e0b;
+  --ok: #10b981;
+  --font-sans: 'DM Sans', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { background: var(--bg); color: var(--text); font-family: var(--font-sans); font-size: 14px; line-height: 1.5; -webkit-font-smoothing: antialiased; }
+
+/* topbar */
+.topbar {
+  border-bottom: 1px solid var(--border);
+  background: var(--bg);
+  padding: 14px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+.brand { display: flex; align-items: baseline; gap: 12px; }
+.brand .logo { font-family: var(--font-mono); font-weight: 600; font-size: 13px; letter-spacing: 0.15em; color: var(--text); text-transform: uppercase; }
+.brand .divider { width: 1px; height: 14px; background: var(--border); display: inline-block; }
+.brand .module { font-size: 13px; color: var(--text-muted); letter-spacing: 0.05em; text-transform: uppercase; }
+.topbar-right { display: flex; align-items: center; gap: 18px; }
+.meta { font-family: var(--font-mono); font-size: 11px; color: var(--text-dim); letter-spacing: 0.04em; }
+.meta .live { display: inline-block; width: 6px; height: 6px; background: var(--ok); border-radius: 50%; margin-right: 6px; vertical-align: middle; animation: pulse 2s infinite; }
+@keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.35; } }
+.lang-toggle { display: flex; border: 1px solid var(--border); border-radius: 4px; overflow: hidden; font-family: var(--font-mono); font-size: 11px; }
+.lang-toggle button { background: transparent; color: var(--text-muted); border: none; padding: 5px 10px; cursor: pointer; letter-spacing: 0.04em; }
+.lang-toggle button.active { background: var(--text); color: var(--bg); }
+
+.brand .tabs { display: flex; gap: 1px; background: var(--border); margin-left: 16px; }
+.brand .tab { background: var(--bg-elev); padding: 4px 10px; font-family: var(--font-mono); font-size: 10px; color: var(--text-muted); letter-spacing: 0.06em; text-transform: uppercase; cursor: pointer; text-decoration: none; transition: background 0.15s, color 0.15s; }
+.brand .tab:hover { background: var(--bg-elev-2); color: var(--text); }
+.brand .tab.active { background: var(--text); color: var(--bg); }
+
+
+/* subheader */
+.subheader { padding: 22px 24px 6px; display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; flex-wrap: wrap; }
+.subheader h1 { font-size: 22px; font-weight: 600; letter-spacing: -0.01em; margin-bottom: 4px; }
+.subheader .subtitle { font-size: 13px; color: var(--text-muted); }
+.subheader .range { font-family: var(--font-mono); font-size: 11px; color: var(--text-dim); letter-spacing: 0.05em; text-transform: uppercase; text-align: right; }
+.subheader .range strong { color: var(--text); }
+
+/* insights */
+.insights { margin: 16px 24px; border-left: 2px solid var(--warn); background: linear-gradient(90deg, rgba(245,158,11,0.06) 0%, transparent 60%); padding: 14px 18px; border-radius: 0 4px 4px 0; }
+.insights .label { font-family: var(--font-mono); font-size: 10px; color: var(--warn); letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 4px; }
+.insights p { font-size: 13px; color: var(--text); line-height: 1.6; }
+.insights p + p { margin-top: 6px; }
+.insights strong { color: var(--text); font-weight: 600; }
+.insights .v { font-family: var(--font-mono); color: var(--warn); font-weight: 600; }
+.insights .v.up { color: var(--danger); }
+.insights .v.down { color: var(--ok); }
+
+/* KPI strip */
+.kpi-strip { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: var(--border); margin: 0 24px; border: 1px solid var(--border); }
+.kpi { background: var(--bg-elev); padding: 18px 18px 16px; position: relative; overflow: hidden; }
+.kpi::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 2px; background: var(--accent); }
+.kpi.seco::before { background: var(--seco); }
+.kpi.sul::before { background: var(--sul); }
+.kpi.ne::before { background: var(--ne); }
+.kpi.n::before { background: var(--n); }
+.kpi .header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 10px; }
+.kpi .name { font-family: var(--font-mono); font-size: 11px; color: var(--text-muted); letter-spacing: 0.08em; text-transform: uppercase; }
+.kpi .unit { font-family: var(--font-mono); font-size: 10px; color: var(--text-dim); letter-spacing: 0.04em; }
+.kpi .value-row { display: flex; align-items: baseline; gap: 8px; margin-bottom: 12px; }
+.kpi .value { font-family: var(--font-mono); font-size: 26px; font-weight: 500; color: var(--text); letter-spacing: -0.01em; line-height: 1; }
+.kpi .value-label { font-family: var(--font-mono); font-size: 10px; color: var(--text-dim); letter-spacing: 0.04em; text-transform: uppercase; }
+.kpi .yoy-row { display: flex; gap: 14px; font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.03em; padding-top: 10px; border-top: 1px solid var(--border-soft); }
+.kpi .yoy-row .y { display: flex; flex-direction: column; gap: 2px; }
+.kpi .yoy-row .y .yr { color: var(--text-dim); }
+.kpi .yoy-row .y .val { color: var(--text-muted); font-weight: 500; font-size: 11px; }
+.kpi .yoy-row .y.current .val { color: var(--text); }
+
+/* main grid */
+.main { padding: 20px 24px 40px; display: grid; grid-template-columns: 1fr; gap: 20px; }
+.section { background: var(--bg-elev); border: 1px solid var(--border); border-radius: 4px; padding: 20px 22px; }
+.section-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 18px; padding-bottom: 12px; border-bottom: 1px solid var(--border-soft); flex-wrap: wrap; gap: 8px; }
+.section-head h2 { font-size: 14px; font-weight: 600; letter-spacing: 0.03em; text-transform: uppercase; color: var(--text); }
+.section-head .hint { font-family: var(--font-mono); font-size: 10px; color: var(--text-dim); letter-spacing: 0.05em; text-transform: uppercase; }
+
+/* multi-year small multiples */
+.small-mult-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 22px;
+}
+@media (max-width: 760px) {
+  .small-mult-grid { grid-template-columns: 1fr; }
+}
+.mini-chart { display: flex; flex-direction: column; }
+.mini-chart-head {
+  display: flex; justify-content: space-between; align-items: baseline;
+  margin-bottom: 10px;
+}
+.mini-chart-head .mc-name {
+  font-family: var(--font-mono); font-size: 11px; color: var(--text); letter-spacing: 0.06em; text-transform: uppercase; font-weight: 600;
+}
+.mini-chart-head .mc-name::before { content: ''; display: inline-block; width: 10px; height: 2px; margin-right: 8px; vertical-align: middle; }
+.mini-chart-head .mc-name.seco::before { background: var(--seco); }
+.mini-chart-head .mc-name.sul::before { background: var(--sul); }
+.mini-chart-head .mc-name.ne::before { background: var(--ne); }
+.mini-chart-head .mc-name.n::before { background: var(--n); }
+.mini-chart-head .mc-avg { font-family: var(--font-mono); font-size: 11px; color: var(--text-muted); }
+.mini-chart svg { display: block; width: 100%; height: 160px; }
+.mini-chart .mc-legend { display: flex; gap: 14px; margin-top: 6px; font-family: var(--font-mono); font-size: 10px; color: var(--text-muted); letter-spacing: 0.04em; }
+.mini-chart .mc-legend .ml-item { display: flex; align-items: center; gap: 5px; }
+.mini-chart .mc-legend .ml-swatch { width: 10px; height: 2px; display: inline-block; }
+.mini-chart .mc-legend .ml-swatch.y24 { background: var(--y24); }
+.mini-chart .mc-legend .ml-swatch.y25 { background: var(--y25); }
+.mini-chart .mc-legend .ml-swatch.y26 { background: var(--y26); height: 3px; }
+.mc-y24 { stroke: var(--y24); stroke-width: 1.4; fill: none; }
+.mc-y25 { stroke: var(--y25); stroke-width: 1.4; fill: none; }
+.mc-y26 { stroke: var(--y26); stroke-width: 2; fill: none; }
+.mc-dot-y26 { fill: var(--y26); }
+.mc-axis { font-family: var(--font-mono); font-size: 9px; fill: var(--text-dim); letter-spacing: 0.04em; }
+.mc-grid { stroke: var(--border-soft); stroke-width: 1; shape-rendering: crispEdges; }
+.mc-area-band { fill: rgba(120,130,140,0.05); }
+
+/* daily chart legend & inline svg */
+.chart-wrap { position: relative; }
+.legend { display: flex; gap: 18px; margin-bottom: 14px; flex-wrap: wrap; }
+.legend-item { display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--text-muted); cursor: pointer; user-select: none; transition: opacity 0.15s; }
+.legend-item.muted { opacity: 0.35; }
+.legend-item .swatch { width: 14px; height: 2px; }
+.legend-item .name { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.04em; }
+.legend-item .val { font-family: var(--font-mono); color: var(--text); font-weight: 500; margin-left: 4px; }
+#line-chart { display: block; width: 100%; height: 340px; }
+.grid-line { stroke: var(--border-soft); stroke-width: 1; shape-rendering: crispEdges; }
+.axis-label { font-family: var(--font-mono); font-size: 10px; fill: var(--text-dim); letter-spacing: 0.04em; }
+.axis-tick { stroke: var(--border); stroke-width: 1; shape-rendering: crispEdges; }
+.line-path { fill: none; stroke-width: 1.5; transition: opacity 0.2s; }
+.line-path.muted { opacity: 0.1; }
+.tooltip { position: absolute; pointer-events: none; background: var(--bg); border: 1px solid var(--border); padding: 10px 12px; font-family: var(--font-mono); font-size: 11px; border-radius: 4px; opacity: 0; transition: opacity 0.1s; white-space: nowrap; z-index: 10; box-shadow: 0 6px 24px rgba(0,0,0,0.5); }
+.tooltip .date { font-size: 10px; color: var(--text-dim); margin-bottom: 6px; letter-spacing: 0.04em; text-transform: uppercase; }
+.tooltip .row { display: flex; justify-content: space-between; gap: 18px; padding: 2px 0; }
+.tooltip .row .name { color: var(--text-muted); }
+.tooltip .row .name::before { content: ''; display: inline-block; width: 8px; height: 2px; margin-right: 6px; vertical-align: middle; }
+.tooltip .row.seco .name::before { background: var(--seco); }
+.tooltip .row.sul .name::before { background: var(--sul); }
+.tooltip .row.ne .name::before { background: var(--ne); }
+.tooltip .row.n .name::before { background: var(--n); }
+.tooltip .row .val { color: var(--text); font-weight: 500; }
+.tooltip-line { stroke: var(--text-dim); stroke-width: 1; stroke-dasharray: 2,3; opacity: 0; }
+
+/* yoy table */
+.yoy-table { width: 100%; border-collapse: collapse; font-family: var(--font-mono); font-size: 12px; }
+.yoy-table th { text-align: right; padding: 8px 10px; font-weight: 500; font-size: 10px; color: var(--text-dim); letter-spacing: 0.06em; text-transform: uppercase; border-bottom: 1px solid var(--border-soft); }
+.yoy-table th:first-child { text-align: left; }
+.yoy-table td { padding: 11px 10px; border-bottom: 1px solid var(--border-soft); color: var(--text); text-align: right; }
+.yoy-table td:first-child { text-align: left; color: var(--text-muted); display: flex; align-items: center; gap: 8px; }
+.yoy-table td:first-child::before { content: ''; width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
+.yoy-table tr.seco td:first-child::before { background: var(--seco); }
+.yoy-table tr.sul td:first-child::before { background: var(--sul); }
+.yoy-table tr.ne td:first-child::before { background: var(--ne); }
+.yoy-table tr.n td:first-child::before { background: var(--n); }
+.yoy-table tr:last-child td { border-bottom: none; }
+.yoy-table .pct-up { color: var(--danger); }
+.yoy-table .pct-down { color: var(--ok); }
+.yoy-table .pct-flat { color: var(--text-muted); }
+
+.footer { padding: 18px 24px; border-top: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; font-family: var(--font-mono); font-size: 10px; color: var(--text-dim); letter-spacing: 0.04em; }
+
+@media (max-width: 880px) {
+  .kpi-strip { grid-template-columns: repeat(2, 1fr); }
+  .topbar { padding: 12px 16px; flex-wrap: wrap; }
+  .subheader { padding: 18px 16px 6px; }
+  .insights { margin: 14px 16px; }
+  .kpi-strip { margin: 0 16px; }
+  .main { padding: 16px; }
+  .subheader h1 { font-size: 18px; }
+  .kpi .value { font-size: 22px; }
+}
+
+@media (max-width: 880px) {
+  .brand .tabs { margin-left: 0; margin-top: 8px; flex-wrap: wrap; }
+}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="brand">
+    <span class="logo">BR ENERGY TERMINAL</span>
+    <span class="divider"></span>
+    <div class="tabs">
+      <a class="tab active" href="market.html">Market</a>
+      <a class="tab" href="hydrology.html">Hydrology</a>
+      <a class="tab" href="operation.html">Operation</a>
+      <a class="tab" href="climate.html">Climate</a>
+      <a class="tab" href="acl.html">ACL</a>
+    </div>
+  </div>
+  <div class="topbar-right">
+    <span class="meta"><span class="live"></span><span data-i18n="dataLag">CCEE Dados Abertos · 3-year series</span></span>
+    <div class="lang-toggle">
+      <button data-lang="EN" class="active">EN</button>
+      <button data-lang="PT">PT</button>
+    </div>
+  </div>
+</header>
+
+<div class="subheader">
+  <div>
+    <h1 data-i18n="pageTitle">PLD by submarket · multi-year context</h1>
+    <div class="subtitle" data-i18n="pageSub">Spot price R$/MWh — daily granularity for 2026, monthly averages 2024-2026</div>
+  </div>
+  <div class="range">
+    <span data-i18n="period">Period</span>
+    <strong>Jan 2024 → Mar 2026</strong> · <span data-i18n="months">27 months</span>
+  </div>
+</div>
+
+<section class="insights">
+  <div class="label" data-i18n="insightsLabel">Highlights · multi-year regime shift</div>
+  <p data-i18n="insightYoy">
+    <strong>SE/CO average PLD rose 69% from 2024 to 2025, then another 47% YTD into 2026.</strong>
+    Trajectory: <span class="v">R$ 125.70</span> →
+    <span class="v">R$ 212.63</span> →
+    <span class="v up">R$ 313.30</span>. Sul is the most exposed:
+    <span class="v">R$ 125.73</span> → <span class="v">R$ 216.27</span> → <span class="v up">R$ 368.87</span>
+    (+193% over 24 months).
+  </p>
+  <p data-i18n="insightSeasonality">
+    <strong>The piso-floor regime that defined 2024 has dissolved.</strong>
+    In 2024, all four submarkets averaged at the floor (R$ 61.07) for 5 of 12 months;
+    in 2026 YTD, the floor has not been touched in any submarket. ENA/EAR trajectory
+    has shifted the cost curve up structurally.
+  </p>
+  <p data-i18n="insightSpread">
+    <strong>NE/N remain the cheapest submarkets across all three years</strong>
+    — 2026 YTD averages of <span class="v">R$ 289.55</span> and <span class="v">R$ 290.46</span>
+    vs SE/CO at <span class="v">R$ 313.30</span> and Sul at <span class="v up">R$ 368.87</span>.
+    NE→SE/CO intercâmbio remains the binding constraint that prices this gap.
+  </p>
+</section>
+
+<section class="kpi-strip" aria-label="PLD by submarket — 3-year"></section>
+
+<main class="main">
+
+  <div class="section">
+    <div class="section-head">
+      <h2 data-i18n="seasonalityTitle">Seasonality · monthly average per year</h2>
+      <div class="hint" data-i18n="seasonalityHint">Lines: 2024 / 2025 / 2026 ytd · y-axis 0-500 R$/MWh</div>
+    </div>
+    <div class="small-mult-grid" id="small-multiples"></div>
+  </div>
+
+  <div class="section">
+    <div class="section-head">
+      <h2 data-i18n="yoyTitle">Year-over-year · same months Jan-Mar</h2>
+      <div class="hint" data-i18n="yoyHint">Δ vs prior year</div>
+    </div>
+    <table class="yoy-table" id="yoy-table">
+      <thead>
+        <tr>
+          <th data-i18n="thSub">Sub</th>
+          <th data-i18n="thJan">Jan 24</th>
+          <th data-i18n="thJan25">Jan 25</th>
+          <th data-i18n="thJan26">Jan 26</th>
+          <th data-i18n="thFeb">Feb 24</th>
+          <th data-i18n="thFeb25">Feb 25</th>
+          <th data-i18n="thFeb26">Feb 26</th>
+          <th data-i18n="thMar">Mar 24</th>
+          <th data-i18n="thMar25">Mar 25</th>
+          <th data-i18n="thMar26">Mar 26</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
+
+  <div class="section">
+    <div class="section-head">
+      <h2 data-i18n="lineTitle">Daily PLD · 2026 detail (Jan 1 - Mar 10)</h2>
+      <div class="hint" data-i18n="lineHint">Hover for detail · click legend to isolate</div>
+    </div>
+    <div class="chart-wrap">
+      <div class="legend" id="legend"></div>
+      <svg id="line-chart" viewBox="0 0 1200 340" preserveAspectRatio="none"></svg>
+      <div class="tooltip" id="tooltip"></div>
+    </div>
+  </div>
+
+</main>
+
+<footer class="footer">
+  <span><span data-i18n="source">Source</span>: CCEE Dados Abertos · PLD_MEDIA_DIARIA 2024, 2025, 2026</span>
+  <span><span data-i18n="limitsLabel">Piso/teto 2026</span>: R$ 57.31 / R$ 785.27 / R$ 1,611.04</span>
+</footer>
+
+<script>
+// ── multi-year monthly data (computed from CCEE PLD_MEDIA_DIARIA) ─────────────
+const MONTHLY = {
+  '2024-01':{SECO:61.07,SUL:61.07,NE:61.07,N:61.07},
+  '2024-02':{SECO:61.20,SUL:61.20,NE:61.20,N:61.20},
+  '2024-03':{SECO:61.07,SUL:61.07,NE:61.07,N:61.07},
+  '2024-04':{SECO:61.07,SUL:61.07,NE:61.07,N:61.07},
+  '2024-05':{SECO:61.07,SUL:61.07,NE:61.07,N:61.07},
+  '2024-06':{SECO:64.92,SUL:64.91,NE:64.92,N:64.93},
+  '2024-07':{SECO:87.85,SUL:87.79,NE:84.96,N:87.83},
+  '2024-08':{SECO:119.05,SUL:119.06,NE:105.71,N:122.12},
+  '2024-09':{SECO:290.45,SUL:290.86,NE:244.85,N:304.05},
+  '2024-10':{SECO:478.16,SUL:478.10,NE:442.96,N:493.79},
+  '2024-11':{SECO:98.45,SUL:98.45,NE:98.27,N:99.18},
+  '2024-12':{SECO:64.07,SUL:64.07,NE:64.07,N:64.07},
+  '2025-01':{SECO:58.85,SUL:58.93,NE:58.86,N:58.85},
+  '2025-02':{SECO:82.45,SUL:82.46,NE:58.60,N:58.60},
+  '2025-03':{SECO:321.40,SUL:327.91,NE:58.91,N:58.91},
+  '2025-04':{SECO:187.55,SUL:189.69,NE:116.06,N:116.06},
+  '2025-05':{SECO:196.10,SUL:219.74,NE:112.05,N:112.30},
+  '2025-06':{SECO:224.31,SUL:230.66,NE:222.30,N:224.13},
+  '2025-07':{SECO:173.18,SUL:178.21,NE:165.62,N:168.51},
+  '2025-08':{SECO:263.91,SUL:263.92,NE:240.21,N:252.62},
+  '2025-09':{SECO:264.55,SUL:264.55,NE:246.84,N:256.94},
+  '2025-10':{SECO:257.21,SUL:257.21,NE:230.04,N:252.16},
+  '2025-11':{SECO:270.27,SUL:270.16,NE:263.14,N:267.79},
+  '2025-12':{SECO:251.80,SUL:251.80,NE:251.78,N:251.81},
+  '2026-01':{SECO:250.10,SUL:252.73,NE:241.36,N:244.10},
+  '2026-02':{SECO:380.89,SUL:391.36,NE:366.69,N:366.69},
+  '2026-03':{SECO:308.92,SUL:462.51,NE:260.61,N:260.60},
+};
+
+const YEAR_STATS = {
+  '2024': {
+    SECO: {avg:125.70, min:61.07, max:478.16},
+    SUL:  {avg:125.73, min:61.07, max:478.10},
+    NE:   {avg:117.60, min:61.07, max:442.96},
+    N:    {avg:128.45, min:61.07, max:493.79}
+  },
+  '2025': {
+    SECO: {avg:212.63, min:58.85, max:321.40},
+    SUL:  {avg:216.27, min:58.93, max:327.91},
+    NE:   {avg:168.70, min:58.60, max:263.14},
+    N:    {avg:173.22, min:58.60, max:267.79}
+  },
+  '2026': {
+    SECO: {avg:313.30, min:250.10, max:380.89},
+    SUL:  {avg:368.87, min:252.73, max:462.51},
+    NE:   {avg:289.55, min:241.36, max:366.69},
+    N:    {avg:290.46, min:244.10, max:366.69}
+  }
+};
+
+// ── daily 2026 data (Jan 1 - Mar 10) ─────────────────────────────
+const DATA = [
+{date:"2026-01-01",SECO:150.38,SUL:150.38,NE:150.39,N:150.39},{date:"2026-01-02",SECO:192.36,SUL:192.36,NE:192.36,N:192.36},{date:"2026-01-03",SECO:139.90,SUL:139.89,NE:139.90,N:139.90},{date:"2026-01-04",SECO:127.99,SUL:127.98,NE:127.99,N:127.99},{date:"2026-01-05",SECO:160.91,SUL:160.91,NE:160.91,N:160.91},{date:"2026-01-06",SECO:161.24,SUL:161.24,NE:161.23,N:161.24},{date:"2026-01-07",SECO:157.02,SUL:157.02,NE:156.87,N:156.87},{date:"2026-01-08",SECO:158.75,SUL:158.76,NE:157.81,N:157.82},{date:"2026-01-09",SECO:159.32,SUL:159.32,NE:157.49,N:157.50},{date:"2026-01-10",SECO:215.75,SUL:215.75,NE:210.47,N:210.69},{date:"2026-01-11",SECO:205.14,SUL:205.13,NE:203.75,N:203.76},{date:"2026-01-12",SECO:286.22,SUL:286.22,NE:280.23,N:280.24},{date:"2026-01-13",SECO:284.96,SUL:285.01,NE:262.33,N:278.46},{date:"2026-01-14",SECO:303.75,SUL:305.02,NE:264.43,N:284.03},{date:"2026-01-15",SECO:299.12,SUL:301.06,NE:282.48,N:288.11},{date:"2026-01-16",SECO:302.70,SUL:304.57,NE:289.28,N:292.43},{date:"2026-01-17",SECO:291.43,SUL:291.43,NE:288.04,N:288.04},{date:"2026-01-18",SECO:260.46,SUL:260.46,NE:260.46,N:260.46},{date:"2026-01-19",SECO:329.07,SUL:329.07,NE:329.07,N:329.07},{date:"2026-01-20",SECO:324.31,SUL:324.30,NE:324.30,N:324.30},{date:"2026-01-21",SECO:324.31,SUL:324.30,NE:324.30,N:324.30},{date:"2026-01-22",SECO:295.08,SUL:295.08,NE:290.90,N:290.90},{date:"2026-01-23",SECO:294.31,SUL:294.32,NE:289.08,N:289.37},{date:"2026-01-24",SECO:216.22,SUL:223.08,NE:171.17,N:171.79},{date:"2026-01-25",SECO:198.00,SUL:199.07,NE:191.60,N:191.60},{date:"2026-01-26",SECO:290.66,SUL:292.59,NE:276.47,N:276.70},{date:"2026-01-27",SECO:282.82,SUL:287.26,NE:267.70,N:268.52},{date:"2026-01-28",SECO:335.02,SUL:337.01,NE:297.19,N:297.18},{date:"2026-01-29",SECO:316.18,SUL:319.48,NE:294.55,N:294.55},{date:"2026-01-30",SECO:302.85,SUL:303.00,NE:300.42,N:300.42},{date:"2026-01-31",SECO:301.90,SUL:357.29,NE:301.89,N:301.89},
+{date:"2026-02-01",SECO:268.08,SUL:268.08,NE:268.08,N:268.07},{date:"2026-02-02",SECO:393.74,SUL:394.49,NE:393.74,N:393.74},{date:"2026-02-03",SECO:457.24,SUL:459.22,NE:457.24,N:457.23},{date:"2026-02-04",SECO:540.31,SUL:542.38,NE:540.31,N:540.30},{date:"2026-02-05",SECO:452.64,SUL:455.62,NE:452.64,N:452.63},{date:"2026-02-06",SECO:374.12,SUL:375.87,NE:374.12,N:374.11},{date:"2026-02-07",SECO:407.65,SUL:434.16,NE:407.65,N:407.65},{date:"2026-02-08",SECO:356.58,SUL:356.57,NE:356.58,N:356.58},{date:"2026-02-09",SECO:452.81,SUL:453.08,NE:452.81,N:452.81},{date:"2026-02-10",SECO:443.28,SUL:448.48,NE:443.27,N:443.27},{date:"2026-02-11",SECO:436.97,SUL:446.54,NE:436.85,N:436.85},{date:"2026-02-12",SECO:413.55,SUL:466.99,NE:401.26,N:401.26},{date:"2026-02-13",SECO:407.34,SUL:444.41,NE:402.38,N:402.39},{date:"2026-02-14",SECO:280.54,SUL:375.57,NE:279.13,N:279.13},{date:"2026-02-15",SECO:255.08,SUL:255.09,NE:252.37,N:252.37},{date:"2026-02-16",SECO:273.99,SUL:390.89,NE:253.51,N:253.52},{date:"2026-02-17",SECO:277.72,SUL:397.32,NE:256.82,N:256.82},{date:"2026-02-18",SECO:401.42,SUL:423.44,NE:401.42,N:401.41},{date:"2026-02-19",SECO:453.83,SUL:458.88,NE:453.83,N:453.83},{date:"2026-02-20",SECO:422.30,SUL:425.57,NE:422.30,N:422.30},{date:"2026-02-21",SECO:336.00,SUL:375.01,NE:336.00,N:336.00},{date:"2026-02-22",SECO:286.58,SUL:286.58,NE:286.58,N:286.58},{date:"2026-02-23",SECO:411.80,SUL:411.80,NE:411.80,N:411.79},{date:"2026-02-24",SECO:394.51,SUL:395.10,NE:394.51,N:394.50},{date:"2026-02-25",SECO:417.09,SUL:417.47,NE:417.09,N:417.09},{date:"2026-02-26",SECO:387.82,SUL:391.94,NE:387.82,N:387.82},{date:"2026-02-27",SECO:376.23,SUL:383.67,NE:375.78,N:375.77},{date:"2026-02-28",SECO:328.13,SUL:341.15,NE:328.13,N:328.13},
+{date:"2026-03-01",SECO:261.66,SUL:262.51,NE:261.66,N:261.65},{date:"2026-03-02",SECO:355.56,SUL:440.89,NE:355.56,N:355.55},{date:"2026-03-03",SECO:371.16,SUL:478.57,NE:371.16,N:371.15},{date:"2026-03-04",SECO:336.15,SUL:487.43,NE:321.58,N:321.58},{date:"2026-03-05",SECO:347.12,SUL:498.70,NE:243.03,N:243.02},{date:"2026-03-06",SECO:379.11,SUL:520.36,NE:179.37,N:179.37},{date:"2026-03-07",SECO:287.10,SUL:594.82,NE:109.42,N:109.41},{date:"2026-03-08",SECO:235.58,SUL:332.47,NE:146.00,N:145.99},{date:"2026-03-09",SECO:354.07,SUL:509.70,NE:283.95,N:283.94},{date:"2026-03-10",SECO:342.15,SUL:511.32,NE:224.12,N:224.12}
+];
+
+const SUBS = ['SECO','SUL','NE','N'];
+const SUB_LABELS = {SECO:'SE/CO', SUL:'S', NE:'NE', N:'N'};
+const SUB_FULL = {SECO:'Sudeste / Centro-Oeste', SUL:'Sul', NE:'Nordeste', N:'Norte'};
+const SUB_COLORS = {SECO:'#5eb3f5', SUL:'#f0a830', NE:'#4ade80', N:'#c084fc'};
+const MONTH_ABBR_EN = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const MONTH_ABBR_PT = ['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
+
+const I18N = {
+  EN: {
+    dataLag: 'CCEE Dados Abertos · 3-year series',
+    pageTitle: 'PLD by submarket · multi-year context',
+    pageSub: 'Spot price R$/MWh — daily granularity for 2026, monthly averages 2024-2026',
+    period: 'Period',
+    months: '27 months',
+    insightsLabel: 'Highlights · multi-year regime shift',
+    insightYoy: '<strong>SE/CO average PLD rose 69% from 2024 to 2025, then another 47% YTD into 2026.</strong> Trajectory: <span class="v">R$ 125.70</span> → <span class="v">R$ 212.63</span> → <span class="v up">R$ 313.30</span>. Sul is the most exposed: <span class="v">R$ 125.73</span> → <span class="v">R$ 216.27</span> → <span class="v up">R$ 368.87</span> (+193% over 24 months).',
+    insightSeasonality: '<strong>The piso-floor regime that defined 2024 has dissolved.</strong> In 2024, all four submarkets averaged at the floor (R$ 61.07) for 5 of 12 months; in 2026 YTD, the floor has not been touched in any submarket. ENA/EAR trajectory has shifted the cost curve up structurally.',
+    insightSpread: '<strong>NE/N remain the cheapest submarkets across all three years</strong> — 2026 YTD averages of <span class="v">R$ 289.55</span> and <span class="v">R$ 290.46</span> vs SE/CO at <span class="v">R$ 313.30</span> and Sul at <span class="v up">R$ 368.87</span>. NE→SE/CO intercâmbio remains the binding constraint that prices this gap.',
+    seasonalityTitle: 'Seasonality · monthly average per year',
+    seasonalityHint: 'Lines: 2024 / 2025 / 2026 ytd · y-axis 0-500 R$/MWh',
+    yoyTitle: 'Year-over-year · same months Jan-Mar',
+    yoyHint: 'Δ vs prior year',
+    lineTitle: 'Daily PLD · 2026 detail (Jan 1 - Mar 10)',
+    lineHint: 'Hover for detail · click legend to isolate',
+    thSub: 'Sub', thJan: 'Jan 24', thJan25: 'Jan 25', thJan26: 'Jan 26',
+    thFeb: 'Feb 24', thFeb25: 'Feb 25', thFeb26: 'Feb 26',
+    thMar: 'Mar 24', thMar25: 'Mar 25', thMar26: 'Mar 26',
+    source: 'Source', limitsLabel: 'Piso/teto 2026',
+    avg24: '2024 avg', avg25: '2025 avg', avg26: '2026 ytd',
+  },
+  PT: {
+    dataLag: 'CCEE Dados Abertos · série 3 anos',
+    pageTitle: 'PLD por submercado · contexto multi-anos',
+    pageSub: 'Preço spot R$/MWh — granularidade diária para 2026, médias mensais 2024-2026',
+    period: 'Período',
+    months: '27 meses',
+    insightsLabel: 'Destaques · mudança de regime multi-anos',
+    insightYoy: '<strong>PLD médio SE/CO subiu 69% de 2024 para 2025, e mais 47% no acumulado de 2026.</strong> Trajetória: <span class="v">R$ 125,70</span> → <span class="v">R$ 212,63</span> → <span class="v up">R$ 313,30</span>. Sul é o mais exposto: <span class="v">R$ 125,73</span> → <span class="v">R$ 216,27</span> → <span class="v up">R$ 368,87</span> (+193% em 24 meses).',
+    insightSeasonality: '<strong>O regime de piso que definiu 2024 dissolveu-se.</strong> Em 2024, os quatro submercados ficaram na média do piso (R$ 61,07) por 5 dos 12 meses; em 2026 YTD, o piso não foi tocado em nenhum submercado. A trajetória de ENA/EAR moveu a curva de custo estruturalmente para cima.',
+    insightSpread: '<strong>NE/N permanecem os submercados mais baratos nos três anos</strong> — médias 2026 YTD de <span class="v">R$ 289,55</span> e <span class="v">R$ 290,46</span> contra SE/CO em <span class="v">R$ 313,30</span> e Sul em <span class="v up">R$ 368,87</span>. O intercâmbio NE→SE/CO continua sendo a restrição que precifica esse gap.',
+    seasonalityTitle: 'Sazonalidade · média mensal por ano',
+    seasonalityHint: 'Linhas: 2024 / 2025 / 2026 ytd · eixo y 0-500 R$/MWh',
+    yoyTitle: 'Ano contra ano · mesmos meses jan-mar',
+    yoyHint: 'Δ vs ano anterior',
+    lineTitle: 'PLD diário · detalhe 2026 (1/jan - 10/mar)',
+    lineHint: 'Passe o mouse · clique na legenda para isolar',
+    thSub: 'Sub', thJan: 'jan/24', thJan25: 'jan/25', thJan26: 'jan/26',
+    thFeb: 'fev/24', thFeb25: 'fev/25', thFeb26: 'fev/26',
+    thMar: 'mar/24', thMar25: 'mar/25', thMar26: 'mar/26',
+    source: 'Fonte', limitsLabel: 'Piso/teto 2026',
+    avg24: 'média 2024', avg25: 'média 2025', avg26: '2026 ytd',
+  }
+};
+
+let currentLang = 'EN';
+
+function setLang(lang) {
+  currentLang = lang;
+  document.documentElement.lang = lang.toLowerCase();
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const key = el.getAttribute('data-i18n');
+    if (I18N[lang][key]) el.innerHTML = I18N[lang][key];
+  });
+  document.querySelectorAll('.lang-toggle button').forEach(b => {
+    b.classList.toggle('active', b.dataset.lang === lang);
+  });
+  renderKPIs();
+  renderLegend();
+  renderSmallMultiples();
+  renderYoYTable();
+  try { localStorage.setItem('lang', lang); } catch(e){}
+}
+
+document.querySelectorAll('.lang-toggle button').forEach(b => {
+  b.addEventListener('click', () => setLang(b.dataset.lang));
+});
+
+function fmt(n, decimals=2) {
+  if (n === null || n === undefined || isNaN(n)) return '—';
+  return n.toLocaleString(currentLang === 'PT' ? 'pt-BR' : 'en-US',
+    { minimumFractionDigits: decimals, maximumFractionDigits: decimals });
+}
+
+// ── KPI strip (now with 3-year context) ──
+function renderKPIs() {
+  const t = I18N[currentLang];
+  const strip = document.querySelector('.kpi-strip');
+  strip.innerHTML = SUBS.map(sub => {
+    const y24 = YEAR_STATS['2024'][sub].avg;
+    const y25 = YEAR_STATS['2025'][sub].avg;
+    const y26 = YEAR_STATS['2026'][sub].avg;
+    return `
+      <div class="kpi ${sub.toLowerCase()}">
+        <div class="header">
+          <span class="name">${SUB_LABELS[sub]}</span>
+          <span class="unit">R$/MWh · avg</span>
+        </div>
+        <div class="value-row">
+          <span class="value">${fmt(y26)}</span>
+          <span class="value-label">${t.avg26}</span>
+        </div>
+        <div class="yoy-row">
+          <div class="y"><span class="yr">2024</span><span class="val">${fmt(y24)}</span></div>
+          <div class="y"><span class="yr">2025</span><span class="val">${fmt(y25)}</span></div>
+          <div class="y current"><span class="yr">2026 YTD</span><span class="val">${fmt(y26)}</span></div>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+// ── small multiples: per-submarket seasonality ──
+function renderSmallMultiples() {
+  const container = document.getElementById('small-multiples');
+  const W = 540, H = 160, padL = 32, padR = 12, padT = 12, padB = 22;
+  const innerW = W - padL - padR, innerH = H - padT - padB;
+
+  const MONTH_LABELS = currentLang === 'PT' ? MONTH_ABBR_PT : MONTH_ABBR_EN;
+  const yMax = 550;
+
+  const xScale = m => padL + ((m-1)/11)*innerW;
+  const yScale = v => padT + innerH - (v/yMax)*innerH;
+
+  container.innerHTML = SUBS.map(sub => {
+    // Build paths for 3 years
+    const yr24 = [];
+    const yr25 = [];
+    const yr26 = [];
+    for (let m = 1; m <= 12; m++) {
+      const mm = m.toString().padStart(2, '0');
+      const k24 = `2024-${mm}`, k25 = `2025-${mm}`, k26 = `2026-${mm}`;
+      if (MONTHLY[k24]) yr24.push({x:xScale(m), y:yScale(MONTHLY[k24][sub])});
+      if (MONTHLY[k25]) yr25.push({x:xScale(m), y:yScale(MONTHLY[k25][sub])});
+      if (MONTHLY[k26]) yr26.push({x:xScale(m), y:yScale(MONTHLY[k26][sub])});
+    }
+    const path = pts => pts.length ? pts.map((p,i) => `${i===0?'M':'L'} ${p.x.toFixed(1)} ${p.y.toFixed(1)}`).join(' ') : '';
+
+    // Y gridlines
+    let grid = '';
+    for (const t of [100, 200, 300, 400, 500]) {
+      grid += `<line class="mc-grid" x1="${padL}" x2="${W-padR}" y1="${yScale(t)}" y2="${yScale(t)}" />`;
+      grid += `<text class="mc-axis" x="${padL-6}" y="${yScale(t)+3}" text-anchor="end">${t}</text>`;
+    }
+
+    // X labels: J F M A M J J A S O N D - show every other
+    let xlab = '';
+    for (let m = 1; m <= 12; m++) {
+      const x = xScale(m);
+      const label = MONTH_LABELS[m-1][0].toUpperCase();
+      xlab += `<text class="mc-axis" x="${x}" y="${H-padB+13}" text-anchor="middle">${label}</text>`;
+    }
+
+    // Highlight dots for 2026
+    const dots = yr26.map(p => `<circle class="mc-dot-y26" cx="${p.x}" cy="${p.y}" r="2.5" />`).join('');
+
+    return `
+      <div class="mini-chart">
+        <div class="mini-chart-head">
+          <span class="mc-name ${sub.toLowerCase()}">${SUB_LABELS[sub]} · ${SUB_FULL[sub]}</span>
+          <span class="mc-avg">2026: <strong style="color:var(--text)">R$ ${fmt(YEAR_STATS['2026'][sub].avg)}</strong></span>
+        </div>
+        <svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none">
+          ${grid}
+          ${xlab}
+          <path class="mc-y24" d="${path(yr24)}" />
+          <path class="mc-y25" d="${path(yr25)}" />
+          <path class="mc-y26" d="${path(yr26)}" />
+          ${dots}
+        </svg>
+        <div class="mc-legend">
+          <span class="ml-item"><span class="ml-swatch y24"></span> 2024</span>
+          <span class="ml-item"><span class="ml-swatch y25"></span> 2025</span>
+          <span class="ml-item"><span class="ml-swatch y26"></span> 2026 YTD</span>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+// ── YoY table ──
+function renderYoYTable() {
+  const tbody = document.querySelector('#yoy-table tbody');
+  function pct(curr, prev) {
+    const p = ((curr - prev) / prev) * 100;
+    const cls = Math.abs(p) < 5 ? 'pct-flat' : (p > 0 ? 'pct-up' : 'pct-down');
+    const arrow = p > 5 ? '↑' : p < -5 ? '↓' : '·';
+    return `<span class="${cls}">${arrow} ${fmt(Math.abs(p),0)}%</span>`;
+  }
+  tbody.innerHTML = SUBS.map(sub => {
+    const j24 = MONTHLY['2024-01'][sub];
+    const j25 = MONTHLY['2025-01'][sub];
+    const j26 = MONTHLY['2026-01'][sub];
+    const f24 = MONTHLY['2024-02'][sub];
+    const f25 = MONTHLY['2025-02'][sub];
+    const f26 = MONTHLY['2026-02'][sub];
+    const m24 = MONTHLY['2024-03'][sub];
+    const m25 = MONTHLY['2025-03'][sub];
+    const m26 = MONTHLY['2026-03'][sub];
+    return `
+      <tr class="${sub.toLowerCase()}">
+        <td>${SUB_LABELS[sub]}</td>
+        <td>${fmt(j24)}</td>
+        <td>${fmt(j25)}</td>
+        <td>${fmt(j26)} <span style="font-size:9px;margin-left:4px">${pct(j26, j25)}</span></td>
+        <td>${fmt(f24)}</td>
+        <td>${fmt(f25)}</td>
+        <td>${fmt(f26)} <span style="font-size:9px;margin-left:4px">${pct(f26, f25)}</span></td>
+        <td>${fmt(m24)}</td>
+        <td>${fmt(m25)}</td>
+        <td>${fmt(m26)} <span style="font-size:9px;margin-left:4px">${pct(m26, m25)}</span></td>
+      </tr>
+    `;
+  }).join('');
+}
+
+// ── daily chart legend ──
+const hiddenSubs = new Set();
+function renderLegend() {
+  const legend = document.getElementById('legend');
+  legend.innerHTML = SUBS.map(sub => {
+    const muted = hiddenSubs.has(sub) ? 'muted' : '';
+    const latest = DATA[DATA.length-1][sub];
+    return `
+      <div class="legend-item ${muted}" data-sub="${sub}">
+        <div class="swatch" style="background:${SUB_COLORS[sub]}"></div>
+        <span class="name">${SUB_LABELS[sub]}</span>
+        <span class="val">R$ ${fmt(latest)}</span>
+      </div>
+    `;
+  }).join('');
+  legend.querySelectorAll('.legend-item').forEach(el => {
+    el.addEventListener('click', () => {
+      const sub = el.dataset.sub;
+      if (hiddenSubs.has(sub)) hiddenSubs.delete(sub); else hiddenSubs.add(sub);
+      renderLineChart();
+      renderLegend();
+    });
+  });
+}
+
+// ── daily line chart ──
+const CHART = { w: 1200, h: 340, padL: 50, padR: 18, padT: 18, padB: 36 };
+
+function renderLineChart() {
+  const svg = document.getElementById('line-chart');
+  const { w, h, padL, padR, padT, padB } = CHART;
+  const innerW = w - padL - padR, innerH = h - padT - padB;
+
+  const allVals = DATA.flatMap(d => SUBS.map(s => d[s]));
+  let yMin = Math.min(...allVals), yMax = Math.max(...allVals);
+  yMin = Math.floor((yMin - 20) / 50) * 50;
+  yMax = Math.ceil((yMax + 20) / 50) * 50;
+
+  const xScale = i => padL + (i/(DATA.length-1))*innerW;
+  const yScale = v => padT + innerH - ((v-yMin)/(yMax-yMin))*innerH;
+
+  const yTicks = [];
+  for (let v = yMin; v <= yMax; v += 100) yTicks.push(v);
+
+  let html = '';
+  html += `<rect x="${padL}" y="${padT}" width="${innerW}" height="${innerH}" fill="transparent" />`;
+  yTicks.forEach(t => {
+    const y = yScale(t);
+    html += `<line class="grid-line" x1="${padL}" x2="${w-padR}" y1="${y}" y2="${y}" />`;
+    html += `<text class="axis-label" x="${padL-8}" y="${y+3}" text-anchor="end">${t}</text>`;
+  });
+
+  const xTickCount = 6;
+  for (let i = 0; i < xTickCount; i++) {
+    const idx = Math.round(i*(DATA.length-1)/(xTickCount-1));
+    const x = xScale(idx);
+    const dateStr = DATA[idx].date;
+    const [y,m,d] = dateStr.split('-');
+    const monthAbbr = (currentLang === 'PT' ? MONTH_ABBR_PT : MONTH_ABBR_EN)[parseInt(m)-1];
+    html += `<text class="axis-label" x="${x}" y="${h-padB+16}" text-anchor="middle">${d} ${monthAbbr}</text>`;
+    html += `<line class="axis-tick" x1="${x}" x2="${x}" y1="${padT+innerH}" y2="${padT+innerH+4}" />`;
+  }
+
+  SUBS.forEach(sub => {
+    const muted = hiddenSubs.has(sub) ? ' muted' : '';
+    const path = DATA.map((d,i) => `${i===0?'M':'L'} ${xScale(i).toFixed(2)} ${yScale(d[sub]).toFixed(2)}`).join(' ');
+    html += `<path class="line-path${muted}" d="${path}" stroke="${SUB_COLORS[sub]}" />`;
+  });
+
+  html += `<line id="tooltip-line" class="tooltip-line" x1="0" y1="${padT}" x2="0" y2="${padT+innerH}" />`;
+  html += `<rect id="hover-overlay" x="${padL}" y="${padT}" width="${innerW}" height="${innerH}" fill="transparent" />`;
+
+  svg.innerHTML = html;
+  attachTooltip(xScale, yScale, innerW, innerH);
+}
+
+function attachTooltip(xScale, yScale, innerW, innerH) {
+  const overlay = document.getElementById('hover-overlay');
+  const tooltipLine = document.getElementById('tooltip-line');
+  const tooltip = document.getElementById('tooltip');
+  const svg = document.getElementById('line-chart');
+
+  overlay.addEventListener('mousemove', e => {
+    const rect = svg.getBoundingClientRect();
+    const mx = e.clientX - rect.left;
+    const vbx = (mx / rect.width) * CHART.w;
+    const idx = Math.round(((vbx - CHART.padL) / innerW) * (DATA.length-1));
+    if (idx < 0 || idx >= DATA.length) return;
+    const d = DATA[idx];
+
+    const xPos = xScale(idx);
+    tooltipLine.setAttribute('x1', xPos);
+    tooltipLine.setAttribute('x2', xPos);
+    tooltipLine.style.opacity = 0.6;
+
+    const xPx = (xPos / CHART.w) * rect.width;
+    const tooltipX = Math.min(rect.width - 200, Math.max(0, xPx + 12));
+    tooltip.style.left = tooltipX + 'px';
+    tooltip.style.top = '36px';
+    tooltip.style.opacity = 1;
+
+    const [yy, mm, dd] = d.date.split('-');
+    const monthAbbr = (currentLang === 'PT' ? MONTH_ABBR_PT : MONTH_ABBR_EN)[parseInt(mm)-1];
+    let html = `<div class="date">${dd} ${monthAbbr} ${yy}</div>`;
+    SUBS.forEach(sub => {
+      if (hiddenSubs.has(sub)) return;
+      html += `<div class="row ${sub.toLowerCase()}"><span class="name">${SUB_LABELS[sub]}</span><span class="val">R$ ${fmt(d[sub])}</span></div>`;
+    });
+    tooltip.innerHTML = html;
+  });
+
+  overlay.addEventListener('mouseleave', () => {
+    tooltipLine.style.opacity = 0;
+    tooltip.style.opacity = 0;
+  });
+}
+
+// ── init ──
+function init() {
+  let saved = 'EN';
+  try { saved = localStorage.getItem('lang') || 'EN'; } catch(e){}
+  setLang(saved);
+  renderLineChart();
+  window.addEventListener('resize', () => { renderLineChart(); renderSmallMultiples(); });
+}
+init();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta http-equiv="refresh" content="0; url=tabs/hydrology.html" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>BR Energy Terminal</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  html, body {
+    margin: 0; padding: 0;
+    background: #0a0b0d; color: #e6e8eb;
+    font-family: 'DM Sans', system-ui, sans-serif;
+    height: 100vh; display: flex; align-items: center; justify-content: center;
+    text-align: center;
+  }
+  .logo {
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 600; font-size: 16px; letter-spacing: 0.2em;
+    margin-bottom: 14px;
+  }
+  .sub { font-size: 13px; color: #8b8f96; margin-bottom: 24px; letter-spacing: 0.04em; }
+  .pulse {
+    display: inline-block; width: 8px; height: 8px;
+    background: #10b981; border-radius: 50%;
+    margin-right: 8px; vertical-align: middle;
+    animation: p 2s infinite;
+  }
+  @keyframes p { 0%,100%{opacity:1} 50%{opacity:.35} }
+  .links {
+    display: flex; flex-direction: column; gap: 8px;
+    margin-top: 18px; font-family: 'JetBrains Mono', monospace;
+    font-size: 11px; letter-spacing: 0.04em;
+  }
+  .links a {
+    color: #8b8f96; text-decoration: none;
+    border: 1px solid #23262c; padding: 6px 12px; border-radius: 3px;
+    transition: all 0.15s;
+  }
+  .links a:hover { color: #e6e8eb; border-color: #e6e8eb; background: #121418; }
+</style>
+</head>
+<body>
+  <div>
+    <div class="logo">BR ENERGY TERMINAL</div>
+    <div class="sub"><span class="pulse"></span>Loading hydrology view...</div>
+    <noscript>
+      <div class="links">
+        <a href="tabs/hydrology.html">Hydrology</a>
+        <a href="tabs/market.html">Market (PLD)</a>
+        <a href="tabs/operation.html">Operation</a>
+        <a href="tabs/climate.html">Climate</a>
+        <a href="tabs/acl.html">ACL &amp; Biomass</a>
+      </div>
+    </noscript>
+  </div>
+</body>
+</html>
