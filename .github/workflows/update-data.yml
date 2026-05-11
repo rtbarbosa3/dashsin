@@ -13,7 +13,7 @@ permissions:
 jobs:
   fetch-and-commit:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 20
 
     steps:
       - name: Checkout repo
@@ -30,6 +30,15 @@ jobs:
 
       - name: Run ONS EAR/ENA pipeline
         run: python pipelines/ons_ear_ena.py
+        continue-on-error: true
+
+      - name: Run ONS ENA bruta por bacia pipeline
+        run: python pipelines/ons_ena_bacia.py
+        continue-on-error: true
+
+      - name: Run NOAA CPC ONI pipeline
+        run: python pipelines/noaa_oni.py
+        continue-on-error: true
 
       - name: Commit and push data updates
         run: |
