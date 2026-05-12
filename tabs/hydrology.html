@@ -116,6 +116,15 @@ html, body { background: var(--bg); color: var(--text); font-family: var(--font-
 .mini-chart-head .mc-name.sin::before { background: var(--sin); }
 .mini-chart-head .mc-avg { font-family: var(--font-mono); font-size: 11px; color: var(--text-muted); }
 .mini-chart-head .mc-avg strong { color: var(--text); }
+.basin-tag {
+  display: inline-block; padding: 1px 5px; border-radius: 2px;
+  font-size: 9px; font-weight: 500; letter-spacing: 0.04em;
+  margin-left: 4px; vertical-align: middle;
+}
+.basin-tag.seco { background: rgba(94,179,245,0.15); color: var(--seco); }
+.basin-tag.sul  { background: rgba(240,168,48,0.15); color: var(--sul); }
+.basin-tag.ne   { background: rgba(74,222,128,0.15); color: var(--ne); }
+.basin-tag.n    { background: rgba(192,132,252,0.15); color: var(--n); }
 .mini-chart svg { display: block; width: 100%; height: 160px; }
 .mini-chart .mc-legend { display: flex; gap: 14px; margin-top: 6px; font-family: var(--font-mono); font-size: 10px; color: var(--text-muted); letter-spacing: 0.04em; }
 .mini-chart .mc-legend .ml-item { display: flex; align-items: center; gap: 5px; }
@@ -299,6 +308,14 @@ html, body { background: var(--bg); color: var(--text); font-family: var(--font-
 
   <div class="section">
     <div class="section-head">
+      <h2 data-i18n="enaBaciaTitle">ENA bruta by basin · MWmed per month (8 main basins)</h2>
+      <div class="hint" data-i18n="enaBaciaHint">Lines: 2024 / 2025 / 2026 ytd · hover for detail</div>
+    </div>
+    <div class="small-mult-grid" id="ena-bacia-multiples"></div>
+  </div>
+
+  <div class="section">
+    <div class="section-head">
       <h2 data-i18n="resTitle">Main reservoirs · useful volume (%)</h2>
       <div class="hint" data-i18n="resHint">Top reservoirs by storage weight</div>
     </div>
@@ -333,6 +350,8 @@ const SUB_LABELS = {SECO:'SE/CO', SUL:'S', NE:'NE', N:'N'};
 const SUB_FULL = {SECO:'Sudeste / Centro-Oeste', SUL:'Sul', NE:'Nordeste', N:'Norte'};
 const MONTH_ABBR_EN = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 const MONTH_ABBR_PT = ['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
+const MONTH_FULL_EN = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+const MONTH_FULL_PT = ['janeiro','fevereiro','março','abril','maio','junho','julho','agosto','setembro','outubro','novembro','dezembro'];
 
 // ── Data containers (populated by loadData from data/ear_ena.json) ──
 let EAR_NOW = {};
@@ -341,6 +360,46 @@ let ENA_NOW = {};
 let ENA_MWMED = {};        // monthly MWmed values per sub/year
 let ENA_PCT_MLT = {};      // monthly % MLT bruta per sub/year
 let DATA_GENERATED_AT = null;
+
+// Basin data (populated from data/ena_bacia.json - ONS source)
+let BASIN_DATA = {};       // monthly_mwmed[basin][year] = [12 values]
+let BASIN_META = {};       // {basin_id: {name, sub}}
+let BASIN_NOW = {};        // latest snapshot per basin
+let BASIN_DATA_GENERATED_AT = null;
+const BASIN_ORDER = ['paranaiba','grande','parana','iguacu','uruguai','sao_francisco','parnaiba','tocantins'];
+
+const BASIN_YAXIS = {
+  paranaiba:     { max: 20000, ticks: [5000, 10000, 15000, 20000] },
+  grande:        { max: 16000, ticks: [4000, 8000, 12000, 16000] },
+  parana:        { max: 14000, ticks: [4000, 8000, 12000] },
+  iguacu:        { max: 14000, ticks: [4000, 8000, 12000] },
+  uruguai:       { max: 14000, ticks: [4000, 8000, 12000] },
+  sao_francisco: { max: 8000,  ticks: [2000, 4000, 6000, 8000] },
+  parnaiba:      { max: 6000,  ticks: [1500, 3000, 4500, 6000] },
+  tocantins:     { max: 30000, ticks: [10000, 20000, 30000] }
+};
+
+function basinPoint(basinId, year, monthIdx) {
+  if (!BASIN_DATA[basinId] || !BASIN_DATA[basinId][year]) return null;
+  const mwmed = BASIN_DATA[basinId][year][monthIdx];
+  if (mwmed === null || mwmed === undefined) return null;
+  return { mwmed };
+}
+
+async function loadBasinData() {
+  try {
+    const res = await fetch('../data/ena_bacia.json', { cache: 'no-cache' });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const j = await res.json();
+    BASIN_DATA = j.monthly_mwmed || {};
+    BASIN_META = j.basin_meta || {};
+    BASIN_NOW  = j.now || {};
+    BASIN_DATA_GENERATED_AT = j.generated_at_utc || null;
+    console.log('Basin data loaded:', BASIN_DATA_GENERATED_AT);
+  } catch (e) {
+    console.error('Failed to load ena_bacia.json:', e);
+  }
+}
 
 // Y-axis max per submarket (MWmed) — covers historical peaks with headroom
 const ENA_YAXIS = {
@@ -425,6 +484,8 @@ const I18N = {
     seasonalityHint: 'Lines: 2024 / 2025 / 2026 ytd · y-axis 0-100%',
     enaTitle: 'ENA bruta · MWmed per month',
     enaHint: 'Lines: 2024 / 2025 / 2026 ytd · hover for detail',
+    enaBaciaTitle: 'ENA bruta by basin · MWmed per month (8 main basins)',
+    enaBaciaHint: 'Lines: 2024 / 2025 / 2026 ytd · ONS data',
     resTitle: 'Main reservoirs · useful volume (%)',
     resHint: 'Top reservoirs by storage weight',
     thRes: 'Reservoir', thBasin: 'Basin / sub', thInflow: 'Inflow m³/s', thOutflow: 'Outflow m³/s', thVU: 'VU%', thBar: '',
@@ -446,6 +507,8 @@ const I18N = {
     seasonalityHint: 'Linhas: 2024 / 2025 / 2026 ytd · eixo y 0-100%',
     enaTitle: 'ENA bruta · MWmed por mês',
     enaHint: 'Linhas: 2024 / 2025 / 2026 ytd · passe o mouse para detalhe',
+    enaBaciaTitle: 'ENA bruta por bacia · MWmed por mês (8 bacias principais)',
+    enaBaciaHint: 'Linhas: 2024 / 2025 / 2026 ytd · dados ONS',
     resTitle: 'Principais reservatórios · volume útil (%)',
     resHint: 'Reservatórios principais por peso de armazenamento',
     thRes: 'Reservatório', thBasin: 'Bacia / sub', thInflow: 'Afluência m³/s', thOutflow: 'Defluência m³/s', thVU: 'VU%', thBar: '',
@@ -470,6 +533,7 @@ function setLang(lang) {
   renderKPIs();
   renderEARMultiples();
   renderENAMultiples();
+  renderBasinMultiples();
   renderReservoirTable();
   if (typeof updateDataStatus === 'function') updateDataStatus();
   try { localStorage.setItem('lang', lang); } catch(e){}
@@ -732,7 +796,140 @@ function renderENAMultiples() {
   });
 }
 
-// ── Reservoir table ──
+// ── ENA Bruta by basin (8 main basins, ONS data) ──
+function renderBasinMultiples() {
+  const container = document.getElementById('ena-bacia-multiples');
+  if (!container) return;
+  const W = 540, H = 160, padL = 44, padR = 12, padT = 12, padB = 22;
+  const innerW = W - padL - padR, innerH = H - padT - padB;
+  const MONTH_LABELS = currentLang === 'PT' ? MONTH_ABBR_PT : MONTH_ABBR_EN;
+  const xScale = m => padL + ((m-1)/11)*innerW;
+  const fmtK = v => v >= 1000 ? (v/1000) + 'k' : String(v);
+  const fmtInt = n => n.toLocaleString(currentLang === 'PT' ? 'pt-BR' : 'en-US');
+
+  container.innerHTML = BASIN_ORDER.map(basinId => {
+    const meta = BASIN_META[basinId];
+    if (!meta) return '';
+    const yMax = BASIN_YAXIS[basinId].max;
+    const yScale = v => padT + innerH - (v/yMax)*innerH;
+
+    const yr24 = [], yr25 = [], yr26 = [];
+    for (let m = 1; m <= 12; m++) {
+      const p24 = basinPoint(basinId, '2024', m-1);
+      const p25 = basinPoint(basinId, '2025', m-1);
+      const p26 = basinPoint(basinId, '2026', m-1);
+      if (p24) yr24.push({m, x:xScale(m), y:yScale(p24.mwmed)});
+      if (p25) yr25.push({m, x:xScale(m), y:yScale(p25.mwmed)});
+      if (p26) yr26.push({m, x:xScale(m), y:yScale(p26.mwmed)});
+    }
+    const path = pts => pts.length ? pts.map((p,i) => `${i===0?'M':'L'} ${p.x.toFixed(1)} ${p.y.toFixed(1)}`).join(' ') : '';
+
+    let grid = '';
+    for (const tv of BASIN_YAXIS[basinId].ticks) {
+      grid += `<line class="mc-grid" x1="${padL}" x2="${W-padR}" y1="${yScale(tv)}" y2="${yScale(tv)}" />`;
+      grid += `<text class="mc-axis" x="${padL-6}" y="${yScale(tv)+3}" text-anchor="end">${fmtK(tv)}</text>`;
+    }
+    let xlab = '';
+    for (let m = 1; m <= 12; m++) {
+      xlab += `<text class="mc-axis" x="${xScale(m)}" y="${H-padB+13}" text-anchor="middle">${MONTH_LABELS[m-1][0].toUpperCase()}</text>`;
+    }
+    const dots = yr26.map(p => `<circle class="mc-dot-y26" cx="${p.x}" cy="${p.y}" r="2.5" />`).join('');
+
+    const now = BASIN_NOW[basinId];
+    const nowMwmed = now ? now.mwmed : null;
+    const subClass = meta.sub.toLowerCase();
+    const subLabel = SUB_LABELS[meta.sub];
+
+    return `
+      <div class="mini-chart" data-basin="${basinId}">
+        <div class="mini-chart-head">
+          <span class="mc-name ${subClass}">${meta.name}<span class="basin-tag ${subClass}">${subLabel}</span></span>
+          <span class="mc-avg">${nowMwmed !== null ? '<strong>'+fmtInt(nowMwmed)+'</strong> MWmed' : '—'}</span>
+        </div>
+        <svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none">
+          ${grid}
+          ${xlab}
+          <path class="mc-y24" d="${path(yr24)}" />
+          <path class="mc-y25" d="${path(yr25)}" />
+          <path class="mc-y26" d="${path(yr26)}" />
+          ${dots}
+          <line class="mc-crosshair" x1="0" y1="${padT}" x2="0" y2="${padT+innerH}" />
+          <circle class="mc-hover-dot y24" r="3.5" cx="0" cy="0" />
+          <circle class="mc-hover-dot y25" r="3.5" cx="0" cy="0" />
+          <circle class="mc-hover-dot y26" r="4" cx="0" cy="0" />
+          <rect class="mc-hover-overlay" x="${padL}" y="${padT}" width="${innerW}" height="${innerH}" fill="transparent" />
+        </svg>
+        <div class="mc-tooltip"></div>
+        <div class="mc-legend">
+          <span class="ml-item"><span class="ml-swatch y24"></span> 2024</span>
+          <span class="ml-item"><span class="ml-swatch y25"></span> 2025</span>
+          <span class="ml-item"><span class="ml-swatch y26"></span> 2026 YTD</span>
+        </div>
+      </div>
+    `;
+  }).join('');
+
+  // Hover interactivity per basin
+  BASIN_ORDER.forEach(basinId => {
+    const chartEl = container.querySelector(`.mini-chart[data-basin="${basinId}"]`);
+    if (!chartEl) return;
+    const svg = chartEl.querySelector('svg');
+    const overlay = chartEl.querySelector('.mc-hover-overlay');
+    const crosshair = chartEl.querySelector('.mc-crosshair');
+    const dot24 = chartEl.querySelector('.mc-hover-dot.y24');
+    const dot25 = chartEl.querySelector('.mc-hover-dot.y25');
+    const dot26 = chartEl.querySelector('.mc-hover-dot.y26');
+    const tooltip = chartEl.querySelector('.mc-tooltip');
+    const yMax = BASIN_YAXIS[basinId].max;
+    const yScale = v => padT + innerH - (v/yMax)*innerH;
+
+    overlay.addEventListener('mousemove', (e) => {
+      const rect = svg.getBoundingClientRect();
+      const mouseX = e.clientX - rect.left;
+      const viewBoxX = (mouseX / rect.width) * W;
+      const monthIdx = Math.max(0, Math.min(11, Math.round((viewBoxX - padL) / innerW * 11)));
+      const m = monthIdx + 1;
+      const xPos = xScale(m);
+
+      crosshair.setAttribute('x1', xPos);
+      crosshair.setAttribute('x2', xPos);
+      crosshair.style.opacity = 0.7;
+
+      const p24 = basinPoint(basinId, '2024', monthIdx);
+      const p25 = basinPoint(basinId, '2025', monthIdx);
+      const p26 = basinPoint(basinId, '2026', monthIdx);
+
+      const setDot = (dot, p) => {
+        if (p) { dot.setAttribute('cx', xPos); dot.setAttribute('cy', yScale(p.mwmed)); dot.style.opacity = 1; }
+        else dot.style.opacity = 0;
+      };
+      setDot(dot24, p24); setDot(dot25, p25); setDot(dot26, p26);
+
+      const MONTH_TT = currentLang === 'PT' ? MONTH_FULL_PT : MONTH_FULL_EN;
+      const rows = [];
+      if (p24) rows.push(`<div class="mctt-row y24"><span class="mctt-lbl"><span class="mctt-sw"></span>2024</span><span><span class="mctt-val">${fmtInt(p24.mwmed)} MWmed</span></span></div>`);
+      if (p25) rows.push(`<div class="mctt-row y25"><span class="mctt-lbl"><span class="mctt-sw"></span>2025</span><span><span class="mctt-val">${fmtInt(p25.mwmed)} MWmed</span></span></div>`);
+      if (p26) rows.push(`<div class="mctt-row y26"><span class="mctt-lbl"><span class="mctt-sw"></span>2026</span><span><span class="mctt-val">${fmtInt(p26.mwmed)} MWmed</span></span></div>`);
+      tooltip.innerHTML = `<div class="mctt-month">${MONTH_TT[monthIdx]} · ENA bruta</div>${rows.join('')}`;
+
+      const chartRect = chartEl.getBoundingClientRect();
+      const tooltipW = 180;
+      const cursorX = e.clientX - chartRect.left;
+      const cursorY = e.clientY - chartRect.top;
+      const left = cursorX + tooltipW + 12 > chartRect.width
+        ? Math.max(4, cursorX - tooltipW - 12) : cursorX + 12;
+      tooltip.style.left = left + 'px';
+      tooltip.style.top = Math.max(4, cursorY - 60) + 'px';
+      tooltip.style.opacity = 1;
+    });
+
+    overlay.addEventListener('mouseleave', () => {
+      crosshair.style.opacity = 0;
+      dot24.style.opacity = 0; dot25.style.opacity = 0; dot26.style.opacity = 0;
+      tooltip.style.opacity = 0;
+    });
+  });
+}
 function renderReservoirTable() {
   const tbody = document.querySelector('#res-table tbody');
   // Sort by VU descending, then by sub
@@ -759,7 +956,7 @@ function renderReservoirTable() {
 
 // ── init ──
 async function init() {
-  await loadData();
+  await Promise.all([loadData(), loadBasinData()]);
   let saved = 'EN';
   try { saved = localStorage.getItem('lang') || 'EN'; } catch(e){}
   setLang(saved);
@@ -768,8 +965,11 @@ async function init() {
 
 function updateDataStatus() {
   const el = document.getElementById('data-status');
-  if (!el || !DATA_GENERATED_AT) return;
-  const d = new Date(DATA_GENERATED_AT);
+  if (!el) return;
+  const stamps = [DATA_GENERATED_AT, BASIN_DATA_GENERATED_AT].filter(Boolean);
+  if (!stamps.length) { el.textContent = 'Data unavailable'; el.style.color = 'var(--danger)'; return; }
+  const latest = stamps.sort().reverse()[0];
+  const d = new Date(latest);
   const opts = { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit', timeZone: 'America/Sao_Paulo' };
   const label = d.toLocaleString(currentLang === 'PT' ? 'pt-BR' : 'en-US', opts);
   el.textContent = `ONS · ${label} BRT`;

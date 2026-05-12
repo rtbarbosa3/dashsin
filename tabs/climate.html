@@ -352,49 +352,49 @@ const MONTH_ABBR_PT = ['jan','fev','mar','abr','mai','jun','jul','ago','set','ou
 const MONTH_FULL_EN = ['January','February','March','April','May','June','July','August','September','October','November','December'];
 const MONTH_FULL_PT = ['janeiro','fevereiro','março','abril','maio','junho','julho','agosto','setembro','outubro','novembro','dezembro'];
 
-// ── Basin data (ENA bruta MWmed, loaded from data/ena_bacia.json) ──
-// Replaces former precipitation-in-mm dataset (ONS discontinued in 2021).
-// ENA Bruta in MWmed is the runoff energy equivalent — a direct proxy for
-// precipitation accumulation, but more directly relevant for energy markets.
-let BASIN_DATA = {};         // monthly_mwmed[basin][year] = [12 values in MWmed]
-let BASIN_META = {};         // {basin_id: {name, sub}}
-let BASIN_NOW = {};          // latest snapshot per basin
-let BASIN_DATA_GENERATED_AT = null;
+// ── Precipitation by basin (mm/month, NASA POWER) ────────────────
+// Loaded from data/precip_bacia.json. NASA POWER provides daily PRECTOTCORR
+// at a representative centroid per basin; pipeline aggregates to monthly sums
+// and computes MLT climatology from 2014-2023.
+let PRECIP_BACIA = {};
+let PRECIP_GENERATED_AT = null;
 const BASIN_ORDER = ['paranaiba','grande','parana','iguacu','uruguai','sao_francisco','parnaiba','tocantins'];
 
-// Y-axis max per basin (MWmed) — covers historical peaks with headroom
-const BASIN_YAXIS = {
-  paranaiba:     { max: 20000, ticks: [5000, 10000, 15000, 20000] },
-  grande:        { max: 16000, ticks: [4000, 8000, 12000, 16000] },
-  parana:        { max: 14000, ticks: [4000, 8000, 12000] },
-  iguacu:        { max: 14000, ticks: [4000, 8000, 12000] },
-  uruguai:       { max: 14000, ticks: [4000, 8000, 12000] },
-  sao_francisco: { max: 8000,  ticks: [2000, 4000, 6000, 8000] },
-  parnaiba:      { max: 6000,  ticks: [1500, 3000, 4500, 6000] },
-  tocantins:     { max: 30000, ticks: [10000, 20000, 30000] }
+const PRECIP_YAXIS = {
+  paranaiba:     { max: 400, ticks: [100, 200, 300] },
+  grande:        { max: 400, ticks: [100, 200, 300] },
+  parana:        { max: 300, ticks: [100, 200, 300] },
+  iguacu:        { max: 400, ticks: [100, 200, 300, 400] },
+  uruguai:       { max: 400, ticks: [100, 200, 300, 400] },
+  sao_francisco: { max: 350, ticks: [100, 200, 300] },
+  parnaiba:      { max: 400, ticks: [100, 200, 300] },
+  tocantins:     { max: 500, ticks: [150, 300, 450] }
 };
 
-function basinPoint(basinId, year, monthIdx) {
-  if (!BASIN_DATA[basinId] || !BASIN_DATA[basinId][year]) return null;
-  const mwmed = BASIN_DATA[basinId][year][monthIdx];
-  if (mwmed === null || mwmed === undefined) return null;
-  return { mwmed };
+function precipPoint(basinId, year, monthIdx) {
+  const b = PRECIP_BACIA[basinId];
+  if (!b || !b.monthly || !b.monthly[year]) return null;
+  const mm = b.monthly[year][monthIdx];
+  if (mm === null || mm === undefined) return null;
+  const mlt = b.mlt[monthIdx];
+  if (!mlt) return { mm, pct: null, mlt: null };
+  const pct = Math.round(mm / mlt * 100);
+  return { mm, pct, mlt };
 }
 
-async function loadBasinData() {
+async function loadPrecipData() {
   try {
-    const res = await fetch('../data/ena_bacia.json', { cache: 'no-cache' });
+    const res = await fetch('../data/precip_bacia.json', { cache: 'no-cache' });
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const j = await res.json();
-    BASIN_DATA = j.monthly_mwmed || {};
-    BASIN_META = j.basin_meta || {};
-    BASIN_NOW  = j.now || {};
-    BASIN_DATA_GENERATED_AT = j.generated_at_utc || null;
-    console.log('Basin data loaded:', BASIN_DATA_GENERATED_AT);
+    PRECIP_BACIA = j.basins || {};
+    PRECIP_GENERATED_AT = j.generated_at_utc || null;
+    console.log('Precip data loaded:', PRECIP_GENERATED_AT);
   } catch (e) {
-    console.error('Failed to load ena_bacia.json:', e);
+    console.error('Failed to load precip_bacia.json:', e);
   }
 }
+
 
 // ── Agro region anomalies (% MLT last 30 days, mm in 30d) ────────
 const AGRO_REGIONS = [
@@ -410,9 +410,9 @@ const AGRO_REGIONS = [
   { code: 'MS', name: 'Mato Grosso do Sul', crops:'Soja, milho, cana',          cropsEn: 'Soy, corn, sugarcane',     pct: 70,  mm: 46 },
 ];
 
-// ── ENSO ONI (loaded from data/oni.json) ─────────────────────────
-let ENSO_ONI = [];           // array of [yyyy-mm, anom] for last 30 months
-let ENSO_CURRENT = null;     // current phase info
+// ── ENSO ONI (loaded from data/oni.json, NOAA CPC source) ────────
+let ENSO_ONI = [];
+let ENSO_CURRENT = null;
 let ENSO_GENERATED_AT = null;
 
 async function loadEnsoData() {
@@ -420,7 +420,6 @@ async function loadEnsoData() {
     const res = await fetch('../data/oni.json', { cache: 'no-cache' });
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const j = await res.json();
-    // Transform: recent_30m records → [yyyy-mm, anom] tuples
     ENSO_ONI = (j.recent_30m || []).map(r =>
       [`${r.year}-${String(r.month).padStart(2,'0')}`, r.anom]
     );
@@ -431,7 +430,6 @@ async function loadEnsoData() {
     console.error('Failed to load oni.json:', e);
   }
 }
-
 
 // ── Renewable capacity factor by submarket (May 2026 daily avg) ──
 const RENEWABLE_CF = {
@@ -451,8 +449,8 @@ const I18N = {
     insightEnso:'<strong>Weak El Niño peaking and weakening</strong> — ONI index hit <span class="v" style="color:var(--nino)">+0.7</span> in Jan-Feb 2026, now retreating to <span class="v">+0.4</span>. NOAA forecasts ENSO-neutral conditions returning by Aug-Sep 2026. Historically, El Niño years bring above-average precipitation to Sul Brazil and below-average to Norte/Nordeste — consistent with what we see today.',
     insightPrecip:'<strong>Iguaçu at 140% MLT, Uruguai at 129% MLT for May</strong> — the wettest May in Sul Brazil since 2022. SE/CO basins running above MLT: Paranaíba <span class="v up">105%</span>, Grande <span class="v up">109%</span>, Paraná <span class="v">120%</span>. NE wet season closed strong: São Francisco <span class="v">100%</span>, Parnaíba <span class="v">100%</span>. Tocantins (N) at <span class="v down">68% MLT</span> — first sign of weakening from Q1 peak.',
     insightAgro:'<strong>Mato Grosso do Sul and Goiás below 80% MLT</strong> — concerning for safrinha de milho. <span class="v down">RS at 145%</span> and <span class="v down">PR at 130%</span> of MLT carries the opposite risk: excess rain delays trigo plantio and damages final-stage soja. Bahia algodão zone at <span class="v">105%</span> — favorable.',
-    precipTitle:'ENA Bruta by basin · MWmed per month (8 main basins)',
-    precipHint:'Lines: 2024 / 2025 / 2026 ytd · hover for detail · proxy for runoff/precipitation',
+    precipTitle:'Precipitation by basin · 8 main hydro basins (mm/month)',
+    precipHint:'Lines: 2024 / 2025 / 2026 ytd · dashed = MLT · hover for detail',
     agroTitle:'Agro regions · last 30 days vs MLT',
     agroHint:'Center = 100% MLT · green above, red below',
     ensoTitle:'ENSO · ONI index timeline (24 months)',
@@ -481,8 +479,8 @@ const I18N = {
     insightEnso:'<strong>El Niño fraco no pico e enfraquecendo</strong> — índice ONI atingiu <span class="v" style="color:var(--nino)">+0,7</span> em jan-fev/26, agora recuando para <span class="v">+0,4</span>. NOAA prevê retorno a condições ENSO-neutras até ago-set/26. Historicamente, anos de El Niño trazem precipitação acima da média ao Sul do Brasil e abaixo ao Norte/Nordeste — consistente com o que se observa hoje.',
     insightPrecip:'<strong>Iguaçu em 140% MLT, Uruguai em 129% MLT em maio</strong> — o maio mais chuvoso no Sul desde 2022. Bacias SE/CO acima da MLT: Paranaíba <span class="v up">105%</span>, Grande <span class="v up">109%</span>, Paraná <span class="v">120%</span>. Período úmido NE encerrou forte: São Francisco <span class="v">100%</span>, Parnaíba <span class="v">100%</span>. Tocantins (N) em <span class="v down">68% MLT</span> — primeiro sinal de enfraquecimento após pico Q1.',
     insightAgro:'<strong>Mato Grosso do Sul e Goiás abaixo de 80% MLT</strong> — preocupante para safrinha de milho. <span class="v down">RS em 145%</span> e <span class="v down">PR em 130%</span> da MLT trazem o risco oposto: chuva excessiva atrasa plantio de trigo e prejudica fase final da soja. Zona algodoeira da Bahia em <span class="v">105%</span> — favorável.',
-    precipTitle:'ENA Bruta por bacia · MWmed por mês (8 bacias principais)',
-    precipHint:'Linhas: 2024 / 2025 / 2026 ytd · passe o mouse · proxy de runoff/precipitação',
+    precipTitle:'Precipitação por bacia · 8 bacias hidrográficas principais (mm/mês)',
+    precipHint:'Linhas: 2024 / 2025 / 2026 ytd · tracejada = MLT · passe o mouse para detalhe',
     agroTitle:'Regiões agro · últimos 30 dias vs MLT',
     agroHint:'Centro = 100% MLT · verde acima, vermelho abaixo',
     ensoTitle:'ENSO · timeline do índice ONI (24 meses)',
@@ -561,26 +559,30 @@ function renderPrecipMultiples() {
   const fmtK = v => v >= 1000 ? (v/1000) + 'k' : String(v);
 
   container.innerHTML = BASIN_ORDER.map(basinId => {
-    const meta = BASIN_META[basinId] || { name: basinId, sub: 'SECO' };
-    const yMax = BASIN_YAXIS[basinId].max;
+    const b = PRECIP_BACIA[basinId];
+    if (!b || !b.mlt) return '';
+    const yMax = PRECIP_YAXIS[basinId].max;
     const yScale = v => padT + innerH - (v/yMax)*innerH;
 
-    const yr24 = [], yr25 = [], yr26 = [];
+    const yr24 = [], yr25 = [], yr26 = [], mltPts = [];
     for (let m = 1; m <= 12; m++) {
-      const p24 = basinPoint(basinId, '2024', m-1);
-      const p25 = basinPoint(basinId, '2025', m-1);
-      const p26 = basinPoint(basinId, '2026', m-1);
-      if (p24) yr24.push({m, x:xScale(m), y:yScale(p24.mwmed)});
-      if (p25) yr25.push({m, x:xScale(m), y:yScale(p25.mwmed)});
-      if (p26) yr26.push({m, x:xScale(m), y:yScale(p26.mwmed)});
+      const p24 = precipPoint(basinId, '2024', m-1);
+      const p25 = precipPoint(basinId, '2025', m-1);
+      const p26 = precipPoint(basinId, '2026', m-1);
+      mltPts.push({x:xScale(m), y:yScale(b.mlt[m-1])});
+      if (p24) yr24.push({m, x:xScale(m), y:yScale(p24.mm)});
+      if (p25) yr25.push({m, x:xScale(m), y:yScale(p25.mm)});
+      if (p26) yr26.push({m, x:xScale(m), y:yScale(p26.mm)});
     }
     const path = pts => pts.length ? pts.map((p,i) => `${i===0?'M':'L'} ${p.x.toFixed(1)} ${p.y.toFixed(1)}`).join(' ') : '';
 
     let grid = '';
-    for (const tv of BASIN_YAXIS[basinId].ticks) {
+    for (const tv of PRECIP_YAXIS[basinId].ticks) {
       grid += `<line class="mc-grid" x1="${padL}" x2="${W-padR}" y1="${yScale(tv)}" y2="${yScale(tv)}" />`;
       grid += `<text class="mc-axis" x="${padL-6}" y="${yScale(tv)+3}" text-anchor="end">${fmtK(tv)}</text>`;
     }
+    grid += `<path class="mc-mlt-ref" d="${path(mltPts)}" fill="none" />`;
+    grid += `<text class="mc-mlt-label" x="${W-padR-4}" y="${yScale(b.mlt[11])-4}" text-anchor="end">MLT</text>`;
 
     let xlab = '';
     for (let m = 1; m <= 12; m++) {
@@ -588,17 +590,26 @@ function renderPrecipMultiples() {
     }
     const dots = yr26.map(p => `<circle class="mc-dot-y26" cx="${p.x}" cy="${p.y}" r="2.5" />`).join('');
 
-    // Current value: latest snapshot from BASIN_NOW
-    const now = BASIN_NOW[basinId];
-    const nowMwmed = now ? now.mwmed : null;
-    const subClass = meta.sub.toLowerCase();
-    const subLabel = SUB_LABELS[meta.sub];
+    // Latest non-null month in current year
+    let latestIdx = -1, latestVal = null;
+    for (let m = 11; m >= 0; m--) {
+      const p = precipPoint(basinId, '2026', m);
+      if (p) { latestIdx = m; latestVal = p; break; }
+    }
+    const headerHtml = latestVal !== null
+      ? (() => {
+          const c = latestVal.pct >= 100 ? 'var(--ok)' : (latestVal.pct >= 80 ? 'var(--warn)' : 'var(--danger)');
+          return `<strong style="color:${c}">${Math.round(latestVal.mm)}</strong> mm · ${latestVal.pct}%`;
+        })()
+      : '<span style="color:var(--text-dim)">—</span>';
+    const subClass = b.sub.toLowerCase();
+    const subLabel = SUB_LABELS[b.sub];
 
     return `
       <div class="mini-chart" data-basin="${basinId}">
         <div class="mini-chart-head">
-          <span class="mc-name ${subClass}">${meta.name}<span class="basin-tag ${subClass}">${subLabel}</span></span>
-          <span class="mc-avg">${nowMwmed !== null ? '<strong>'+fmtInt(nowMwmed)+'</strong> MWmed' : '—'}</span>
+          <span class="mc-name ${subClass}">${b.name}<span class="basin-tag ${subClass}">${subLabel}</span></span>
+          <span class="mc-avg">${headerHtml}</span>
         </div>
         <svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none">
           ${grid}
@@ -626,7 +637,6 @@ function renderPrecipMultiples() {
   // Hover interactivity per basin
   BASIN_ORDER.forEach(basinId => {
     const chartEl = container.querySelector(`.mini-chart[data-basin="${basinId}"]`);
-    if (!chartEl) return;
     const svg = chartEl.querySelector('svg');
     const overlay = chartEl.querySelector('.mc-hover-overlay');
     const crosshair = chartEl.querySelector('.mc-crosshair');
@@ -634,7 +644,7 @@ function renderPrecipMultiples() {
     const dot25 = chartEl.querySelector('.mc-hover-dot.y25');
     const dot26 = chartEl.querySelector('.mc-hover-dot.y26');
     const tooltip = chartEl.querySelector('.mc-tooltip');
-    const yMax = BASIN_YAXIS[basinId].max;
+    const yMax = PRECIP_YAXIS[basinId].max;
     const yScale = v => padT + innerH - (v/yMax)*innerH;
 
     overlay.addEventListener('mousemove', (e) => {
@@ -649,22 +659,22 @@ function renderPrecipMultiples() {
       crosshair.setAttribute('x2', xPos);
       crosshair.style.opacity = 0.7;
 
-      const p24 = basinPoint(basinId, '2024', monthIdx);
-      const p25 = basinPoint(basinId, '2025', monthIdx);
-      const p26 = basinPoint(basinId, '2026', monthIdx);
+      const p24 = precipPoint(basinId, '2024', monthIdx);
+      const p25 = precipPoint(basinId, '2025', monthIdx);
+      const p26 = precipPoint(basinId, '2026', monthIdx);
 
       const setDot = (dot, p) => {
-        if (p) { dot.setAttribute('cx', xPos); dot.setAttribute('cy', yScale(p.mwmed)); dot.style.opacity = 1; }
+        if (p) { dot.setAttribute('cx', xPos); dot.setAttribute('cy', yScale(p.mm)); dot.style.opacity = 1; }
         else dot.style.opacity = 0;
       };
       setDot(dot24, p24); setDot(dot25, p25); setDot(dot26, p26);
 
       const MONTH_TT = currentLang === 'PT' ? MONTH_FULL_PT : MONTH_FULL_EN;
       const rows = [];
-      if (p24) rows.push(`<div class="mctt-row y24"><span class="mctt-lbl"><span class="mctt-sw"></span>2024</span><span><span class="mctt-val">${fmtInt(p24.mwmed)} MWmed</span></span></div>`);
-      if (p25) rows.push(`<div class="mctt-row y25"><span class="mctt-lbl"><span class="mctt-sw"></span>2025</span><span><span class="mctt-val">${fmtInt(p25.mwmed)} MWmed</span></span></div>`);
-      if (p26) rows.push(`<div class="mctt-row y26"><span class="mctt-lbl"><span class="mctt-sw"></span>2026</span><span><span class="mctt-val">${fmtInt(p26.mwmed)} MWmed</span></span></div>`);
-      tooltip.innerHTML = `<div class="mctt-month">${MONTH_TT[monthIdx]} · ENA bruta</div>${rows.join('')}`;
+      if (p24) rows.push(`<div class="mctt-row y24"><span class="mctt-lbl"><span class="mctt-sw"></span>2024</span><span><span class="mctt-val">${p24.mm} mm</span><span class="mctt-pct">${p24.pct}%</span></span></div>`);
+      if (p25) rows.push(`<div class="mctt-row y25"><span class="mctt-lbl"><span class="mctt-sw"></span>2025</span><span><span class="mctt-val">${p25.mm} mm</span><span class="mctt-pct">${p25.pct}%</span></span></div>`);
+      if (p26) rows.push(`<div class="mctt-row y26"><span class="mctt-lbl"><span class="mctt-sw"></span>2026</span><span><span class="mctt-val">${p26.mm} mm</span><span class="mctt-pct">${p26.pct}%</span></span></div>`);
+      tooltip.innerHTML = `<div class="mctt-month">${MONTH_TT[monthIdx]} · mm (% MLT)</div>${rows.join('')}`;
 
       const chartRect = chartEl.getBoundingClientRect();
       const tooltipW = 180;
@@ -876,7 +886,6 @@ function renderEnsoChart() {
       curVal.className = 'val ' + phaseClass;
     }
     if (phVal) {
-      // Translate phase to current language
       const phaseLabel = currentLang === 'PT'
         ? (ENSO_CURRENT.phase === 'El Niño' ? 'El Niño'
          : ENSO_CURRENT.phase === 'La Niña' ? 'La Niña' : 'Neutro')
@@ -939,7 +948,7 @@ function renderAll() {
 }
 
 async function init() {
-  await Promise.all([loadBasinData(), loadEnsoData()]);
+  await Promise.all([loadPrecipData(), loadEnsoData()]);
   let saved = 'EN';
   try { saved = localStorage.getItem('lang') || 'EN'; } catch(e){}
   setLang(saved);
@@ -949,14 +958,13 @@ async function init() {
 function updateDataStatus() {
   const el = document.getElementById('data-status');
   if (!el) return;
-  const stamps = [BASIN_DATA_GENERATED_AT, ENSO_GENERATED_AT].filter(Boolean);
+  const stamps = [PRECIP_GENERATED_AT, ENSO_GENERATED_AT].filter(Boolean);
   if (!stamps.length) { el.textContent = 'Data unavailable'; el.style.color = 'var(--danger)'; return; }
-  // Use the most recent timestamp
   const latest = stamps.sort().reverse()[0];
   const d = new Date(latest);
   const opts = { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit', timeZone: 'America/Sao_Paulo' };
   const label = d.toLocaleString(currentLang === 'PT' ? 'pt-BR' : 'en-US', opts);
-  el.textContent = `ONS · NOAA · ${label} BRT`;
+  el.textContent = `NASA POWER · NOAA · ${label} BRT`;
   el.style.color = '';
 }
 init();

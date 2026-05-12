@@ -1,0 +1,86 @@
+{
+  "generated_at_utc": "2026-05-11T13:00:00Z",
+  "source": {
+    "name": "INITIAL SEED — will be replaced by NASA POWER data on first Action run",
+    "variable": "PRECTOTCORR",
+    "url_template": "https://power.larc.nasa.gov/api/temporal/daily/point",
+    "mlt_window": "2014-2023",
+    "fetch_errors": [],
+    "note": "Precipitation in mm/month aggregated from daily PRECTOTCORR at a single representative centroid per basin."
+  },
+  "basin_order": ["paranaiba", "grande", "parana", "iguacu", "uruguai", "sao_francisco", "parnaiba", "tocantins"],
+  "basins": {
+    "paranaiba": {
+      "lat": -18.5, "lon": -49.0, "name": "Paranaíba", "sub": "SECO",
+      "mlt":    [250, 220, 180,  90,  50,  30,  25,  30,  70, 130, 200, 260],
+      "monthly": {
+        "2024": [295, 240, 175,  75,  30,  12,   8,   9,  25,  65, 140, 240],
+        "2025": [260, 210, 160,  70,  28,  12,   8,   9,  25,  70, 165, 285],
+        "2026": [310, 280, 200,  95,  42, null, null, null, null, null, null, null]
+      }
+    },
+    "grande": {
+      "lat": -20.5, "lon": -47.0, "name": "Grande", "sub": "SECO",
+      "mlt":    [280, 240, 200, 100,  50,  25,  20,  25,  65, 130, 200, 280],
+      "monthly": {
+        "2024": [320, 265, 200,  80,  30,  10,   7,   8,  22,  65, 145, 260],
+        "2025": [280, 230, 180,  75,  28,  10,   7,   8,  22,  70, 170, 305],
+        "2026": [340, 305, 225, 105,  47, null, null, null, null, null, null, null]
+      }
+    },
+    "parana": {
+      "lat": -23.5, "lon": -52.5, "name": "Paraná", "sub": "SECO",
+      "mlt":    [200, 180, 160, 120, 100,  90,  75,  70, 100, 130, 160, 190],
+      "monthly": {
+        "2024": [230, 200, 165, 105,  75,  60,  50,  50,  75, 110, 145, 195],
+        "2025": [215, 190, 165, 110,  80,  65,  55,  55,  80, 120, 165, 210],
+        "2026": [245, 220, 180, 130, 105, null, null, null, null, null, null, null]
+      }
+    },
+    "iguacu": {
+      "lat": -25.5, "lon": -51.5, "name": "Iguaçu", "sub": "SUL",
+      "mlt":    [170, 145, 130, 145, 175, 185, 195, 180, 170, 175, 155, 155],
+      "monthly": {
+        "2024": [155, 110, 105, 130, 195, 280, 330, 280, 235, 200, 145, 125],
+        "2025": [145, 100, 100, 120, 185, 260, 350, 300, 255, 200, 135, 115],
+        "2026": [135, 110, 120, 185, 245, null, null, null, null, null, null, null]
+      }
+    },
+    "uruguai": {
+      "lat": -27.5, "lon": -53.5, "name": "Uruguai", "sub": "SUL",
+      "mlt":    [150, 135, 130, 145, 170, 175, 185, 175, 165, 175, 150, 145],
+      "monthly": {
+        "2024": [130,  95, 100, 115, 165, 235, 305, 295, 250, 215, 150, 125],
+        "2025": [125,  88,  95, 110, 155, 225, 335, 315, 270, 210, 145, 115],
+        "2026": [110,  90, 115, 165, 220, null, null, null, null, null, null, null]
+      }
+    },
+    "sao_francisco": {
+      "lat": -14.0, "lon": -44.0, "name": "São Francisco", "sub": "NE",
+      "mlt":    [210, 230, 240, 155,  60,  25,   8,   5,  12,  45, 110, 190],
+      "monthly": {
+        "2024": [170, 210, 265, 165,  45,  14,   3,   1,   2,  18,  75, 150],
+        "2025": [150, 195, 240, 150,  45,  13,   3,   1,   2,  18,  70, 150],
+        "2026": [200, 265, 300, 140,  45, null, null, null, null, null, null, null]
+      }
+    },
+    "parnaiba": {
+      "lat": -7.5, "lon": -44.5, "name": "Parnaíba", "sub": "NE",
+      "mlt":    [180, 230, 280, 200,  80,  25,   8,   4,  10,  35,  80, 130],
+      "monthly": {
+        "2024": [145, 207, 308, 220,  65,  17,   4,   2,   8,  22,  55, 100],
+        "2025": [135, 195, 280, 200,  60,  16,   4,   2,   8,  22,  50, 100],
+        "2026": [175, 245, 325, 175,  50, null, null, null, null, null, null, null]
+      }
+    },
+    "tocantins": {
+      "lat": -10.0, "lon": -48.5, "name": "Tocantins", "sub": "N",
+      "mlt":    [310, 330, 350, 230,  95,  25,   8,   5,  12,  55, 155, 270],
+      "monthly": {
+        "2024": [310, 380, 475, 280,  90,  18,   4,   1,   4,  22,  80, 230],
+        "2025": [325, 410, 475, 280,  90,  18,   4,   1,   4,  25,  90, 245],
+        "2026": [340, 395, 385, 185,  65, null, null, null, null, null, null, null]
+      }
+    }
+  }
+}
