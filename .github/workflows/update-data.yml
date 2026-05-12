@@ -13,7 +13,7 @@ permissions:
 jobs:
   fetch-and-commit:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 25
 
     steps:
       - name: Checkout repo
@@ -34,6 +34,10 @@ jobs:
 
       - name: Run ONS ENA bruta por bacia pipeline
         run: python pipelines/ons_ena_bacia.py
+        continue-on-error: true
+
+      - name: Run NASA POWER precipitation by basin pipeline
+        run: python pipelines/nasa_power_basin_precip.py
         continue-on-error: true
 
       - name: Run NOAA CPC ONI pipeline
