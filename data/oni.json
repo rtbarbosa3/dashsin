@@ -1,49 +1,6636 @@
 {
-  "generated_at_utc": "2026-05-11T13:00:00Z",
+  "generated_at_utc": "2026-05-12T10:24:03Z",
   "source": {
-    "name": "INITIAL SEED — will be replaced by NOAA CPC data on first Action run",
+    "name": "NOAA Climate Prediction Center — Oceanic Niño Index",
     "url": "https://www.cpc.ncep.noaa.gov/data/indices/oni.ascii.txt",
-    "records_count": 30,
+    "records_count": 915,
     "note": "ONI = 3-month running mean SST anomaly in Niño 3.4 region. ±0.5 °C is the El Niño / La Niña threshold."
   },
   "current": {
     "year": 2026,
-    "month": 5,
-    "season": "AMJ",
-    "anom": 0.4,
+    "month": 3,
+    "season": "FMA",
+    "anom": 0.11,
     "phase": "Neutral",
-    "streak_months": 1
+    "streak_months": 3
   },
   "recent_30m": [
-    {"year": 2023, "month": 12, "season": "NDJ", "anom": -0.7, "classification": "La Niña"},
-    {"year": 2024, "month": 1,  "season": "DJF", "anom": -0.7, "classification": "La Niña"},
-    {"year": 2024, "month": 2,  "season": "JFM", "anom": -0.5, "classification": "La Niña"},
-    {"year": 2024, "month": 3,  "season": "FMA", "anom": -0.3, "classification": "Neutral"},
-    {"year": 2024, "month": 4,  "season": "MAM", "anom": -0.2, "classification": "Neutral"},
-    {"year": 2024, "month": 5,  "season": "AMJ", "anom": -0.1, "classification": "Neutral"},
-    {"year": 2024, "month": 6,  "season": "MJJ", "anom":  0.0, "classification": "Neutral"},
-    {"year": 2024, "month": 7,  "season": "JJA", "anom":  0.1, "classification": "Neutral"},
-    {"year": 2024, "month": 8,  "season": "JAS", "anom":  0.0, "classification": "Neutral"},
-    {"year": 2024, "month": 9,  "season": "ASO", "anom": -0.2, "classification": "Neutral"},
-    {"year": 2024, "month": 10, "season": "SON", "anom": -0.4, "classification": "Neutral"},
-    {"year": 2024, "month": 11, "season": "OND", "anom": -0.6, "classification": "La Niña"},
-    {"year": 2024, "month": 12, "season": "NDJ", "anom": -0.8, "classification": "La Niña"},
-    {"year": 2025, "month": 1,  "season": "DJF", "anom": -0.9, "classification": "La Niña"},
-    {"year": 2025, "month": 2,  "season": "JFM", "anom": -0.8, "classification": "La Niña"},
-    {"year": 2025, "month": 3,  "season": "FMA", "anom": -0.6, "classification": "La Niña"},
-    {"year": 2025, "month": 4,  "season": "MAM", "anom": -0.4, "classification": "Neutral"},
-    {"year": 2025, "month": 5,  "season": "AMJ", "anom": -0.2, "classification": "Neutral"},
-    {"year": 2025, "month": 6,  "season": "MJJ", "anom": -0.1, "classification": "Neutral"},
-    {"year": 2025, "month": 7,  "season": "JJA", "anom":  0.0, "classification": "Neutral"},
-    {"year": 2025, "month": 8,  "season": "JAS", "anom":  0.1, "classification": "Neutral"},
-    {"year": 2025, "month": 9,  "season": "ASO", "anom":  0.2, "classification": "Neutral"},
-    {"year": 2025, "month": 10, "season": "SON", "anom":  0.4, "classification": "Neutral"},
-    {"year": 2025, "month": 11, "season": "OND", "anom":  0.5, "classification": "El Niño"},
-    {"year": 2025, "month": 12, "season": "NDJ", "anom":  0.6, "classification": "El Niño"},
-    {"year": 2026, "month": 1,  "season": "DJF", "anom":  0.7, "classification": "El Niño"},
-    {"year": 2026, "month": 2,  "season": "JFM", "anom":  0.7, "classification": "El Niño"},
-    {"year": 2026, "month": 3,  "season": "FMA", "anom":  0.6, "classification": "El Niño"},
-    {"year": 2026, "month": 4,  "season": "MAM", "anom":  0.5, "classification": "El Niño"},
-    {"year": 2026, "month": 5,  "season": "AMJ", "anom":  0.4, "classification": "Neutral"}
+    {
+      "year": 2023,
+      "month": 10,
+      "season": "SON",
+      "anom": 1.83,
+      "classification": "El Niño"
+    },
+    {
+      "year": 2023,
+      "month": 11,
+      "season": "OND",
+      "anom": 1.99,
+      "classification": "El Niño"
+    },
+    {
+      "year": 2023,
+      "month": 12,
+      "season": "NDJ",
+      "anom": 2.06,
+      "classification": "El Niño"
+    },
+    {
+      "year": 2024,
+      "month": 1,
+      "season": "DJF",
+      "anom": 1.92,
+      "classification": "El Niño"
+    },
+    {
+      "year": 2024,
+      "month": 2,
+      "season": "JFM",
+      "anom": 1.62,
+      "classification": "El Niño"
+    },
+    {
+      "year": 2024,
+      "month": 3,
+      "season": "FMA",
+      "anom": 1.26,
+      "classification": "El Niño"
+    },
+    {
+      "year": 2024,
+      "month": 4,
+      "season": "MAM",
+      "anom": 0.82,
+      "classification": "El Niño"
+    },
+    {
+      "year": 2024,
+      "month": 5,
+      "season": "AMJ",
+      "anom": 0.49,
+      "classification": "Neutral"
+    },
+    {
+      "year": 2024,
+      "month": 6,
+      "season": "MJJ",
+      "anom": 0.22,
+      "classification": "Neutral"
+    },
+    {
+      "year": 2024,
+      "month": 7,
+      "season": "JJA",
+      "anom": 0.08,
+      "classification": "Neutral"
+    },
+    {
+      "year": 2024,
+      "month": 8,
+      "season": "JAS",
+      "anom": -0.07,
+      "classification": "Neutral"
+    },
+    {
+      "year": 2024,
+      "month": 9,
+      "season": "ASO",
+      "anom": -0.17,
+      "classification": "Neutral"
+    },
+    {
+      "year": 2024,
+      "month": 10,
+      "season": "SON",
+      "anom": -0.21,
+      "classification": "Neutral"
+    },
+    {
+      "year": 2024,
+      "month": 11,
+      "season": "OND",
+      "anom": -0.3,
+      "classification": "Neutral"
+    },
+    {
+      "year": 2024,
+      "month": 12,
+      "season": "NDJ",
+      "anom": -0.42,
+      "classification": "Neutral"
+    },
+    {
+      "year": 2025,
+      "month": 1,
+      "season": "DJF",
+      "anom": -0.45,
+      "classification": "Neutral"
+    },
+    {
+      "year": 2025,
+      "month": 2,
+      "season": "JFM",
+      "anom": -0.24,
+      "classification": "Neutral"
+    },
+    {
+      "year": 2025,
+      "month": 3,
+      "season": "FMA",
+      "anom": -0.06,
+      "classification": "Neutral"
+    },
+    {
+      "year": 2025,
+      "month": 4,
+      "season": "MAM",
+      "anom": 0.02,
+      "classification": "Neutral"
+    },
+    {
+      "year": 2025,
+      "month": 5,
+      "season": "AMJ",
+      "anom": -0.02,
+      "classification": "Neutral"
+    },
+    {
+      "year": 2025,
+      "month": 6,
+      "season": "MJJ",
+      "anom": -0.04,
+      "classification": "Neutral"
+    },
+    {
+      "year": 2025,
+      "month": 7,
+      "season": "JJA",
+      "anom": -0.14,
+      "classification": "Neutral"
+    },
+    {
+      "year": 2025,
+      "month": 8,
+      "season": "JAS",
+      "anom": -0.28,
+      "classification": "Neutral"
+    },
+    {
+      "year": 2025,
+      "month": 9,
+      "season": "ASO",
+      "anom": -0.4,
+      "classification": "Neutral"
+    },
+    {
+      "year": 2025,
+      "month": 10,
+      "season": "SON",
+      "anom": -0.51,
+      "classification": "La Niña"
+    },
+    {
+      "year": 2025,
+      "month": 11,
+      "season": "OND",
+      "anom": -0.55,
+      "classification": "La Niña"
+    },
+    {
+      "year": 2025,
+      "month": 12,
+      "season": "NDJ",
+      "anom": -0.54,
+      "classification": "La Niña"
+    },
+    {
+      "year": 2026,
+      "month": 1,
+      "season": "DJF",
+      "anom": -0.37,
+      "classification": "Neutral"
+    },
+    {
+      "year": 2026,
+      "month": 2,
+      "season": "JFM",
+      "anom": -0.15,
+      "classification": "Neutral"
+    },
+    {
+      "year": 2026,
+      "month": 3,
+      "season": "FMA",
+      "anom": 0.11,
+      "classification": "Neutral"
+    }
+  ],
+  "all_records_since_1950": [
+    {
+      "year": 1950,
+      "month": 1,
+      "season": "DJF",
+      "anom": -1.53,
+      "classification": "La Niña"
+    },
+    {
+      "year": 1950,
+      "month": 2,
+      "season": "JFM",
+      "anom": -1.34,
+      "classification": "La Niña"
+    },
+    {
+      "year": 1950,
+      "month": 3,
+      "season": "FMA",
+      "anom": -1.16,
+      "classification": "La Niña"
+    },
+    {
+      "year": 1950,
+      "month": 4,
+      "season": "MAM",
+      "anom": -1.18,
+      "classification": "La Niña"
+    },
+    {
+      "year": 1950,
+      "month": 5,
+      "season": "AMJ",
+      "anom": -1.07,
+      "classification": "La Niña"
+    },
+    {
+      "year": 1950,
+      "month": 6,
+      "season": "MJJ",
+      "anom": -0.85,
+      "classification": "La Niña"
+    },
+    {
+      "year": 1950,
+      "month": 7,
+      "season": "JJA",
+      "anom": -0.54,
+      "classification": "La Niña"
+    },
+    {
+      "year": 1950,
+      "month": 8,
+      "season": "JAS",
+      "anom": -0.42,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1950,
+      "month": 9,
+      "season": "ASO",
+      "anom": -0.39,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1950,
+      "month": 10,
+      "season": "SON",
+      "anom": -0.44,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1950,
+      "month": 11,
+      "season": "OND",
+      "anom": -0.6,
+      "classification": "La Niña"
+    },
+    {
+      "year": 1950,
+      "month": 12,
+      "season": "NDJ",
+      "anom": -0.8,
+      "classification": "La Niña"
+    },
+    {
+      "year": 1951,
+      "month": 1,
+      "season": "DJF",
+      "anom": -0.82,
+      "classification": "La Niña"
+    },
+    {
+      "year": 1951,
+      "month": 2,
+      "season": "JFM",
+      "anom": -0.54,
+      "classification": "La Niña"
+    },
+    {
+      "year": 1951,
+      "month": 3,
+      "season": "FMA",
+      "anom": -0.17,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1951,
+      "month": 4,
+      "season": "MAM",
+      "anom": 0.18,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1951,
+      "month": 5,
+      "season": "AMJ",
+      "anom": 0.36,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1951,
+      "month": 6,
+      "season": "MJJ",
+      "anom": 0.58,
+      "classification": "El Niño"
+    },
+    {
+      "year": 1951,
+      "month": 7,
+      "season": "JJA",
+      "anom": 0.7,
+      "classification": "El Niño"
+    },
+    {
+      "year": 1951,
+      "month": 8,
+      "season": "JAS",
+      "anom": 0.89,
+      "classification": "El Niño"
+    },
+    {
+      "year": 1951,
+      "month": 9,
+      "season": "ASO",
+      "anom": 0.99,
+      "classification": "El Niño"
+    },
+    {
+      "year": 1951,
+      "month": 10,
+      "season": "SON",
+      "anom": 1.15,
+      "classification": "El Niño"
+    },
+    {
+      "year": 1951,
+      "month": 11,
+      "season": "OND",
+      "anom": 1.04,
+      "classification": "El Niño"
+    },
+    {
+      "year": 1951,
+      "month": 12,
+      "season": "NDJ",
+      "anom": 0.81,
+      "classification": "El Niño"
+    },
+    {
+      "year": 1952,
+      "month": 1,
+      "season": "DJF",
+      "anom": 0.53,
+      "classification": "El Niño"
+    },
+    {
+      "year": 1952,
+      "month": 2,
+      "season": "JFM",
+      "anom": 0.37,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1952,
+      "month": 3,
+      "season": "FMA",
+      "anom": 0.34,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1952,
+      "month": 4,
+      "season": "MAM",
+      "anom": 0.29,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1952,
+      "month": 5,
+      "season": "AMJ",
+      "anom": 0.2,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1952,
+      "month": 6,
+      "season": "MJJ",
+      "anom": 0.0,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1952,
+      "month": 7,
+      "season": "JJA",
+      "anom": -0.08,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1952,
+      "month": 8,
+      "season": "JAS",
+      "anom": 0.0,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1952,
+      "month": 9,
+      "season": "ASO",
+      "anom": 0.15,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1952,
+      "month": 10,
+      "season": "SON",
+      "anom": 0.1,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1952,
+      "month": 11,
+      "season": "OND",
+      "anom": 0.04,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1952,
+      "month": 12,
+      "season": "NDJ",
+      "anom": 0.15,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1953,
+      "month": 1,
+      "season": "DJF",
+      "anom": 0.4,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1953,
+      "month": 2,
+      "season": "JFM",
+      "anom": 0.6,
+      "classification": "El Niño"
+    },
+    {
+      "year": 1953,
+      "month": 3,
+      "season": "FMA",
+      "anom": 0.63,
+      "classification": "El Niño"
+    },
+    {
+      "year": 1953,
+      "month": 4,
+      "season": "MAM",
+      "anom": 0.66,
+      "classification": "El Niño"
+    },
+    {
+      "year": 1953,
+      "month": 5,
+      "season": "AMJ",
+      "anom": 0.75,
+      "classification": "El Niño"
+    },
+    {
+      "year": 1953,
+      "month": 6,
+      "season": "MJJ",
+      "anom": 0.77,
+      "classification": "El Niño"
+    },
+    {
+      "year": 1953,
+      "month": 7,
+      "season": "JJA",
+      "anom": 0.75,
+      "classification": "El Niño"
+    },
+    {
+      "year": 1953,
+      "month": 8,
+      "season": "JAS",
+      "anom": 0.73,
+      "classification": "El Niño"
+    },
+    {
+      "year": 1953,
+      "month": 9,
+      "season": "ASO",
+      "anom": 0.78,
+      "classification": "El Niño"
+    },
+    {
+      "year": 1953,
+      "month": 10,
+      "season": "SON",
+      "anom": 0.84,
+      "classification": "El Niño"
+    },
+    {
+      "year": 1953,
+      "month": 11,
+      "season": "OND",
+      "anom": 0.84,
+      "classification": "El Niño"
+    },
+    {
+      "year": 1953,
+      "month": 12,
+      "season": "NDJ",
+      "anom": 0.81,
+      "classification": "El Niño"
+    },
+    {
+      "year": 1954,
+      "month": 1,
+      "season": "DJF",
+      "anom": 0.76,
+      "classification": "El Niño"
+    },
+    {
+      "year": 1954,
+      "month": 2,
+      "season": "JFM",
+      "anom": 0.47,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1954,
+      "month": 3,
+      "season": "FMA",
+      "anom": -0.05,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1954,
+      "month": 4,
+      "season": "MAM",
+      "anom": -0.41,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1954,
+      "month": 5,
+      "season": "AMJ",
+      "anom": -0.54,
+      "classification": "La Niña"
+    },
+    {
+      "year": 1954,
+      "month": 6,
+      "season": "MJJ",
+      "anom": -0.5,
+      "classification": "La Niña"
+    },
+    {
+      "year": 1954,
+      "month": 7,
+      "season": "JJA",
+      "anom": -0.64,
+      "classification": "La Niña"
+    },
+    {
+      "year": 1954,
+      "month": 8,
+      "season": "JAS",
+      "anom": -0.84,
+      "classification": "La Niña"
+    },
+    {
+      "year": 1954,
+      "month": 9,
+      "season": "ASO",
+      "anom": -0.9,
+      "classification": "La Niña"
+    },
+    {
+      "year": 1954,
+      "month": 10,
+      "season": "SON",
+      "anom": -0.77,
+      "classification": "La Niña"
+    },
+    {
+      "year": 1954,
+      "month": 11,
+      "season": "OND",
+      "anom": -0.73,
+      "classification": "La Niña"
+    },
+    {
+      "year": 1954,
+      "month": 12,
+      "season": "NDJ",
+      "anom": -0.66,
+      "classification": "La Niña"
+    },
+    {
+      "year": 1955,
+      "month": 1,
+      "season": "DJF",
+      "anom": -0.68,
+      "classification": "La Niña"
+    },
+    {
+      "year": 1955,
+      "month": 2,
+      "season": "JFM",
+      "anom": -0.62,
+      "classification": "La Niña"
+    },
+    {
+      "year": 1955,
+      "month": 3,
+      "season": "FMA",
+      "anom": -0.69,
+      "classification": "La Niña"
+    },
+    {
+      "year": 1955,
+      "month": 4,
+      "season": "MAM",
+      "anom": -0.8,
+      "classification": "La Niña"
+    },
+    {
+      "year": 1955,
+      "month": 5,
+      "season": "AMJ",
+      "anom": -0.79,
+      "classification": "La Niña"
+    },
+    {
+      "year": 1955,
+      "month": 6,
+      "season": "MJJ",
+      "anom": -0.72,
+      "classification": "La Niña"
+    },
+    {
+      "year": 1955,
+      "month": 7,
+      "season": "JJA",
+      "anom": -0.68,
+      "classification": "La Niña"
+    },
+    {
+      "year": 1955,
+      "month": 8,
+      "season": "JAS",
+      "anom": -0.75,
+      "classification": "La Niña"
+    },
+    {
+      "year": 1955,
+      "month": 9,
+      "season": "ASO",
+      "anom": -1.09,
+      "classification": "La Niña"
+    },
+    {
+      "year": 1955,
+      "month": 10,
+      "season": "SON",
+      "anom": -1.42,
+      "classification": "La Niña"
+    },
+    {
+      "year": 1955,
+      "month": 11,
+      "season": "OND",
+      "anom": -1.67,
+      "classification": "La Niña"
+    },
+    {
+      "year": 1955,
+      "month": 12,
+      "season": "NDJ",
+      "anom": -1.47,
+      "classification": "La Niña"
+    },
+    {
+      "year": 1956,
+      "month": 1,
+      "season": "DJF",
+      "anom": -1.11,
+      "classification": "La Niña"
+    },
+    {
+      "year": 1956,
+      "month": 2,
+      "season": "JFM",
+      "anom": -0.76,
+      "classification": "La Niña"
+    },
+    {
+      "year": 1956,
+      "month": 3,
+      "season": "FMA",
+      "anom": -0.63,
+      "classification": "La Niña"
+    },
+    {
+      "year": 1956,
+      "month": 4,
+      "season": "MAM",
+      "anom": -0.54,
+      "classification": "La Niña"
+    },
+    {
+      "year": 1956,
+      "month": 5,
+      "season": "AMJ",
+      "anom": -0.52,
+      "classification": "La Niña"
+    },
+    {
+      "year": 1956,
+      "month": 6,
+      "season": "MJJ",
+      "anom": -0.51,
+      "classification": "La Niña"
+    },
+    {
+      "year": 1956,
+      "month": 7,
+      "season": "JJA",
+      "anom": -0.57,
+      "classification": "La Niña"
+    },
+    {
+      "year": 1956,
+      "month": 8,
+      "season": "JAS",
+      "anom": -0.55,
+      "classification": "La Niña"
+    },
+    {
+      "year": 1956,
+      "month": 9,
+      "season": "ASO",
+      "anom": -0.46,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1956,
+      "month": 10,
+      "season": "SON",
+      "anom": -0.42,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1956,
+      "month": 11,
+      "season": "OND",
+      "anom": -0.43,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1956,
+      "month": 12,
+      "season": "NDJ",
+      "anom": -0.43,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1957,
+      "month": 1,
+      "season": "DJF",
+      "anom": -0.25,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1957,
+      "month": 2,
+      "season": "JFM",
+      "anom": 0.06,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1957,
+      "month": 3,
+      "season": "FMA",
+      "anom": 0.41,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1957,
+      "month": 4,
+      "season": "MAM",
+      "anom": 0.72,
+      "classification": "El Niño"
+    },
+    {
+      "year": 1957,
+      "month": 5,
+      "season": "AMJ",
+      "anom": 0.92,
+      "classification": "El Niño"
+    },
+    {
+      "year": 1957,
+      "month": 6,
+      "season": "MJJ",
+      "anom": 1.11,
+      "classification": "El Niño"
+    },
+    {
+      "year": 1957,
+      "month": 7,
+      "season": "JJA",
+      "anom": 1.25,
+      "classification": "El Niño"
+    },
+    {
+      "year": 1957,
+      "month": 8,
+      "season": "JAS",
+      "anom": 1.32,
+      "classification": "El Niño"
+    },
+    {
+      "year": 1957,
+      "month": 9,
+      "season": "ASO",
+      "anom": 1.33,
+      "classification": "El Niño"
+    },
+    {
+      "year": 1957,
+      "month": 10,
+      "season": "SON",
+      "anom": 1.39,
+      "classification": "El Niño"
+    },
+    {
+      "year": 1957,
+      "month": 11,
+      "season": "OND",
+      "anom": 1.53,
+      "classification": "El Niño"
+    },
+    {
+      "year": 1957,
+      "month": 12,
+      "season": "NDJ",
+      "anom": 1.74,
+      "classification": "El Niño"
+    },
+    {
+      "year": 1958,
+      "month": 1,
+      "season": "DJF",
+      "anom": 1.81,
+      "classification": "El Niño"
+    },
+    {
+      "year": 1958,
+      "month": 2,
+      "season": "JFM",
+      "anom": 1.66,
+      "classification": "El Niño"
+    },
+    {
+      "year": 1958,
+      "month": 3,
+      "season": "FMA",
+      "anom": 1.27,
+      "classification": "El Niño"
+    },
+    {
+      "year": 1958,
+      "month": 4,
+      "season": "MAM",
+      "anom": 0.93,
+      "classification": "El Niño"
+    },
+    {
+      "year": 1958,
+      "month": 5,
+      "season": "AMJ",
+      "anom": 0.74,
+      "classification": "El Niño"
+    },
+    {
+      "year": 1958,
+      "month": 6,
+      "season": "MJJ",
+      "anom": 0.64,
+      "classification": "El Niño"
+    },
+    {
+      "year": 1958,
+      "month": 7,
+      "season": "JJA",
+      "anom": 0.57,
+      "classification": "El Niño"
+    },
+    {
+      "year": 1958,
+      "month": 8,
+      "season": "JAS",
+      "anom": 0.43,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1958,
+      "month": 9,
+      "season": "ASO",
+      "anom": 0.39,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1958,
+      "month": 10,
+      "season": "SON",
+      "anom": 0.44,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1958,
+      "month": 11,
+      "season": "OND",
+      "anom": 0.5,
+      "classification": "El Niño"
+    },
+    {
+      "year": 1958,
+      "month": 12,
+      "season": "NDJ",
+      "anom": 0.61,
+      "classification": "El Niño"
+    },
+    {
+      "year": 1959,
+      "month": 1,
+      "season": "DJF",
+      "anom": 0.61,
+      "classification": "El Niño"
+    },
+    {
+      "year": 1959,
+      "month": 2,
+      "season": "JFM",
+      "anom": 0.62,
+      "classification": "El Niño"
+    },
+    {
+      "year": 1959,
+      "month": 3,
+      "season": "FMA",
+      "anom": 0.52,
+      "classification": "El Niño"
+    },
+    {
+      "year": 1959,
+      "month": 4,
+      "season": "MAM",
+      "anom": 0.33,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1959,
+      "month": 5,
+      "season": "AMJ",
+      "anom": 0.2,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1959,
+      "month": 6,
+      "season": "MJJ",
+      "anom": -0.07,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1959,
+      "month": 7,
+      "season": "JJA",
+      "anom": -0.18,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1959,
+      "month": 8,
+      "season": "JAS",
+      "anom": -0.28,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1959,
+      "month": 9,
+      "season": "ASO",
+      "anom": -0.09,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1959,
+      "month": 10,
+      "season": "SON",
+      "anom": -0.03,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1959,
+      "month": 11,
+      "season": "OND",
+      "anom": 0.05,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1959,
+      "month": 12,
+      "season": "NDJ",
+      "anom": -0.04,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1960,
+      "month": 1,
+      "season": "DJF",
+      "anom": -0.1,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1960,
+      "month": 2,
+      "season": "JFM",
+      "anom": -0.1,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1960,
+      "month": 3,
+      "season": "FMA",
+      "anom": -0.07,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1960,
+      "month": 4,
+      "season": "MAM",
+      "anom": 0.03,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1960,
+      "month": 5,
+      "season": "AMJ",
+      "anom": 0.02,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1960,
+      "month": 6,
+      "season": "MJJ",
+      "anom": 0.03,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1960,
+      "month": 7,
+      "season": "JJA",
+      "anom": 0.13,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1960,
+      "month": 8,
+      "season": "JAS",
+      "anom": 0.24,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1960,
+      "month": 9,
+      "season": "ASO",
+      "anom": 0.27,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1960,
+      "month": 10,
+      "season": "SON",
+      "anom": 0.2,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1960,
+      "month": 11,
+      "season": "OND",
+      "anom": 0.12,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1960,
+      "month": 12,
+      "season": "NDJ",
+      "anom": 0.05,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1961,
+      "month": 1,
+      "season": "DJF",
+      "anom": 0.04,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1961,
+      "month": 2,
+      "season": "JFM",
+      "anom": 0.03,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1961,
+      "month": 3,
+      "season": "FMA",
+      "anom": 0.04,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1961,
+      "month": 4,
+      "season": "MAM",
+      "anom": 0.09,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1961,
+      "month": 5,
+      "season": "AMJ",
+      "anom": 0.23,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1961,
+      "month": 6,
+      "season": "MJJ",
+      "anom": 0.27,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1961,
+      "month": 7,
+      "season": "JJA",
+      "anom": 0.14,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1961,
+      "month": 8,
+      "season": "JAS",
+      "anom": -0.13,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1961,
+      "month": 9,
+      "season": "ASO",
+      "anom": -0.3,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1961,
+      "month": 10,
+      "season": "SON",
+      "anom": -0.26,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1961,
+      "month": 11,
+      "season": "OND",
+      "anom": -0.19,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1961,
+      "month": 12,
+      "season": "NDJ",
+      "anom": -0.16,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1962,
+      "month": 1,
+      "season": "DJF",
+      "anom": -0.24,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1962,
+      "month": 2,
+      "season": "JFM",
+      "anom": -0.22,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1962,
+      "month": 3,
+      "season": "FMA",
+      "anom": -0.2,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1962,
+      "month": 4,
+      "season": "MAM",
+      "anom": -0.26,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1962,
+      "month": 5,
+      "season": "AMJ",
+      "anom": -0.28,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1962,
+      "month": 6,
+      "season": "MJJ",
+      "anom": -0.2,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1962,
+      "month": 7,
+      "season": "JJA",
+      "anom": -0.04,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1962,
+      "month": 8,
+      "season": "JAS",
+      "anom": -0.07,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1962,
+      "month": 9,
+      "season": "ASO",
+      "anom": -0.11,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1962,
+      "month": 10,
+      "season": "SON",
+      "anom": -0.22,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1962,
+      "month": 11,
+      "season": "OND",
+      "anom": -0.31,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1962,
+      "month": 12,
+      "season": "NDJ",
+      "anom": -0.43,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1963,
+      "month": 1,
+      "season": "DJF",
+      "anom": -0.4,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1963,
+      "month": 2,
+      "season": "JFM",
+      "anom": -0.15,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1963,
+      "month": 3,
+      "season": "FMA",
+      "anom": 0.15,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1963,
+      "month": 4,
+      "season": "MAM",
+      "anom": 0.27,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1963,
+      "month": 5,
+      "season": "AMJ",
+      "anom": 0.31,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1963,
+      "month": 6,
+      "season": "MJJ",
+      "anom": 0.52,
+      "classification": "El Niño"
+    },
+    {
+      "year": 1963,
+      "month": 7,
+      "season": "JJA",
+      "anom": 0.86,
+      "classification": "El Niño"
+    },
+    {
+      "year": 1963,
+      "month": 8,
+      "season": "JAS",
+      "anom": 1.14,
+      "classification": "El Niño"
+    },
+    {
+      "year": 1963,
+      "month": 9,
+      "season": "ASO",
+      "anom": 1.22,
+      "classification": "El Niño"
+    },
+    {
+      "year": 1963,
+      "month": 10,
+      "season": "SON",
+      "anom": 1.29,
+      "classification": "El Niño"
+    },
+    {
+      "year": 1963,
+      "month": 11,
+      "season": "OND",
+      "anom": 1.37,
+      "classification": "El Niño"
+    },
+    {
+      "year": 1963,
+      "month": 12,
+      "season": "NDJ",
+      "anom": 1.31,
+      "classification": "El Niño"
+    },
+    {
+      "year": 1964,
+      "month": 1,
+      "season": "DJF",
+      "anom": 1.07,
+      "classification": "El Niño"
+    },
+    {
+      "year": 1964,
+      "month": 2,
+      "season": "JFM",
+      "anom": 0.62,
+      "classification": "El Niño"
+    },
+    {
+      "year": 1964,
+      "month": 3,
+      "season": "FMA",
+      "anom": 0.12,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1964,
+      "month": 4,
+      "season": "MAM",
+      "anom": -0.33,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1964,
+      "month": 5,
+      "season": "AMJ",
+      "anom": -0.58,
+      "classification": "La Niña"
+    },
+    {
+      "year": 1964,
+      "month": 6,
+      "season": "MJJ",
+      "anom": -0.58,
+      "classification": "La Niña"
+    },
+    {
+      "year": 1964,
+      "month": 7,
+      "season": "JJA",
+      "anom": -0.6,
+      "classification": "La Niña"
+    },
+    {
+      "year": 1964,
+      "month": 8,
+      "season": "JAS",
+      "anom": -0.66,
+      "classification": "La Niña"
+    },
+    {
+      "year": 1964,
+      "month": 9,
+      "season": "ASO",
+      "anom": -0.76,
+      "classification": "La Niña"
+    },
+    {
+      "year": 1964,
+      "month": 10,
+      "season": "SON",
+      "anom": -0.8,
+      "classification": "La Niña"
+    },
+    {
+      "year": 1964,
+      "month": 11,
+      "season": "OND",
+      "anom": -0.82,
+      "classification": "La Niña"
+    },
+    {
+      "year": 1964,
+      "month": 12,
+      "season": "NDJ",
+      "anom": -0.78,
+      "classification": "La Niña"
+    },
+    {
+      "year": 1965,
+      "month": 1,
+      "season": "DJF",
+      "anom": -0.59,
+      "classification": "La Niña"
+    },
+    {
+      "year": 1965,
+      "month": 2,
+      "season": "JFM",
+      "anom": -0.28,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1965,
+      "month": 3,
+      "season": "FMA",
+      "anom": -0.07,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1965,
+      "month": 4,
+      "season": "MAM",
+      "anom": 0.18,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1965,
+      "month": 5,
+      "season": "AMJ",
+      "anom": 0.46,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1965,
+      "month": 6,
+      "season": "MJJ",
+      "anom": 0.83,
+      "classification": "El Niño"
+    },
+    {
+      "year": 1965,
+      "month": 7,
+      "season": "JJA",
+      "anom": 1.22,
+      "classification": "El Niño"
+    },
+    {
+      "year": 1965,
+      "month": 8,
+      "season": "JAS",
+      "anom": 1.54,
+      "classification": "El Niño"
+    },
+    {
+      "year": 1965,
+      "month": 9,
+      "season": "ASO",
+      "anom": 1.85,
+      "classification": "El Niño"
+    },
+    {
+      "year": 1965,
+      "month": 10,
+      "season": "SON",
+      "anom": 1.98,
+      "classification": "El Niño"
+    },
+    {
+      "year": 1965,
+      "month": 11,
+      "season": "OND",
+      "anom": 1.97,
+      "classification": "El Niño"
+    },
+    {
+      "year": 1965,
+      "month": 12,
+      "season": "NDJ",
+      "anom": 1.72,
+      "classification": "El Niño"
+    },
+    {
+      "year": 1966,
+      "month": 1,
+      "season": "DJF",
+      "anom": 1.37,
+      "classification": "El Niño"
+    },
+    {
+      "year": 1966,
+      "month": 2,
+      "season": "JFM",
+      "anom": 1.17,
+      "classification": "El Niño"
+    },
+    {
+      "year": 1966,
+      "month": 3,
+      "season": "FMA",
+      "anom": 0.98,
+      "classification": "El Niño"
+    },
+    {
+      "year": 1966,
+      "month": 4,
+      "season": "MAM",
+      "anom": 0.66,
+      "classification": "El Niño"
+    },
+    {
+      "year": 1966,
+      "month": 5,
+      "season": "AMJ",
+      "anom": 0.35,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1966,
+      "month": 6,
+      "season": "MJJ",
+      "anom": 0.24,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1966,
+      "month": 7,
+      "season": "JJA",
+      "anom": 0.24,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1966,
+      "month": 8,
+      "season": "JAS",
+      "anom": 0.12,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1966,
+      "month": 9,
+      "season": "ASO",
+      "anom": -0.05,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1966,
+      "month": 10,
+      "season": "SON",
+      "anom": -0.1,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1966,
+      "month": 11,
+      "season": "OND",
+      "anom": -0.18,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1966,
+      "month": 12,
+      "season": "NDJ",
+      "anom": -0.3,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1967,
+      "month": 1,
+      "season": "DJF",
+      "anom": -0.41,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1967,
+      "month": 2,
+      "season": "JFM",
+      "anom": -0.48,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1967,
+      "month": 3,
+      "season": "FMA",
+      "anom": -0.53,
+      "classification": "La Niña"
+    },
+    {
+      "year": 1967,
+      "month": 4,
+      "season": "MAM",
+      "anom": -0.45,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1967,
+      "month": 5,
+      "season": "AMJ",
+      "anom": -0.24,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1967,
+      "month": 6,
+      "season": "MJJ",
+      "anom": -0.0,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1967,
+      "month": 7,
+      "season": "JJA",
+      "anom": 0.05,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1967,
+      "month": 8,
+      "season": "JAS",
+      "anom": -0.16,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1967,
+      "month": 9,
+      "season": "ASO",
+      "anom": -0.3,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1967,
+      "month": 10,
+      "season": "SON",
+      "anom": -0.38,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1967,
+      "month": 11,
+      "season": "OND",
+      "anom": -0.34,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1967,
+      "month": 12,
+      "season": "NDJ",
+      "anom": -0.44,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1968,
+      "month": 1,
+      "season": "DJF",
+      "anom": -0.64,
+      "classification": "La Niña"
+    },
+    {
+      "year": 1968,
+      "month": 2,
+      "season": "JFM",
+      "anom": -0.74,
+      "classification": "La Niña"
+    },
+    {
+      "year": 1968,
+      "month": 3,
+      "season": "FMA",
+      "anom": -0.62,
+      "classification": "La Niña"
+    },
+    {
+      "year": 1968,
+      "month": 4,
+      "season": "MAM",
+      "anom": -0.44,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1968,
+      "month": 5,
+      "season": "AMJ",
+      "anom": -0.04,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1968,
+      "month": 6,
+      "season": "MJJ",
+      "anom": 0.28,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1968,
+      "month": 7,
+      "season": "JJA",
+      "anom": 0.58,
+      "classification": "El Niño"
+    },
+    {
+      "year": 1968,
+      "month": 8,
+      "season": "JAS",
+      "anom": 0.53,
+      "classification": "El Niño"
+    },
+    {
+      "year": 1968,
+      "month": 9,
+      "season": "ASO",
+      "anom": 0.45,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1968,
+      "month": 10,
+      "season": "SON",
+      "anom": 0.55,
+      "classification": "El Niño"
+    },
+    {
+      "year": 1968,
+      "month": 11,
+      "season": "OND",
+      "anom": 0.73,
+      "classification": "El Niño"
+    },
+    {
+      "year": 1968,
+      "month": 12,
+      "season": "NDJ",
+      "anom": 0.98,
+      "classification": "El Niño"
+    },
+    {
+      "year": 1969,
+      "month": 1,
+      "season": "DJF",
+      "anom": 1.13,
+      "classification": "El Niño"
+    },
+    {
+      "year": 1969,
+      "month": 2,
+      "season": "JFM",
+      "anom": 1.09,
+      "classification": "El Niño"
+    },
+    {
+      "year": 1969,
+      "month": 3,
+      "season": "FMA",
+      "anom": 0.95,
+      "classification": "El Niño"
+    },
+    {
+      "year": 1969,
+      "month": 4,
+      "season": "MAM",
+      "anom": 0.77,
+      "classification": "El Niño"
+    },
+    {
+      "year": 1969,
+      "month": 5,
+      "season": "AMJ",
+      "anom": 0.61,
+      "classification": "El Niño"
+    },
+    {
+      "year": 1969,
+      "month": 6,
+      "season": "MJJ",
+      "anom": 0.43,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1969,
+      "month": 7,
+      "season": "JJA",
+      "anom": 0.36,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1969,
+      "month": 8,
+      "season": "JAS",
+      "anom": 0.51,
+      "classification": "El Niño"
+    },
+    {
+      "year": 1969,
+      "month": 9,
+      "season": "ASO",
+      "anom": 0.79,
+      "classification": "El Niño"
+    },
+    {
+      "year": 1969,
+      "month": 10,
+      "season": "SON",
+      "anom": 0.86,
+      "classification": "El Niño"
+    },
+    {
+      "year": 1969,
+      "month": 11,
+      "season": "OND",
+      "anom": 0.81,
+      "classification": "El Niño"
+    },
+    {
+      "year": 1969,
+      "month": 12,
+      "season": "NDJ",
+      "anom": 0.63,
+      "classification": "El Niño"
+    },
+    {
+      "year": 1970,
+      "month": 1,
+      "season": "DJF",
+      "anom": 0.51,
+      "classification": "El Niño"
+    },
+    {
+      "year": 1970,
+      "month": 2,
+      "season": "JFM",
+      "anom": 0.34,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1970,
+      "month": 3,
+      "season": "FMA",
+      "anom": 0.29,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1970,
+      "month": 4,
+      "season": "MAM",
+      "anom": 0.19,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1970,
+      "month": 5,
+      "season": "AMJ",
+      "anom": 0.04,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1970,
+      "month": 6,
+      "season": "MJJ",
+      "anom": -0.3,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1970,
+      "month": 7,
+      "season": "JJA",
+      "anom": -0.63,
+      "classification": "La Niña"
+    },
+    {
+      "year": 1970,
+      "month": 8,
+      "season": "JAS",
+      "anom": -0.76,
+      "classification": "La Niña"
+    },
+    {
+      "year": 1970,
+      "month": 9,
+      "season": "ASO",
+      "anom": -0.77,
+      "classification": "La Niña"
+    },
+    {
+      "year": 1970,
+      "month": 10,
+      "season": "SON",
+      "anom": -0.74,
+      "classification": "La Niña"
+    },
+    {
+      "year": 1970,
+      "month": 11,
+      "season": "OND",
+      "anom": -0.86,
+      "classification": "La Niña"
+    },
+    {
+      "year": 1970,
+      "month": 12,
+      "season": "NDJ",
+      "anom": -1.15,
+      "classification": "La Niña"
+    },
+    {
+      "year": 1971,
+      "month": 1,
+      "season": "DJF",
+      "anom": -1.36,
+      "classification": "La Niña"
+    },
+    {
+      "year": 1971,
+      "month": 2,
+      "season": "JFM",
+      "anom": -1.38,
+      "classification": "La Niña"
+    },
+    {
+      "year": 1971,
+      "month": 3,
+      "season": "FMA",
+      "anom": -1.12,
+      "classification": "La Niña"
+    },
+    {
+      "year": 1971,
+      "month": 4,
+      "season": "MAM",
+      "anom": -0.85,
+      "classification": "La Niña"
+    },
+    {
+      "year": 1971,
+      "month": 5,
+      "season": "AMJ",
+      "anom": -0.73,
+      "classification": "La Niña"
+    },
+    {
+      "year": 1971,
+      "month": 6,
+      "season": "MJJ",
+      "anom": -0.74,
+      "classification": "La Niña"
+    },
+    {
+      "year": 1971,
+      "month": 7,
+      "season": "JJA",
+      "anom": -0.8,
+      "classification": "La Niña"
+    },
+    {
+      "year": 1971,
+      "month": 8,
+      "season": "JAS",
+      "anom": -0.77,
+      "classification": "La Niña"
+    },
+    {
+      "year": 1971,
+      "month": 9,
+      "season": "ASO",
+      "anom": -0.82,
+      "classification": "La Niña"
+    },
+    {
+      "year": 1971,
+      "month": 10,
+      "season": "SON",
+      "anom": -0.85,
+      "classification": "La Niña"
+    },
+    {
+      "year": 1971,
+      "month": 11,
+      "season": "OND",
+      "anom": -0.96,
+      "classification": "La Niña"
+    },
+    {
+      "year": 1971,
+      "month": 12,
+      "season": "NDJ",
+      "anom": -0.9,
+      "classification": "La Niña"
+    },
+    {
+      "year": 1972,
+      "month": 1,
+      "season": "DJF",
+      "anom": -0.71,
+      "classification": "La Niña"
+    },
+    {
+      "year": 1972,
+      "month": 2,
+      "season": "JFM",
+      "anom": -0.35,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1972,
+      "month": 3,
+      "season": "FMA",
+      "anom": 0.06,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1972,
+      "month": 4,
+      "season": "MAM",
+      "anom": 0.41,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1972,
+      "month": 5,
+      "season": "AMJ",
+      "anom": 0.67,
+      "classification": "El Niño"
+    },
+    {
+      "year": 1972,
+      "month": 6,
+      "season": "MJJ",
+      "anom": 0.92,
+      "classification": "El Niño"
+    },
+    {
+      "year": 1972,
+      "month": 7,
+      "season": "JJA",
+      "anom": 1.13,
+      "classification": "El Niño"
+    },
+    {
+      "year": 1972,
+      "month": 8,
+      "season": "JAS",
+      "anom": 1.37,
+      "classification": "El Niño"
+    },
+    {
+      "year": 1972,
+      "month": 9,
+      "season": "ASO",
+      "anom": 1.58,
+      "classification": "El Niño"
+    },
+    {
+      "year": 1972,
+      "month": 10,
+      "season": "SON",
+      "anom": 1.84,
+      "classification": "El Niño"
+    },
+    {
+      "year": 1972,
+      "month": 11,
+      "season": "OND",
+      "anom": 2.09,
+      "classification": "El Niño"
+    },
+    {
+      "year": 1972,
+      "month": 12,
+      "season": "NDJ",
+      "anom": 2.12,
+      "classification": "El Niño"
+    },
+    {
+      "year": 1973,
+      "month": 1,
+      "season": "DJF",
+      "anom": 1.84,
+      "classification": "El Niño"
+    },
+    {
+      "year": 1973,
+      "month": 2,
+      "season": "JFM",
+      "anom": 1.25,
+      "classification": "El Niño"
+    },
+    {
+      "year": 1973,
+      "month": 3,
+      "season": "FMA",
+      "anom": 0.54,
+      "classification": "El Niño"
+    },
+    {
+      "year": 1973,
+      "month": 4,
+      "season": "MAM",
+      "anom": -0.1,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1973,
+      "month": 5,
+      "season": "AMJ",
+      "anom": -0.54,
+      "classification": "La Niña"
+    },
+    {
+      "year": 1973,
+      "month": 6,
+      "season": "MJJ",
+      "anom": -0.87,
+      "classification": "La Niña"
+    },
+    {
+      "year": 1973,
+      "month": 7,
+      "season": "JJA",
+      "anom": -1.11,
+      "classification": "La Niña"
+    },
+    {
+      "year": 1973,
+      "month": 8,
+      "season": "JAS",
+      "anom": -1.28,
+      "classification": "La Niña"
+    },
+    {
+      "year": 1973,
+      "month": 9,
+      "season": "ASO",
+      "anom": -1.45,
+      "classification": "La Niña"
+    },
+    {
+      "year": 1973,
+      "month": 10,
+      "season": "SON",
+      "anom": -1.71,
+      "classification": "La Niña"
+    },
+    {
+      "year": 1973,
+      "month": 11,
+      "season": "OND",
+      "anom": -1.95,
+      "classification": "La Niña"
+    },
+    {
+      "year": 1973,
+      "month": 12,
+      "season": "NDJ",
+      "anom": -2.03,
+      "classification": "La Niña"
+    },
+    {
+      "year": 1974,
+      "month": 1,
+      "season": "DJF",
+      "anom": -1.84,
+      "classification": "La Niña"
+    },
+    {
+      "year": 1974,
+      "month": 2,
+      "season": "JFM",
+      "anom": -1.55,
+      "classification": "La Niña"
+    },
+    {
+      "year": 1974,
+      "month": 3,
+      "season": "FMA",
+      "anom": -1.23,
+      "classification": "La Niña"
+    },
+    {
+      "year": 1974,
+      "month": 4,
+      "season": "MAM",
+      "anom": -1.03,
+      "classification": "La Niña"
+    },
+    {
+      "year": 1974,
+      "month": 5,
+      "season": "AMJ",
+      "anom": -0.91,
+      "classification": "La Niña"
+    },
+    {
+      "year": 1974,
+      "month": 6,
+      "season": "MJJ",
+      "anom": -0.77,
+      "classification": "La Niña"
+    },
+    {
+      "year": 1974,
+      "month": 7,
+      "season": "JJA",
+      "anom": -0.53,
+      "classification": "La Niña"
+    },
+    {
+      "year": 1974,
+      "month": 8,
+      "season": "JAS",
+      "anom": -0.37,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1974,
+      "month": 9,
+      "season": "ASO",
+      "anom": -0.41,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1974,
+      "month": 10,
+      "season": "SON",
+      "anom": -0.61,
+      "classification": "La Niña"
+    },
+    {
+      "year": 1974,
+      "month": 11,
+      "season": "OND",
+      "anom": -0.75,
+      "classification": "La Niña"
+    },
+    {
+      "year": 1974,
+      "month": 12,
+      "season": "NDJ",
+      "anom": -0.64,
+      "classification": "La Niña"
+    },
+    {
+      "year": 1975,
+      "month": 1,
+      "season": "DJF",
+      "anom": -0.54,
+      "classification": "La Niña"
+    },
+    {
+      "year": 1975,
+      "month": 2,
+      "season": "JFM",
+      "anom": -0.57,
+      "classification": "La Niña"
+    },
+    {
+      "year": 1975,
+      "month": 3,
+      "season": "FMA",
+      "anom": -0.65,
+      "classification": "La Niña"
+    },
+    {
+      "year": 1975,
+      "month": 4,
+      "season": "MAM",
+      "anom": -0.73,
+      "classification": "La Niña"
+    },
+    {
+      "year": 1975,
+      "month": 5,
+      "season": "AMJ",
+      "anom": -0.83,
+      "classification": "La Niña"
+    },
+    {
+      "year": 1975,
+      "month": 6,
+      "season": "MJJ",
+      "anom": -0.98,
+      "classification": "La Niña"
+    },
+    {
+      "year": 1975,
+      "month": 7,
+      "season": "JJA",
+      "anom": -1.13,
+      "classification": "La Niña"
+    },
+    {
+      "year": 1975,
+      "month": 8,
+      "season": "JAS",
+      "anom": -1.2,
+      "classification": "La Niña"
+    },
+    {
+      "year": 1975,
+      "month": 9,
+      "season": "ASO",
+      "anom": -1.37,
+      "classification": "La Niña"
+    },
+    {
+      "year": 1975,
+      "month": 10,
+      "season": "SON",
+      "anom": -1.43,
+      "classification": "La Niña"
+    },
+    {
+      "year": 1975,
+      "month": 11,
+      "season": "OND",
+      "anom": -1.55,
+      "classification": "La Niña"
+    },
+    {
+      "year": 1975,
+      "month": 12,
+      "season": "NDJ",
+      "anom": -1.65,
+      "classification": "La Niña"
+    },
+    {
+      "year": 1976,
+      "month": 1,
+      "season": "DJF",
+      "anom": -1.56,
+      "classification": "La Niña"
+    },
+    {
+      "year": 1976,
+      "month": 2,
+      "season": "JFM",
+      "anom": -1.17,
+      "classification": "La Niña"
+    },
+    {
+      "year": 1976,
+      "month": 3,
+      "season": "FMA",
+      "anom": -0.73,
+      "classification": "La Niña"
+    },
+    {
+      "year": 1976,
+      "month": 4,
+      "season": "MAM",
+      "anom": -0.47,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1976,
+      "month": 5,
+      "season": "AMJ",
+      "anom": -0.28,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1976,
+      "month": 6,
+      "season": "MJJ",
+      "anom": -0.05,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1976,
+      "month": 7,
+      "season": "JJA",
+      "anom": 0.18,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1976,
+      "month": 8,
+      "season": "JAS",
+      "anom": 0.35,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1976,
+      "month": 9,
+      "season": "ASO",
+      "anom": 0.62,
+      "classification": "El Niño"
+    },
+    {
+      "year": 1976,
+      "month": 10,
+      "season": "SON",
+      "anom": 0.81,
+      "classification": "El Niño"
+    },
+    {
+      "year": 1976,
+      "month": 11,
+      "season": "OND",
+      "anom": 0.86,
+      "classification": "El Niño"
+    },
+    {
+      "year": 1976,
+      "month": 12,
+      "season": "NDJ",
+      "anom": 0.85,
+      "classification": "El Niño"
+    },
+    {
+      "year": 1977,
+      "month": 1,
+      "season": "DJF",
+      "anom": 0.71,
+      "classification": "El Niño"
+    },
+    {
+      "year": 1977,
+      "month": 2,
+      "season": "JFM",
+      "anom": 0.64,
+      "classification": "El Niño"
+    },
+    {
+      "year": 1977,
+      "month": 3,
+      "season": "FMA",
+      "anom": 0.34,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1977,
+      "month": 4,
+      "season": "MAM",
+      "anom": 0.23,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1977,
+      "month": 5,
+      "season": "AMJ",
+      "anom": 0.21,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1977,
+      "month": 6,
+      "season": "MJJ",
+      "anom": 0.34,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1977,
+      "month": 7,
+      "season": "JJA",
+      "anom": 0.35,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1977,
+      "month": 8,
+      "season": "JAS",
+      "anom": 0.42,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1977,
+      "month": 9,
+      "season": "ASO",
+      "anom": 0.57,
+      "classification": "El Niño"
+    },
+    {
+      "year": 1977,
+      "month": 10,
+      "season": "SON",
+      "anom": 0.73,
+      "classification": "El Niño"
+    },
+    {
+      "year": 1977,
+      "month": 11,
+      "season": "OND",
+      "anom": 0.81,
+      "classification": "El Niño"
+    },
+    {
+      "year": 1977,
+      "month": 12,
+      "season": "NDJ",
+      "anom": 0.79,
+      "classification": "El Niño"
+    },
+    {
+      "year": 1978,
+      "month": 1,
+      "season": "DJF",
+      "anom": 0.69,
+      "classification": "El Niño"
+    },
+    {
+      "year": 1978,
+      "month": 2,
+      "season": "JFM",
+      "anom": 0.42,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1978,
+      "month": 3,
+      "season": "FMA",
+      "anom": 0.06,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1978,
+      "month": 4,
+      "season": "MAM",
+      "anom": -0.18,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1978,
+      "month": 5,
+      "season": "AMJ",
+      "anom": -0.31,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1978,
+      "month": 6,
+      "season": "MJJ",
+      "anom": -0.29,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1978,
+      "month": 7,
+      "season": "JJA",
+      "anom": -0.36,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1978,
+      "month": 8,
+      "season": "JAS",
+      "anom": -0.42,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1978,
+      "month": 9,
+      "season": "ASO",
+      "anom": -0.42,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1978,
+      "month": 10,
+      "season": "SON",
+      "anom": -0.29,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1978,
+      "month": 11,
+      "season": "OND",
+      "anom": -0.08,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1978,
+      "month": 12,
+      "season": "NDJ",
+      "anom": 0.0,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1979,
+      "month": 1,
+      "season": "DJF",
+      "anom": 0.03,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1979,
+      "month": 2,
+      "season": "JFM",
+      "anom": 0.07,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1979,
+      "month": 3,
+      "season": "FMA",
+      "anom": 0.2,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1979,
+      "month": 4,
+      "season": "MAM",
+      "anom": 0.28,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1979,
+      "month": 5,
+      "season": "AMJ",
+      "anom": 0.23,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1979,
+      "month": 6,
+      "season": "MJJ",
+      "anom": 0.05,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1979,
+      "month": 7,
+      "season": "JJA",
+      "anom": 0.04,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1979,
+      "month": 8,
+      "season": "JAS",
+      "anom": 0.17,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1979,
+      "month": 9,
+      "season": "ASO",
+      "anom": 0.33,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1979,
+      "month": 10,
+      "season": "SON",
+      "anom": 0.45,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1979,
+      "month": 11,
+      "season": "OND",
+      "anom": 0.52,
+      "classification": "El Niño"
+    },
+    {
+      "year": 1979,
+      "month": 12,
+      "season": "NDJ",
+      "anom": 0.64,
+      "classification": "El Niño"
+    },
+    {
+      "year": 1980,
+      "month": 1,
+      "season": "DJF",
+      "anom": 0.59,
+      "classification": "El Niño"
+    },
+    {
+      "year": 1980,
+      "month": 2,
+      "season": "JFM",
+      "anom": 0.46,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1980,
+      "month": 3,
+      "season": "FMA",
+      "anom": 0.34,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1980,
+      "month": 4,
+      "season": "MAM",
+      "anom": 0.38,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1980,
+      "month": 5,
+      "season": "AMJ",
+      "anom": 0.48,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1980,
+      "month": 6,
+      "season": "MJJ",
+      "anom": 0.46,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1980,
+      "month": 7,
+      "season": "JJA",
+      "anom": 0.25,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1980,
+      "month": 8,
+      "season": "JAS",
+      "anom": 0.03,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1980,
+      "month": 9,
+      "season": "ASO",
+      "anom": -0.07,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1980,
+      "month": 10,
+      "season": "SON",
+      "anom": 0.02,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1980,
+      "month": 11,
+      "season": "OND",
+      "anom": 0.11,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1980,
+      "month": 12,
+      "season": "NDJ",
+      "anom": -0.01,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1981,
+      "month": 1,
+      "season": "DJF",
+      "anom": -0.26,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1981,
+      "month": 2,
+      "season": "JFM",
+      "anom": -0.5,
+      "classification": "La Niña"
+    },
+    {
+      "year": 1981,
+      "month": 3,
+      "season": "FMA",
+      "anom": -0.47,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1981,
+      "month": 4,
+      "season": "MAM",
+      "anom": -0.37,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1981,
+      "month": 5,
+      "season": "AMJ",
+      "anom": -0.26,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1981,
+      "month": 6,
+      "season": "MJJ",
+      "anom": -0.29,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1981,
+      "month": 7,
+      "season": "JJA",
+      "anom": -0.3,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1981,
+      "month": 8,
+      "season": "JAS",
+      "anom": -0.25,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1981,
+      "month": 9,
+      "season": "ASO",
+      "anom": -0.16,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1981,
+      "month": 10,
+      "season": "SON",
+      "anom": -0.13,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1981,
+      "month": 11,
+      "season": "OND",
+      "anom": -0.15,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1981,
+      "month": 12,
+      "season": "NDJ",
+      "anom": -0.08,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1982,
+      "month": 1,
+      "season": "DJF",
+      "anom": -0.05,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1982,
+      "month": 2,
+      "season": "JFM",
+      "anom": 0.07,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1982,
+      "month": 3,
+      "season": "FMA",
+      "anom": 0.19,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1982,
+      "month": 4,
+      "season": "MAM",
+      "anom": 0.47,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1982,
+      "month": 5,
+      "season": "AMJ",
+      "anom": 0.66,
+      "classification": "El Niño"
+    },
+    {
+      "year": 1982,
+      "month": 6,
+      "season": "MJJ",
+      "anom": 0.72,
+      "classification": "El Niño"
+    },
+    {
+      "year": 1982,
+      "month": 7,
+      "season": "JJA",
+      "anom": 0.79,
+      "classification": "El Niño"
+    },
+    {
+      "year": 1982,
+      "month": 8,
+      "season": "JAS",
+      "anom": 1.07,
+      "classification": "El Niño"
+    },
+    {
+      "year": 1982,
+      "month": 9,
+      "season": "ASO",
+      "anom": 1.58,
+      "classification": "El Niño"
+    },
+    {
+      "year": 1982,
+      "month": 10,
+      "season": "SON",
+      "anom": 1.97,
+      "classification": "El Niño"
+    },
+    {
+      "year": 1982,
+      "month": 11,
+      "season": "OND",
+      "anom": 2.18,
+      "classification": "El Niño"
+    },
+    {
+      "year": 1982,
+      "month": 12,
+      "season": "NDJ",
+      "anom": 2.23,
+      "classification": "El Niño"
+    },
+    {
+      "year": 1983,
+      "month": 1,
+      "season": "DJF",
+      "anom": 2.18,
+      "classification": "El Niño"
+    },
+    {
+      "year": 1983,
+      "month": 2,
+      "season": "JFM",
+      "anom": 1.92,
+      "classification": "El Niño"
+    },
+    {
+      "year": 1983,
+      "month": 3,
+      "season": "FMA",
+      "anom": 1.54,
+      "classification": "El Niño"
+    },
+    {
+      "year": 1983,
+      "month": 4,
+      "season": "MAM",
+      "anom": 1.29,
+      "classification": "El Niño"
+    },
+    {
+      "year": 1983,
+      "month": 5,
+      "season": "AMJ",
+      "anom": 1.06,
+      "classification": "El Niño"
+    },
+    {
+      "year": 1983,
+      "month": 6,
+      "season": "MJJ",
+      "anom": 0.72,
+      "classification": "El Niño"
+    },
+    {
+      "year": 1983,
+      "month": 7,
+      "season": "JJA",
+      "anom": 0.31,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1983,
+      "month": 8,
+      "season": "JAS",
+      "anom": -0.08,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1983,
+      "month": 9,
+      "season": "ASO",
+      "anom": -0.46,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1983,
+      "month": 10,
+      "season": "SON",
+      "anom": -0.81,
+      "classification": "La Niña"
+    },
+    {
+      "year": 1983,
+      "month": 11,
+      "season": "OND",
+      "anom": -1.0,
+      "classification": "La Niña"
+    },
+    {
+      "year": 1983,
+      "month": 12,
+      "season": "NDJ",
+      "anom": -0.91,
+      "classification": "La Niña"
+    },
+    {
+      "year": 1984,
+      "month": 1,
+      "season": "DJF",
+      "anom": -0.6,
+      "classification": "La Niña"
+    },
+    {
+      "year": 1984,
+      "month": 2,
+      "season": "JFM",
+      "anom": -0.42,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1984,
+      "month": 3,
+      "season": "FMA",
+      "anom": -0.34,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1984,
+      "month": 4,
+      "season": "MAM",
+      "anom": -0.43,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1984,
+      "month": 5,
+      "season": "AMJ",
+      "anom": -0.51,
+      "classification": "La Niña"
+    },
+    {
+      "year": 1984,
+      "month": 6,
+      "season": "MJJ",
+      "anom": -0.45,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1984,
+      "month": 7,
+      "season": "JJA",
+      "anom": -0.3,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1984,
+      "month": 8,
+      "season": "JAS",
+      "anom": -0.16,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1984,
+      "month": 9,
+      "season": "ASO",
+      "anom": -0.24,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1984,
+      "month": 10,
+      "season": "SON",
+      "anom": -0.56,
+      "classification": "La Niña"
+    },
+    {
+      "year": 1984,
+      "month": 11,
+      "season": "OND",
+      "anom": -0.92,
+      "classification": "La Niña"
+    },
+    {
+      "year": 1984,
+      "month": 12,
+      "season": "NDJ",
+      "anom": -1.14,
+      "classification": "La Niña"
+    },
+    {
+      "year": 1985,
+      "month": 1,
+      "season": "DJF",
+      "anom": -1.04,
+      "classification": "La Niña"
+    },
+    {
+      "year": 1985,
+      "month": 2,
+      "season": "JFM",
+      "anom": -0.85,
+      "classification": "La Niña"
+    },
+    {
+      "year": 1985,
+      "month": 3,
+      "season": "FMA",
+      "anom": -0.77,
+      "classification": "La Niña"
+    },
+    {
+      "year": 1985,
+      "month": 4,
+      "season": "MAM",
+      "anom": -0.78,
+      "classification": "La Niña"
+    },
+    {
+      "year": 1985,
+      "month": 5,
+      "season": "AMJ",
+      "anom": -0.78,
+      "classification": "La Niña"
+    },
+    {
+      "year": 1985,
+      "month": 6,
+      "season": "MJJ",
+      "anom": -0.63,
+      "classification": "La Niña"
+    },
+    {
+      "year": 1985,
+      "month": 7,
+      "season": "JJA",
+      "anom": -0.49,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1985,
+      "month": 8,
+      "season": "JAS",
+      "anom": -0.46,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1985,
+      "month": 9,
+      "season": "ASO",
+      "anom": -0.4,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1985,
+      "month": 10,
+      "season": "SON",
+      "anom": -0.35,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1985,
+      "month": 11,
+      "season": "OND",
+      "anom": -0.27,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1985,
+      "month": 12,
+      "season": "NDJ",
+      "anom": -0.36,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1986,
+      "month": 1,
+      "season": "DJF",
+      "anom": -0.49,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1986,
+      "month": 2,
+      "season": "JFM",
+      "anom": -0.47,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1986,
+      "month": 3,
+      "season": "FMA",
+      "anom": -0.31,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1986,
+      "month": 4,
+      "season": "MAM",
+      "anom": -0.2,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1986,
+      "month": 5,
+      "season": "AMJ",
+      "anom": -0.12,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1986,
+      "month": 6,
+      "season": "MJJ",
+      "anom": -0.04,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1986,
+      "month": 7,
+      "season": "JJA",
+      "anom": 0.22,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1986,
+      "month": 8,
+      "season": "JAS",
+      "anom": 0.44,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1986,
+      "month": 9,
+      "season": "ASO",
+      "anom": 0.71,
+      "classification": "El Niño"
+    },
+    {
+      "year": 1986,
+      "month": 10,
+      "season": "SON",
+      "anom": 0.94,
+      "classification": "El Niño"
+    },
+    {
+      "year": 1986,
+      "month": 11,
+      "season": "OND",
+      "anom": 1.14,
+      "classification": "El Niño"
+    },
+    {
+      "year": 1986,
+      "month": 12,
+      "season": "NDJ",
+      "anom": 1.22,
+      "classification": "El Niño"
+    },
+    {
+      "year": 1987,
+      "month": 1,
+      "season": "DJF",
+      "anom": 1.23,
+      "classification": "El Niño"
+    },
+    {
+      "year": 1987,
+      "month": 2,
+      "season": "JFM",
+      "anom": 1.19,
+      "classification": "El Niño"
+    },
+    {
+      "year": 1987,
+      "month": 3,
+      "season": "FMA",
+      "anom": 1.06,
+      "classification": "El Niño"
+    },
+    {
+      "year": 1987,
+      "month": 4,
+      "season": "MAM",
+      "anom": 0.95,
+      "classification": "El Niño"
+    },
+    {
+      "year": 1987,
+      "month": 5,
+      "season": "AMJ",
+      "anom": 0.97,
+      "classification": "El Niño"
+    },
+    {
+      "year": 1987,
+      "month": 6,
+      "season": "MJJ",
+      "anom": 1.22,
+      "classification": "El Niño"
+    },
+    {
+      "year": 1987,
+      "month": 7,
+      "season": "JJA",
+      "anom": 1.51,
+      "classification": "El Niño"
+    },
+    {
+      "year": 1987,
+      "month": 8,
+      "season": "JAS",
+      "anom": 1.7,
+      "classification": "El Niño"
+    },
+    {
+      "year": 1987,
+      "month": 9,
+      "season": "ASO",
+      "anom": 1.65,
+      "classification": "El Niño"
+    },
+    {
+      "year": 1987,
+      "month": 10,
+      "season": "SON",
+      "anom": 1.48,
+      "classification": "El Niño"
+    },
+    {
+      "year": 1987,
+      "month": 11,
+      "season": "OND",
+      "anom": 1.25,
+      "classification": "El Niño"
+    },
+    {
+      "year": 1987,
+      "month": 12,
+      "season": "NDJ",
+      "anom": 1.11,
+      "classification": "El Niño"
+    },
+    {
+      "year": 1988,
+      "month": 1,
+      "season": "DJF",
+      "anom": 0.81,
+      "classification": "El Niño"
+    },
+    {
+      "year": 1988,
+      "month": 2,
+      "season": "JFM",
+      "anom": 0.54,
+      "classification": "El Niño"
+    },
+    {
+      "year": 1988,
+      "month": 3,
+      "season": "FMA",
+      "anom": 0.14,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1988,
+      "month": 4,
+      "season": "MAM",
+      "anom": -0.31,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1988,
+      "month": 5,
+      "season": "AMJ",
+      "anom": -0.88,
+      "classification": "La Niña"
+    },
+    {
+      "year": 1988,
+      "month": 6,
+      "season": "MJJ",
+      "anom": -1.3,
+      "classification": "La Niña"
+    },
+    {
+      "year": 1988,
+      "month": 7,
+      "season": "JJA",
+      "anom": -1.3,
+      "classification": "La Niña"
+    },
+    {
+      "year": 1988,
+      "month": 8,
+      "season": "JAS",
+      "anom": -1.11,
+      "classification": "La Niña"
+    },
+    {
+      "year": 1988,
+      "month": 9,
+      "season": "ASO",
+      "anom": -1.19,
+      "classification": "La Niña"
+    },
+    {
+      "year": 1988,
+      "month": 10,
+      "season": "SON",
+      "anom": -1.48,
+      "classification": "La Niña"
+    },
+    {
+      "year": 1988,
+      "month": 11,
+      "season": "OND",
+      "anom": -1.8,
+      "classification": "La Niña"
+    },
+    {
+      "year": 1988,
+      "month": 12,
+      "season": "NDJ",
+      "anom": -1.85,
+      "classification": "La Niña"
+    },
+    {
+      "year": 1989,
+      "month": 1,
+      "season": "DJF",
+      "anom": -1.69,
+      "classification": "La Niña"
+    },
+    {
+      "year": 1989,
+      "month": 2,
+      "season": "JFM",
+      "anom": -1.43,
+      "classification": "La Niña"
+    },
+    {
+      "year": 1989,
+      "month": 3,
+      "season": "FMA",
+      "anom": -1.08,
+      "classification": "La Niña"
+    },
+    {
+      "year": 1989,
+      "month": 4,
+      "season": "MAM",
+      "anom": -0.83,
+      "classification": "La Niña"
+    },
+    {
+      "year": 1989,
+      "month": 5,
+      "season": "AMJ",
+      "anom": -0.58,
+      "classification": "La Niña"
+    },
+    {
+      "year": 1989,
+      "month": 6,
+      "season": "MJJ",
+      "anom": -0.4,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1989,
+      "month": 7,
+      "season": "JJA",
+      "anom": -0.31,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1989,
+      "month": 8,
+      "season": "JAS",
+      "anom": -0.27,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1989,
+      "month": 9,
+      "season": "ASO",
+      "anom": -0.24,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1989,
+      "month": 10,
+      "season": "SON",
+      "anom": -0.22,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1989,
+      "month": 11,
+      "season": "OND",
+      "anom": -0.16,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1989,
+      "month": 12,
+      "season": "NDJ",
+      "anom": -0.05,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1990,
+      "month": 1,
+      "season": "DJF",
+      "anom": 0.14,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1990,
+      "month": 2,
+      "season": "JFM",
+      "anom": 0.21,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1990,
+      "month": 3,
+      "season": "FMA",
+      "anom": 0.28,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1990,
+      "month": 4,
+      "season": "MAM",
+      "anom": 0.29,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1990,
+      "month": 5,
+      "season": "AMJ",
+      "anom": 0.29,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1990,
+      "month": 6,
+      "season": "MJJ",
+      "anom": 0.31,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1990,
+      "month": 7,
+      "season": "JJA",
+      "anom": 0.33,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1990,
+      "month": 8,
+      "season": "JAS",
+      "anom": 0.38,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1990,
+      "month": 9,
+      "season": "ASO",
+      "anom": 0.39,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1990,
+      "month": 10,
+      "season": "SON",
+      "anom": 0.35,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1990,
+      "month": 11,
+      "season": "OND",
+      "anom": 0.4,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1990,
+      "month": 12,
+      "season": "NDJ",
+      "anom": 0.41,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1991,
+      "month": 1,
+      "season": "DJF",
+      "anom": 0.41,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1991,
+      "month": 2,
+      "season": "JFM",
+      "anom": 0.26,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1991,
+      "month": 3,
+      "season": "FMA",
+      "anom": 0.22,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1991,
+      "month": 4,
+      "season": "MAM",
+      "anom": 0.26,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1991,
+      "month": 5,
+      "season": "AMJ",
+      "anom": 0.45,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1991,
+      "month": 6,
+      "season": "MJJ",
+      "anom": 0.64,
+      "classification": "El Niño"
+    },
+    {
+      "year": 1991,
+      "month": 7,
+      "season": "JJA",
+      "anom": 0.73,
+      "classification": "El Niño"
+    },
+    {
+      "year": 1991,
+      "month": 8,
+      "season": "JAS",
+      "anom": 0.64,
+      "classification": "El Niño"
+    },
+    {
+      "year": 1991,
+      "month": 9,
+      "season": "ASO",
+      "anom": 0.62,
+      "classification": "El Niño"
+    },
+    {
+      "year": 1991,
+      "month": 10,
+      "season": "SON",
+      "anom": 0.79,
+      "classification": "El Niño"
+    },
+    {
+      "year": 1991,
+      "month": 11,
+      "season": "OND",
+      "anom": 1.21,
+      "classification": "El Niño"
+    },
+    {
+      "year": 1991,
+      "month": 12,
+      "season": "NDJ",
+      "anom": 1.53,
+      "classification": "El Niño"
+    },
+    {
+      "year": 1992,
+      "month": 1,
+      "season": "DJF",
+      "anom": 1.71,
+      "classification": "El Niño"
+    },
+    {
+      "year": 1992,
+      "month": 2,
+      "season": "JFM",
+      "anom": 1.63,
+      "classification": "El Niño"
+    },
+    {
+      "year": 1992,
+      "month": 3,
+      "season": "FMA",
+      "anom": 1.48,
+      "classification": "El Niño"
+    },
+    {
+      "year": 1992,
+      "month": 4,
+      "season": "MAM",
+      "anom": 1.29,
+      "classification": "El Niño"
+    },
+    {
+      "year": 1992,
+      "month": 5,
+      "season": "AMJ",
+      "anom": 1.06,
+      "classification": "El Niño"
+    },
+    {
+      "year": 1992,
+      "month": 6,
+      "season": "MJJ",
+      "anom": 0.73,
+      "classification": "El Niño"
+    },
+    {
+      "year": 1992,
+      "month": 7,
+      "season": "JJA",
+      "anom": 0.37,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1992,
+      "month": 8,
+      "season": "JAS",
+      "anom": 0.09,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1992,
+      "month": 9,
+      "season": "ASO",
+      "anom": -0.13,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1992,
+      "month": 10,
+      "season": "SON",
+      "anom": -0.25,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1992,
+      "month": 11,
+      "season": "OND",
+      "anom": -0.28,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1992,
+      "month": 12,
+      "season": "NDJ",
+      "anom": -0.13,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1993,
+      "month": 1,
+      "season": "DJF",
+      "anom": 0.09,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1993,
+      "month": 2,
+      "season": "JFM",
+      "anom": 0.3,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1993,
+      "month": 3,
+      "season": "FMA",
+      "anom": 0.5,
+      "classification": "El Niño"
+    },
+    {
+      "year": 1993,
+      "month": 4,
+      "season": "MAM",
+      "anom": 0.67,
+      "classification": "El Niño"
+    },
+    {
+      "year": 1993,
+      "month": 5,
+      "season": "AMJ",
+      "anom": 0.7,
+      "classification": "El Niño"
+    },
+    {
+      "year": 1993,
+      "month": 6,
+      "season": "MJJ",
+      "anom": 0.57,
+      "classification": "El Niño"
+    },
+    {
+      "year": 1993,
+      "month": 7,
+      "season": "JJA",
+      "anom": 0.32,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1993,
+      "month": 8,
+      "season": "JAS",
+      "anom": 0.25,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1993,
+      "month": 9,
+      "season": "ASO",
+      "anom": 0.15,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1993,
+      "month": 10,
+      "season": "SON",
+      "anom": 0.1,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1993,
+      "month": 11,
+      "season": "OND",
+      "anom": 0.04,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1993,
+      "month": 12,
+      "season": "NDJ",
+      "anom": 0.06,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1994,
+      "month": 1,
+      "season": "DJF",
+      "anom": 0.06,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1994,
+      "month": 2,
+      "season": "JFM",
+      "anom": 0.07,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1994,
+      "month": 3,
+      "season": "FMA",
+      "anom": 0.17,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1994,
+      "month": 4,
+      "season": "MAM",
+      "anom": 0.31,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1994,
+      "month": 5,
+      "season": "AMJ",
+      "anom": 0.42,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1994,
+      "month": 6,
+      "season": "MJJ",
+      "anom": 0.41,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1994,
+      "month": 7,
+      "season": "JJA",
+      "anom": 0.44,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1994,
+      "month": 8,
+      "season": "JAS",
+      "anom": 0.43,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1994,
+      "month": 9,
+      "season": "ASO",
+      "anom": 0.55,
+      "classification": "El Niño"
+    },
+    {
+      "year": 1994,
+      "month": 10,
+      "season": "SON",
+      "anom": 0.74,
+      "classification": "El Niño"
+    },
+    {
+      "year": 1994,
+      "month": 11,
+      "season": "OND",
+      "anom": 1.01,
+      "classification": "El Niño"
+    },
+    {
+      "year": 1994,
+      "month": 12,
+      "season": "NDJ",
+      "anom": 1.09,
+      "classification": "El Niño"
+    },
+    {
+      "year": 1995,
+      "month": 1,
+      "season": "DJF",
+      "anom": 0.96,
+      "classification": "El Niño"
+    },
+    {
+      "year": 1995,
+      "month": 2,
+      "season": "JFM",
+      "anom": 0.72,
+      "classification": "El Niño"
+    },
+    {
+      "year": 1995,
+      "month": 3,
+      "season": "FMA",
+      "anom": 0.53,
+      "classification": "El Niño"
+    },
+    {
+      "year": 1995,
+      "month": 4,
+      "season": "MAM",
+      "anom": 0.3,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1995,
+      "month": 5,
+      "season": "AMJ",
+      "anom": 0.14,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1995,
+      "month": 6,
+      "season": "MJJ",
+      "anom": -0.03,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1995,
+      "month": 7,
+      "season": "JJA",
+      "anom": -0.24,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1995,
+      "month": 8,
+      "season": "JAS",
+      "anom": -0.54,
+      "classification": "La Niña"
+    },
+    {
+      "year": 1995,
+      "month": 9,
+      "season": "ASO",
+      "anom": -0.81,
+      "classification": "La Niña"
+    },
+    {
+      "year": 1995,
+      "month": 10,
+      "season": "SON",
+      "anom": -0.97,
+      "classification": "La Niña"
+    },
+    {
+      "year": 1995,
+      "month": 11,
+      "season": "OND",
+      "anom": -1.0,
+      "classification": "La Niña"
+    },
+    {
+      "year": 1995,
+      "month": 12,
+      "season": "NDJ",
+      "anom": -0.98,
+      "classification": "La Niña"
+    },
+    {
+      "year": 1996,
+      "month": 1,
+      "season": "DJF",
+      "anom": -0.9,
+      "classification": "La Niña"
+    },
+    {
+      "year": 1996,
+      "month": 2,
+      "season": "JFM",
+      "anom": -0.75,
+      "classification": "La Niña"
+    },
+    {
+      "year": 1996,
+      "month": 3,
+      "season": "FMA",
+      "anom": -0.59,
+      "classification": "La Niña"
+    },
+    {
+      "year": 1996,
+      "month": 4,
+      "season": "MAM",
+      "anom": -0.39,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1996,
+      "month": 5,
+      "season": "AMJ",
+      "anom": -0.31,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1996,
+      "month": 6,
+      "season": "MJJ",
+      "anom": -0.3,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1996,
+      "month": 7,
+      "season": "JJA",
+      "anom": -0.27,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1996,
+      "month": 8,
+      "season": "JAS",
+      "anom": -0.32,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1996,
+      "month": 9,
+      "season": "ASO",
+      "anom": -0.35,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1996,
+      "month": 10,
+      "season": "SON",
+      "anom": -0.4,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1996,
+      "month": 11,
+      "season": "OND",
+      "anom": -0.45,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1996,
+      "month": 12,
+      "season": "NDJ",
+      "anom": -0.49,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1997,
+      "month": 1,
+      "season": "DJF",
+      "anom": -0.5,
+      "classification": "La Niña"
+    },
+    {
+      "year": 1997,
+      "month": 2,
+      "season": "JFM",
+      "anom": -0.36,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1997,
+      "month": 3,
+      "season": "FMA",
+      "anom": -0.1,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1997,
+      "month": 4,
+      "season": "MAM",
+      "anom": 0.28,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1997,
+      "month": 5,
+      "season": "AMJ",
+      "anom": 0.75,
+      "classification": "El Niño"
+    },
+    {
+      "year": 1997,
+      "month": 6,
+      "season": "MJJ",
+      "anom": 1.22,
+      "classification": "El Niño"
+    },
+    {
+      "year": 1997,
+      "month": 7,
+      "season": "JJA",
+      "anom": 1.6,
+      "classification": "El Niño"
+    },
+    {
+      "year": 1997,
+      "month": 8,
+      "season": "JAS",
+      "anom": 1.9,
+      "classification": "El Niño"
+    },
+    {
+      "year": 1997,
+      "month": 9,
+      "season": "ASO",
+      "anom": 2.14,
+      "classification": "El Niño"
+    },
+    {
+      "year": 1997,
+      "month": 10,
+      "season": "SON",
+      "anom": 2.33,
+      "classification": "El Niño"
+    },
+    {
+      "year": 1997,
+      "month": 11,
+      "season": "OND",
+      "anom": 2.4,
+      "classification": "El Niño"
+    },
+    {
+      "year": 1997,
+      "month": 12,
+      "season": "NDJ",
+      "anom": 2.39,
+      "classification": "El Niño"
+    },
+    {
+      "year": 1998,
+      "month": 1,
+      "season": "DJF",
+      "anom": 2.24,
+      "classification": "El Niño"
+    },
+    {
+      "year": 1998,
+      "month": 2,
+      "season": "JFM",
+      "anom": 1.93,
+      "classification": "El Niño"
+    },
+    {
+      "year": 1998,
+      "month": 3,
+      "season": "FMA",
+      "anom": 1.44,
+      "classification": "El Niño"
+    },
+    {
+      "year": 1998,
+      "month": 4,
+      "season": "MAM",
+      "anom": 0.99,
+      "classification": "El Niño"
+    },
+    {
+      "year": 1998,
+      "month": 5,
+      "season": "AMJ",
+      "anom": 0.45,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1998,
+      "month": 6,
+      "season": "MJJ",
+      "anom": -0.13,
+      "classification": "Neutral"
+    },
+    {
+      "year": 1998,
+      "month": 7,
+      "season": "JJA",
+      "anom": -0.78,
+      "classification": "La Niña"
+    },
+    {
+      "year": 1998,
+      "month": 8,
+      "season": "JAS",
+      "anom": -1.12,
+      "classification": "La Niña"
+    },
+    {
+      "year": 1998,
+      "month": 9,
+      "season": "ASO",
+      "anom": -1.31,
+      "classification": "La Niña"
+    },
+    {
+      "year": 1998,
+      "month": 10,
+      "season": "SON",
+      "anom": -1.35,
+      "classification": "La Niña"
+    },
+    {
+      "year": 1998,
+      "month": 11,
+      "season": "OND",
+      "anom": -1.48,
+      "classification": "La Niña"
+    },
+    {
+      "year": 1998,
+      "month": 12,
+      "season": "NDJ",
+      "anom": -1.57,
+      "classification": "La Niña"
+    },
+    {
+      "year": 1999,
+      "month": 1,
+      "season": "DJF",
+      "anom": -1.55,
+      "classification": "La Niña"
+    },
+    {
+      "year": 1999,
+      "month": 2,
+      "season": "JFM",
+      "anom": -1.3,
+      "classification": "La Niña"
+    },
+    {
+      "year": 1999,
+      "month": 3,
+      "season": "FMA",
+      "anom": -1.07,
+      "classification": "La Niña"
+    },
+    {
+      "year": 1999,
+      "month": 4,
+      "season": "MAM",
+      "anom": -0.98,
+      "classification": "La Niña"
+    },
+    {
+      "year": 1999,
+      "month": 5,
+      "season": "AMJ",
+      "anom": -1.02,
+      "classification": "La Niña"
+    },
+    {
+      "year": 1999,
+      "month": 6,
+      "season": "MJJ",
+      "anom": -1.04,
+      "classification": "La Niña"
+    },
+    {
+      "year": 1999,
+      "month": 7,
+      "season": "JJA",
+      "anom": -1.1,
+      "classification": "La Niña"
+    },
+    {
+      "year": 1999,
+      "month": 8,
+      "season": "JAS",
+      "anom": -1.11,
+      "classification": "La Niña"
+    },
+    {
+      "year": 1999,
+      "month": 9,
+      "season": "ASO",
+      "anom": -1.16,
+      "classification": "La Niña"
+    },
+    {
+      "year": 1999,
+      "month": 10,
+      "season": "SON",
+      "anom": -1.26,
+      "classification": "La Niña"
+    },
+    {
+      "year": 1999,
+      "month": 11,
+      "season": "OND",
+      "anom": -1.46,
+      "classification": "La Niña"
+    },
+    {
+      "year": 1999,
+      "month": 12,
+      "season": "NDJ",
+      "anom": -1.65,
+      "classification": "La Niña"
+    },
+    {
+      "year": 2000,
+      "month": 1,
+      "season": "DJF",
+      "anom": -1.66,
+      "classification": "La Niña"
+    },
+    {
+      "year": 2000,
+      "month": 2,
+      "season": "JFM",
+      "anom": -1.41,
+      "classification": "La Niña"
+    },
+    {
+      "year": 2000,
+      "month": 3,
+      "season": "FMA",
+      "anom": -1.07,
+      "classification": "La Niña"
+    },
+    {
+      "year": 2000,
+      "month": 4,
+      "season": "MAM",
+      "anom": -0.81,
+      "classification": "La Niña"
+    },
+    {
+      "year": 2000,
+      "month": 5,
+      "season": "AMJ",
+      "anom": -0.71,
+      "classification": "La Niña"
+    },
+    {
+      "year": 2000,
+      "month": 6,
+      "season": "MJJ",
+      "anom": -0.64,
+      "classification": "La Niña"
+    },
+    {
+      "year": 2000,
+      "month": 7,
+      "season": "JJA",
+      "anom": -0.55,
+      "classification": "La Niña"
+    },
+    {
+      "year": 2000,
+      "month": 8,
+      "season": "JAS",
+      "anom": -0.51,
+      "classification": "La Niña"
+    },
+    {
+      "year": 2000,
+      "month": 9,
+      "season": "ASO",
+      "anom": -0.55,
+      "classification": "La Niña"
+    },
+    {
+      "year": 2000,
+      "month": 10,
+      "season": "SON",
+      "anom": -0.63,
+      "classification": "La Niña"
+    },
+    {
+      "year": 2000,
+      "month": 11,
+      "season": "OND",
+      "anom": -0.75,
+      "classification": "La Niña"
+    },
+    {
+      "year": 2000,
+      "month": 12,
+      "season": "NDJ",
+      "anom": -0.74,
+      "classification": "La Niña"
+    },
+    {
+      "year": 2001,
+      "month": 1,
+      "season": "DJF",
+      "anom": -0.68,
+      "classification": "La Niña"
+    },
+    {
+      "year": 2001,
+      "month": 2,
+      "season": "JFM",
+      "anom": -0.52,
+      "classification": "La Niña"
+    },
+    {
+      "year": 2001,
+      "month": 3,
+      "season": "FMA",
+      "anom": -0.44,
+      "classification": "Neutral"
+    },
+    {
+      "year": 2001,
+      "month": 4,
+      "season": "MAM",
+      "anom": -0.34,
+      "classification": "Neutral"
+    },
+    {
+      "year": 2001,
+      "month": 5,
+      "season": "AMJ",
+      "anom": -0.25,
+      "classification": "Neutral"
+    },
+    {
+      "year": 2001,
+      "month": 6,
+      "season": "MJJ",
+      "anom": -0.12,
+      "classification": "Neutral"
+    },
+    {
+      "year": 2001,
+      "month": 7,
+      "season": "JJA",
+      "anom": -0.08,
+      "classification": "Neutral"
+    },
+    {
+      "year": 2001,
+      "month": 8,
+      "season": "JAS",
+      "anom": -0.13,
+      "classification": "Neutral"
+    },
+    {
+      "year": 2001,
+      "month": 9,
+      "season": "ASO",
+      "anom": -0.19,
+      "classification": "Neutral"
+    },
+    {
+      "year": 2001,
+      "month": 10,
+      "season": "SON",
+      "anom": -0.29,
+      "classification": "Neutral"
+    },
+    {
+      "year": 2001,
+      "month": 11,
+      "season": "OND",
+      "anom": -0.35,
+      "classification": "Neutral"
+    },
+    {
+      "year": 2001,
+      "month": 12,
+      "season": "NDJ",
+      "anom": -0.31,
+      "classification": "Neutral"
+    },
+    {
+      "year": 2002,
+      "month": 1,
+      "season": "DJF",
+      "anom": -0.15,
+      "classification": "Neutral"
+    },
+    {
+      "year": 2002,
+      "month": 2,
+      "season": "JFM",
+      "anom": 0.03,
+      "classification": "Neutral"
+    },
+    {
+      "year": 2002,
+      "month": 3,
+      "season": "FMA",
+      "anom": 0.09,
+      "classification": "Neutral"
+    },
+    {
+      "year": 2002,
+      "month": 4,
+      "season": "MAM",
+      "anom": 0.2,
+      "classification": "Neutral"
+    },
+    {
+      "year": 2002,
+      "month": 5,
+      "season": "AMJ",
+      "anom": 0.43,
+      "classification": "Neutral"
+    },
+    {
+      "year": 2002,
+      "month": 6,
+      "season": "MJJ",
+      "anom": 0.65,
+      "classification": "El Niño"
+    },
+    {
+      "year": 2002,
+      "month": 7,
+      "season": "JJA",
+      "anom": 0.79,
+      "classification": "El Niño"
+    },
+    {
+      "year": 2002,
+      "month": 8,
+      "season": "JAS",
+      "anom": 0.86,
+      "classification": "El Niño"
+    },
+    {
+      "year": 2002,
+      "month": 9,
+      "season": "ASO",
+      "anom": 1.01,
+      "classification": "El Niño"
+    },
+    {
+      "year": 2002,
+      "month": 10,
+      "season": "SON",
+      "anom": 1.21,
+      "classification": "El Niño"
+    },
+    {
+      "year": 2002,
+      "month": 11,
+      "season": "OND",
+      "anom": 1.31,
+      "classification": "El Niño"
+    },
+    {
+      "year": 2002,
+      "month": 12,
+      "season": "NDJ",
+      "anom": 1.14,
+      "classification": "El Niño"
+    },
+    {
+      "year": 2003,
+      "month": 1,
+      "season": "DJF",
+      "anom": 0.92,
+      "classification": "El Niño"
+    },
+    {
+      "year": 2003,
+      "month": 2,
+      "season": "JFM",
+      "anom": 0.63,
+      "classification": "El Niño"
+    },
+    {
+      "year": 2003,
+      "month": 3,
+      "season": "FMA",
+      "anom": 0.38,
+      "classification": "Neutral"
+    },
+    {
+      "year": 2003,
+      "month": 4,
+      "season": "MAM",
+      "anom": -0.04,
+      "classification": "Neutral"
+    },
+    {
+      "year": 2003,
+      "month": 5,
+      "season": "AMJ",
+      "anom": -0.26,
+      "classification": "Neutral"
+    },
+    {
+      "year": 2003,
+      "month": 6,
+      "season": "MJJ",
+      "anom": -0.16,
+      "classification": "Neutral"
+    },
+    {
+      "year": 2003,
+      "month": 7,
+      "season": "JJA",
+      "anom": 0.08,
+      "classification": "Neutral"
+    },
+    {
+      "year": 2003,
+      "month": 8,
+      "season": "JAS",
+      "anom": 0.21,
+      "classification": "Neutral"
+    },
+    {
+      "year": 2003,
+      "month": 9,
+      "season": "ASO",
+      "anom": 0.26,
+      "classification": "Neutral"
+    },
+    {
+      "year": 2003,
+      "month": 10,
+      "season": "SON",
+      "anom": 0.29,
+      "classification": "Neutral"
+    },
+    {
+      "year": 2003,
+      "month": 11,
+      "season": "OND",
+      "anom": 0.35,
+      "classification": "Neutral"
+    },
+    {
+      "year": 2003,
+      "month": 12,
+      "season": "NDJ",
+      "anom": 0.35,
+      "classification": "Neutral"
+    },
+    {
+      "year": 2004,
+      "month": 1,
+      "season": "DJF",
+      "anom": 0.37,
+      "classification": "Neutral"
+    },
+    {
+      "year": 2004,
+      "month": 2,
+      "season": "JFM",
+      "anom": 0.31,
+      "classification": "Neutral"
+    },
+    {
+      "year": 2004,
+      "month": 3,
+      "season": "FMA",
+      "anom": 0.23,
+      "classification": "Neutral"
+    },
+    {
+      "year": 2004,
+      "month": 4,
+      "season": "MAM",
+      "anom": 0.17,
+      "classification": "Neutral"
+    },
+    {
+      "year": 2004,
+      "month": 5,
+      "season": "AMJ",
+      "anom": 0.17,
+      "classification": "Neutral"
+    },
+    {
+      "year": 2004,
+      "month": 6,
+      "season": "MJJ",
+      "anom": 0.28,
+      "classification": "Neutral"
+    },
+    {
+      "year": 2004,
+      "month": 7,
+      "season": "JJA",
+      "anom": 0.47,
+      "classification": "Neutral"
+    },
+    {
+      "year": 2004,
+      "month": 8,
+      "season": "JAS",
+      "anom": 0.64,
+      "classification": "El Niño"
+    },
+    {
+      "year": 2004,
+      "month": 9,
+      "season": "ASO",
+      "anom": 0.7,
+      "classification": "El Niño"
+    },
+    {
+      "year": 2004,
+      "month": 10,
+      "season": "SON",
+      "anom": 0.67,
+      "classification": "El Niño"
+    },
+    {
+      "year": 2004,
+      "month": 11,
+      "season": "OND",
+      "anom": 0.66,
+      "classification": "El Niño"
+    },
+    {
+      "year": 2004,
+      "month": 12,
+      "season": "NDJ",
+      "anom": 0.69,
+      "classification": "El Niño"
+    },
+    {
+      "year": 2005,
+      "month": 1,
+      "season": "DJF",
+      "anom": 0.64,
+      "classification": "El Niño"
+    },
+    {
+      "year": 2005,
+      "month": 2,
+      "season": "JFM",
+      "anom": 0.58,
+      "classification": "El Niño"
+    },
+    {
+      "year": 2005,
+      "month": 3,
+      "season": "FMA",
+      "anom": 0.45,
+      "classification": "Neutral"
+    },
+    {
+      "year": 2005,
+      "month": 4,
+      "season": "MAM",
+      "anom": 0.43,
+      "classification": "Neutral"
+    },
+    {
+      "year": 2005,
+      "month": 5,
+      "season": "AMJ",
+      "anom": 0.29,
+      "classification": "Neutral"
+    },
+    {
+      "year": 2005,
+      "month": 6,
+      "season": "MJJ",
+      "anom": 0.11,
+      "classification": "Neutral"
+    },
+    {
+      "year": 2005,
+      "month": 7,
+      "season": "JJA",
+      "anom": -0.06,
+      "classification": "Neutral"
+    },
+    {
+      "year": 2005,
+      "month": 8,
+      "season": "JAS",
+      "anom": -0.14,
+      "classification": "Neutral"
+    },
+    {
+      "year": 2005,
+      "month": 9,
+      "season": "ASO",
+      "anom": -0.11,
+      "classification": "Neutral"
+    },
+    {
+      "year": 2005,
+      "month": 10,
+      "season": "SON",
+      "anom": -0.29,
+      "classification": "Neutral"
+    },
+    {
+      "year": 2005,
+      "month": 11,
+      "season": "OND",
+      "anom": -0.57,
+      "classification": "La Niña"
+    },
+    {
+      "year": 2005,
+      "month": 12,
+      "season": "NDJ",
+      "anom": -0.84,
+      "classification": "La Niña"
+    },
+    {
+      "year": 2006,
+      "month": 1,
+      "season": "DJF",
+      "anom": -0.85,
+      "classification": "La Niña"
+    },
+    {
+      "year": 2006,
+      "month": 2,
+      "season": "JFM",
+      "anom": -0.77,
+      "classification": "La Niña"
+    },
+    {
+      "year": 2006,
+      "month": 3,
+      "season": "FMA",
+      "anom": -0.57,
+      "classification": "La Niña"
+    },
+    {
+      "year": 2006,
+      "month": 4,
+      "season": "MAM",
+      "anom": -0.37,
+      "classification": "Neutral"
+    },
+    {
+      "year": 2006,
+      "month": 5,
+      "season": "AMJ",
+      "anom": -0.14,
+      "classification": "Neutral"
+    },
+    {
+      "year": 2006,
+      "month": 6,
+      "season": "MJJ",
+      "anom": -0.03,
+      "classification": "Neutral"
+    },
+    {
+      "year": 2006,
+      "month": 7,
+      "season": "JJA",
+      "anom": 0.1,
+      "classification": "Neutral"
+    },
+    {
+      "year": 2006,
+      "month": 8,
+      "season": "JAS",
+      "anom": 0.3,
+      "classification": "Neutral"
+    },
+    {
+      "year": 2006,
+      "month": 9,
+      "season": "ASO",
+      "anom": 0.54,
+      "classification": "El Niño"
+    },
+    {
+      "year": 2006,
+      "month": 10,
+      "season": "SON",
+      "anom": 0.77,
+      "classification": "El Niño"
+    },
+    {
+      "year": 2006,
+      "month": 11,
+      "season": "OND",
+      "anom": 0.94,
+      "classification": "El Niño"
+    },
+    {
+      "year": 2006,
+      "month": 12,
+      "season": "NDJ",
+      "anom": 0.94,
+      "classification": "El Niño"
+    },
+    {
+      "year": 2007,
+      "month": 1,
+      "season": "DJF",
+      "anom": 0.66,
+      "classification": "El Niño"
+    },
+    {
+      "year": 2007,
+      "month": 2,
+      "season": "JFM",
+      "anom": 0.22,
+      "classification": "Neutral"
+    },
+    {
+      "year": 2007,
+      "month": 3,
+      "season": "FMA",
+      "anom": -0.12,
+      "classification": "Neutral"
+    },
+    {
+      "year": 2007,
+      "month": 4,
+      "season": "MAM",
+      "anom": -0.32,
+      "classification": "Neutral"
+    },
+    {
+      "year": 2007,
+      "month": 5,
+      "season": "AMJ",
+      "anom": -0.38,
+      "classification": "Neutral"
+    },
+    {
+      "year": 2007,
+      "month": 6,
+      "season": "MJJ",
+      "anom": -0.47,
+      "classification": "Neutral"
+    },
+    {
+      "year": 2007,
+      "month": 7,
+      "season": "JJA",
+      "anom": -0.56,
+      "classification": "La Niña"
+    },
+    {
+      "year": 2007,
+      "month": 8,
+      "season": "JAS",
+      "anom": -0.81,
+      "classification": "La Niña"
+    },
+    {
+      "year": 2007,
+      "month": 9,
+      "season": "ASO",
+      "anom": -1.07,
+      "classification": "La Niña"
+    },
+    {
+      "year": 2007,
+      "month": 10,
+      "season": "SON",
+      "anom": -1.34,
+      "classification": "La Niña"
+    },
+    {
+      "year": 2007,
+      "month": 11,
+      "season": "OND",
+      "anom": -1.5,
+      "classification": "La Niña"
+    },
+    {
+      "year": 2007,
+      "month": 12,
+      "season": "NDJ",
+      "anom": -1.6,
+      "classification": "La Niña"
+    },
+    {
+      "year": 2008,
+      "month": 1,
+      "season": "DJF",
+      "anom": -1.64,
+      "classification": "La Niña"
+    },
+    {
+      "year": 2008,
+      "month": 2,
+      "season": "JFM",
+      "anom": -1.52,
+      "classification": "La Niña"
+    },
+    {
+      "year": 2008,
+      "month": 3,
+      "season": "FMA",
+      "anom": -1.29,
+      "classification": "La Niña"
+    },
+    {
+      "year": 2008,
+      "month": 4,
+      "season": "MAM",
+      "anom": -1.01,
+      "classification": "La Niña"
+    },
+    {
+      "year": 2008,
+      "month": 5,
+      "season": "AMJ",
+      "anom": -0.84,
+      "classification": "La Niña"
+    },
+    {
+      "year": 2008,
+      "month": 6,
+      "season": "MJJ",
+      "anom": -0.61,
+      "classification": "La Niña"
+    },
+    {
+      "year": 2008,
+      "month": 7,
+      "season": "JJA",
+      "anom": -0.37,
+      "classification": "Neutral"
+    },
+    {
+      "year": 2008,
+      "month": 8,
+      "season": "JAS",
+      "anom": -0.23,
+      "classification": "Neutral"
+    },
+    {
+      "year": 2008,
+      "month": 9,
+      "season": "ASO",
+      "anom": -0.24,
+      "classification": "Neutral"
+    },
+    {
+      "year": 2008,
+      "month": 10,
+      "season": "SON",
+      "anom": -0.35,
+      "classification": "Neutral"
+    },
+    {
+      "year": 2008,
+      "month": 11,
+      "season": "OND",
+      "anom": -0.55,
+      "classification": "La Niña"
+    },
+    {
+      "year": 2008,
+      "month": 12,
+      "season": "NDJ",
+      "anom": -0.73,
+      "classification": "La Niña"
+    },
+    {
+      "year": 2009,
+      "month": 1,
+      "season": "DJF",
+      "anom": -0.85,
+      "classification": "La Niña"
+    },
+    {
+      "year": 2009,
+      "month": 2,
+      "season": "JFM",
+      "anom": -0.79,
+      "classification": "La Niña"
+    },
+    {
+      "year": 2009,
+      "month": 3,
+      "season": "FMA",
+      "anom": -0.61,
+      "classification": "La Niña"
+    },
+    {
+      "year": 2009,
+      "month": 4,
+      "season": "MAM",
+      "anom": -0.33,
+      "classification": "Neutral"
+    },
+    {
+      "year": 2009,
+      "month": 5,
+      "season": "AMJ",
+      "anom": 0.01,
+      "classification": "Neutral"
+    },
+    {
+      "year": 2009,
+      "month": 6,
+      "season": "MJJ",
+      "anom": 0.28,
+      "classification": "Neutral"
+    },
+    {
+      "year": 2009,
+      "month": 7,
+      "season": "JJA",
+      "anom": 0.45,
+      "classification": "Neutral"
+    },
+    {
+      "year": 2009,
+      "month": 8,
+      "season": "JAS",
+      "anom": 0.58,
+      "classification": "El Niño"
+    },
+    {
+      "year": 2009,
+      "month": 9,
+      "season": "ASO",
+      "anom": 0.71,
+      "classification": "El Niño"
+    },
+    {
+      "year": 2009,
+      "month": 10,
+      "season": "SON",
+      "anom": 1.01,
+      "classification": "El Niño"
+    },
+    {
+      "year": 2009,
+      "month": 11,
+      "season": "OND",
+      "anom": 1.36,
+      "classification": "El Niño"
+    },
+    {
+      "year": 2009,
+      "month": 12,
+      "season": "NDJ",
+      "anom": 1.56,
+      "classification": "El Niño"
+    },
+    {
+      "year": 2010,
+      "month": 1,
+      "season": "DJF",
+      "anom": 1.5,
+      "classification": "El Niño"
+    },
+    {
+      "year": 2010,
+      "month": 2,
+      "season": "JFM",
+      "anom": 1.22,
+      "classification": "El Niño"
+    },
+    {
+      "year": 2010,
+      "month": 3,
+      "season": "FMA",
+      "anom": 0.84,
+      "classification": "El Niño"
+    },
+    {
+      "year": 2010,
+      "month": 4,
+      "season": "MAM",
+      "anom": 0.35,
+      "classification": "Neutral"
+    },
+    {
+      "year": 2010,
+      "month": 5,
+      "season": "AMJ",
+      "anom": -0.17,
+      "classification": "Neutral"
+    },
+    {
+      "year": 2010,
+      "month": 6,
+      "season": "MJJ",
+      "anom": -0.66,
+      "classification": "La Niña"
+    },
+    {
+      "year": 2010,
+      "month": 7,
+      "season": "JJA",
+      "anom": -1.05,
+      "classification": "La Niña"
+    },
+    {
+      "year": 2010,
+      "month": 8,
+      "season": "JAS",
+      "anom": -1.35,
+      "classification": "La Niña"
+    },
+    {
+      "year": 2010,
+      "month": 9,
+      "season": "ASO",
+      "anom": -1.56,
+      "classification": "La Niña"
+    },
+    {
+      "year": 2010,
+      "month": 10,
+      "season": "SON",
+      "anom": -1.64,
+      "classification": "La Niña"
+    },
+    {
+      "year": 2010,
+      "month": 11,
+      "season": "OND",
+      "anom": -1.64,
+      "classification": "La Niña"
+    },
+    {
+      "year": 2010,
+      "month": 12,
+      "season": "NDJ",
+      "anom": -1.54,
+      "classification": "La Niña"
+    },
+    {
+      "year": 2011,
+      "month": 1,
+      "season": "DJF",
+      "anom": -1.31,
+      "classification": "La Niña"
+    },
+    {
+      "year": 2011,
+      "month": 2,
+      "season": "JFM",
+      "anom": -1.04,
+      "classification": "La Niña"
+    },
+    {
+      "year": 2011,
+      "month": 3,
+      "season": "FMA",
+      "anom": -0.8,
+      "classification": "La Niña"
+    },
+    {
+      "year": 2011,
+      "month": 4,
+      "season": "MAM",
+      "anom": -0.62,
+      "classification": "La Niña"
+    },
+    {
+      "year": 2011,
+      "month": 5,
+      "season": "AMJ",
+      "anom": -0.46,
+      "classification": "Neutral"
+    },
+    {
+      "year": 2011,
+      "month": 6,
+      "season": "MJJ",
+      "anom": -0.37,
+      "classification": "Neutral"
+    },
+    {
+      "year": 2011,
+      "month": 7,
+      "season": "JJA",
+      "anom": -0.43,
+      "classification": "Neutral"
+    },
+    {
+      "year": 2011,
+      "month": 8,
+      "season": "JAS",
+      "anom": -0.58,
+      "classification": "La Niña"
+    },
+    {
+      "year": 2011,
+      "month": 9,
+      "season": "ASO",
+      "anom": -0.79,
+      "classification": "La Niña"
+    },
+    {
+      "year": 2011,
+      "month": 10,
+      "season": "SON",
+      "anom": -0.96,
+      "classification": "La Niña"
+    },
+    {
+      "year": 2011,
+      "month": 11,
+      "season": "OND",
+      "anom": -1.02,
+      "classification": "La Niña"
+    },
+    {
+      "year": 2011,
+      "month": 12,
+      "season": "NDJ",
+      "anom": -0.92,
+      "classification": "La Niña"
+    },
+    {
+      "year": 2012,
+      "month": 1,
+      "season": "DJF",
+      "anom": -0.72,
+      "classification": "La Niña"
+    },
+    {
+      "year": 2012,
+      "month": 2,
+      "season": "JFM",
+      "anom": -0.57,
+      "classification": "La Niña"
+    },
+    {
+      "year": 2012,
+      "month": 3,
+      "season": "FMA",
+      "anom": -0.46,
+      "classification": "Neutral"
+    },
+    {
+      "year": 2012,
+      "month": 4,
+      "season": "MAM",
+      "anom": -0.36,
+      "classification": "Neutral"
+    },
+    {
+      "year": 2012,
+      "month": 5,
+      "season": "AMJ",
+      "anom": -0.17,
+      "classification": "Neutral"
+    },
+    {
+      "year": 2012,
+      "month": 6,
+      "season": "MJJ",
+      "anom": 0.06,
+      "classification": "Neutral"
+    },
+    {
+      "year": 2012,
+      "month": 7,
+      "season": "JJA",
+      "anom": 0.3,
+      "classification": "Neutral"
+    },
+    {
+      "year": 2012,
+      "month": 8,
+      "season": "JAS",
+      "anom": 0.41,
+      "classification": "Neutral"
+    },
+    {
+      "year": 2012,
+      "month": 9,
+      "season": "ASO",
+      "anom": 0.41,
+      "classification": "Neutral"
+    },
+    {
+      "year": 2012,
+      "month": 10,
+      "season": "SON",
+      "anom": 0.31,
+      "classification": "Neutral"
+    },
+    {
+      "year": 2012,
+      "month": 11,
+      "season": "OND",
+      "anom": 0.13,
+      "classification": "Neutral"
+    },
+    {
+      "year": 2012,
+      "month": 12,
+      "season": "NDJ",
+      "anom": -0.1,
+      "classification": "Neutral"
+    },
+    {
+      "year": 2013,
+      "month": 1,
+      "season": "DJF",
+      "anom": -0.29,
+      "classification": "Neutral"
+    },
+    {
+      "year": 2013,
+      "month": 2,
+      "season": "JFM",
+      "anom": -0.29,
+      "classification": "Neutral"
+    },
+    {
+      "year": 2013,
+      "month": 3,
+      "season": "FMA",
+      "anom": -0.21,
+      "classification": "Neutral"
+    },
+    {
+      "year": 2013,
+      "month": 4,
+      "season": "MAM",
+      "anom": -0.19,
+      "classification": "Neutral"
+    },
+    {
+      "year": 2013,
+      "month": 5,
+      "season": "AMJ",
+      "anom": -0.27,
+      "classification": "Neutral"
+    },
+    {
+      "year": 2013,
+      "month": 6,
+      "season": "MJJ",
+      "anom": -0.34,
+      "classification": "Neutral"
+    },
+    {
+      "year": 2013,
+      "month": 7,
+      "season": "JJA",
+      "anom": -0.35,
+      "classification": "Neutral"
+    },
+    {
+      "year": 2013,
+      "month": 8,
+      "season": "JAS",
+      "anom": -0.28,
+      "classification": "Neutral"
+    },
+    {
+      "year": 2013,
+      "month": 9,
+      "season": "ASO",
+      "anom": -0.21,
+      "classification": "Neutral"
+    },
+    {
+      "year": 2013,
+      "month": 10,
+      "season": "SON",
+      "anom": -0.13,
+      "classification": "Neutral"
+    },
+    {
+      "year": 2013,
+      "month": 11,
+      "season": "OND",
+      "anom": -0.1,
+      "classification": "Neutral"
+    },
+    {
+      "year": 2013,
+      "month": 12,
+      "season": "NDJ",
+      "anom": -0.15,
+      "classification": "Neutral"
+    },
+    {
+      "year": 2014,
+      "month": 1,
+      "season": "DJF",
+      "anom": -0.28,
+      "classification": "Neutral"
+    },
+    {
+      "year": 2014,
+      "month": 2,
+      "season": "JFM",
+      "anom": -0.32,
+      "classification": "Neutral"
+    },
+    {
+      "year": 2014,
+      "month": 3,
+      "season": "FMA",
+      "anom": -0.14,
+      "classification": "Neutral"
+    },
+    {
+      "year": 2014,
+      "month": 4,
+      "season": "MAM",
+      "anom": 0.15,
+      "classification": "Neutral"
+    },
+    {
+      "year": 2014,
+      "month": 5,
+      "season": "AMJ",
+      "anom": 0.31,
+      "classification": "Neutral"
+    },
+    {
+      "year": 2014,
+      "month": 6,
+      "season": "MJJ",
+      "anom": 0.23,
+      "classification": "Neutral"
+    },
+    {
+      "year": 2014,
+      "month": 7,
+      "season": "JJA",
+      "anom": 0.1,
+      "classification": "Neutral"
+    },
+    {
+      "year": 2014,
+      "month": 8,
+      "season": "JAS",
+      "anom": 0.11,
+      "classification": "Neutral"
+    },
+    {
+      "year": 2014,
+      "month": 9,
+      "season": "ASO",
+      "anom": 0.28,
+      "classification": "Neutral"
+    },
+    {
+      "year": 2014,
+      "month": 10,
+      "season": "SON",
+      "anom": 0.54,
+      "classification": "El Niño"
+    },
+    {
+      "year": 2014,
+      "month": 11,
+      "season": "OND",
+      "anom": 0.71,
+      "classification": "El Niño"
+    },
+    {
+      "year": 2014,
+      "month": 12,
+      "season": "NDJ",
+      "anom": 0.77,
+      "classification": "El Niño"
+    },
+    {
+      "year": 2015,
+      "month": 1,
+      "season": "DJF",
+      "anom": 0.69,
+      "classification": "El Niño"
+    },
+    {
+      "year": 2015,
+      "month": 2,
+      "season": "JFM",
+      "anom": 0.61,
+      "classification": "El Niño"
+    },
+    {
+      "year": 2015,
+      "month": 3,
+      "season": "FMA",
+      "anom": 0.65,
+      "classification": "El Niño"
+    },
+    {
+      "year": 2015,
+      "month": 4,
+      "season": "MAM",
+      "anom": 0.81,
+      "classification": "El Niño"
+    },
+    {
+      "year": 2015,
+      "month": 5,
+      "season": "AMJ",
+      "anom": 1.02,
+      "classification": "El Niño"
+    },
+    {
+      "year": 2015,
+      "month": 6,
+      "season": "MJJ",
+      "anom": 1.25,
+      "classification": "El Niño"
+    },
+    {
+      "year": 2015,
+      "month": 7,
+      "season": "JJA",
+      "anom": 1.57,
+      "classification": "El Niño"
+    },
+    {
+      "year": 2015,
+      "month": 8,
+      "season": "JAS",
+      "anom": 1.91,
+      "classification": "El Niño"
+    },
+    {
+      "year": 2015,
+      "month": 9,
+      "season": "ASO",
+      "anom": 2.21,
+      "classification": "El Niño"
+    },
+    {
+      "year": 2015,
+      "month": 10,
+      "season": "SON",
+      "anom": 2.47,
+      "classification": "El Niño"
+    },
+    {
+      "year": 2015,
+      "month": 11,
+      "season": "OND",
+      "anom": 2.64,
+      "classification": "El Niño"
+    },
+    {
+      "year": 2015,
+      "month": 12,
+      "season": "NDJ",
+      "anom": 2.75,
+      "classification": "El Niño"
+    },
+    {
+      "year": 2016,
+      "month": 1,
+      "season": "DJF",
+      "anom": 2.63,
+      "classification": "El Niño"
+    },
+    {
+      "year": 2016,
+      "month": 2,
+      "season": "JFM",
+      "anom": 2.28,
+      "classification": "El Niño"
+    },
+    {
+      "year": 2016,
+      "month": 3,
+      "season": "FMA",
+      "anom": 1.71,
+      "classification": "El Niño"
+    },
+    {
+      "year": 2016,
+      "month": 4,
+      "season": "MAM",
+      "anom": 1.05,
+      "classification": "El Niño"
+    },
+    {
+      "year": 2016,
+      "month": 5,
+      "season": "AMJ",
+      "anom": 0.49,
+      "classification": "Neutral"
+    },
+    {
+      "year": 2016,
+      "month": 6,
+      "season": "MJJ",
+      "anom": 0.0,
+      "classification": "Neutral"
+    },
+    {
+      "year": 2016,
+      "month": 7,
+      "season": "JJA",
+      "anom": -0.31,
+      "classification": "Neutral"
+    },
+    {
+      "year": 2016,
+      "month": 8,
+      "season": "JAS",
+      "anom": -0.5,
+      "classification": "La Niña"
+    },
+    {
+      "year": 2016,
+      "month": 9,
+      "season": "ASO",
+      "anom": -0.58,
+      "classification": "La Niña"
+    },
+    {
+      "year": 2016,
+      "month": 10,
+      "season": "SON",
+      "anom": -0.64,
+      "classification": "La Niña"
+    },
+    {
+      "year": 2016,
+      "month": 11,
+      "season": "OND",
+      "anom": -0.6,
+      "classification": "La Niña"
+    },
+    {
+      "year": 2016,
+      "month": 12,
+      "season": "NDJ",
+      "anom": -0.45,
+      "classification": "Neutral"
+    },
+    {
+      "year": 2017,
+      "month": 1,
+      "season": "DJF",
+      "anom": -0.19,
+      "classification": "Neutral"
+    },
+    {
+      "year": 2017,
+      "month": 2,
+      "season": "JFM",
+      "anom": -0.02,
+      "classification": "Neutral"
+    },
+    {
+      "year": 2017,
+      "month": 3,
+      "season": "FMA",
+      "anom": 0.18,
+      "classification": "Neutral"
+    },
+    {
+      "year": 2017,
+      "month": 4,
+      "season": "MAM",
+      "anom": 0.31,
+      "classification": "Neutral"
+    },
+    {
+      "year": 2017,
+      "month": 5,
+      "season": "AMJ",
+      "anom": 0.4,
+      "classification": "Neutral"
+    },
+    {
+      "year": 2017,
+      "month": 6,
+      "season": "MJJ",
+      "anom": 0.39,
+      "classification": "Neutral"
+    },
+    {
+      "year": 2017,
+      "month": 7,
+      "season": "JJA",
+      "anom": 0.19,
+      "classification": "Neutral"
+    },
+    {
+      "year": 2017,
+      "month": 8,
+      "season": "JAS",
+      "anom": -0.07,
+      "classification": "Neutral"
+    },
+    {
+      "year": 2017,
+      "month": 9,
+      "season": "ASO",
+      "anom": -0.34,
+      "classification": "Neutral"
+    },
+    {
+      "year": 2017,
+      "month": 10,
+      "season": "SON",
+      "anom": -0.6,
+      "classification": "La Niña"
+    },
+    {
+      "year": 2017,
+      "month": 11,
+      "season": "OND",
+      "anom": -0.77,
+      "classification": "La Niña"
+    },
+    {
+      "year": 2017,
+      "month": 12,
+      "season": "NDJ",
+      "anom": -0.86,
+      "classification": "La Niña"
+    },
+    {
+      "year": 2018,
+      "month": 1,
+      "season": "DJF",
+      "anom": -0.77,
+      "classification": "La Niña"
+    },
+    {
+      "year": 2018,
+      "month": 2,
+      "season": "JFM",
+      "anom": -0.71,
+      "classification": "La Niña"
+    },
+    {
+      "year": 2018,
+      "month": 3,
+      "season": "FMA",
+      "anom": -0.57,
+      "classification": "La Niña"
+    },
+    {
+      "year": 2018,
+      "month": 4,
+      "season": "MAM",
+      "anom": -0.39,
+      "classification": "Neutral"
+    },
+    {
+      "year": 2018,
+      "month": 5,
+      "season": "AMJ",
+      "anom": -0.13,
+      "classification": "Neutral"
+    },
+    {
+      "year": 2018,
+      "month": 6,
+      "season": "MJJ",
+      "anom": 0.06,
+      "classification": "Neutral"
+    },
+    {
+      "year": 2018,
+      "month": 7,
+      "season": "JJA",
+      "anom": 0.14,
+      "classification": "Neutral"
+    },
+    {
+      "year": 2018,
+      "month": 8,
+      "season": "JAS",
+      "anom": 0.27,
+      "classification": "Neutral"
+    },
+    {
+      "year": 2018,
+      "month": 9,
+      "season": "ASO",
+      "anom": 0.53,
+      "classification": "El Niño"
+    },
+    {
+      "year": 2018,
+      "month": 10,
+      "season": "SON",
+      "anom": 0.81,
+      "classification": "El Niño"
+    },
+    {
+      "year": 2018,
+      "month": 11,
+      "season": "OND",
+      "anom": 0.97,
+      "classification": "El Niño"
+    },
+    {
+      "year": 2018,
+      "month": 12,
+      "season": "NDJ",
+      "anom": 0.92,
+      "classification": "El Niño"
+    },
+    {
+      "year": 2019,
+      "month": 1,
+      "season": "DJF",
+      "anom": 0.89,
+      "classification": "El Niño"
+    },
+    {
+      "year": 2019,
+      "month": 2,
+      "season": "JFM",
+      "anom": 0.86,
+      "classification": "El Niño"
+    },
+    {
+      "year": 2019,
+      "month": 3,
+      "season": "FMA",
+      "anom": 0.84,
+      "classification": "El Niño"
+    },
+    {
+      "year": 2019,
+      "month": 4,
+      "season": "MAM",
+      "anom": 0.77,
+      "classification": "El Niño"
+    },
+    {
+      "year": 2019,
+      "month": 5,
+      "season": "AMJ",
+      "anom": 0.64,
+      "classification": "El Niño"
+    },
+    {
+      "year": 2019,
+      "month": 6,
+      "season": "MJJ",
+      "anom": 0.52,
+      "classification": "El Niño"
+    },
+    {
+      "year": 2019,
+      "month": 7,
+      "season": "JJA",
+      "anom": 0.33,
+      "classification": "Neutral"
+    },
+    {
+      "year": 2019,
+      "month": 8,
+      "season": "JAS",
+      "anom": 0.19,
+      "classification": "Neutral"
+    },
+    {
+      "year": 2019,
+      "month": 9,
+      "season": "ASO",
+      "anom": 0.23,
+      "classification": "Neutral"
+    },
+    {
+      "year": 2019,
+      "month": 10,
+      "season": "SON",
+      "anom": 0.39,
+      "classification": "Neutral"
+    },
+    {
+      "year": 2019,
+      "month": 11,
+      "season": "OND",
+      "anom": 0.58,
+      "classification": "El Niño"
+    },
+    {
+      "year": 2019,
+      "month": 12,
+      "season": "NDJ",
+      "anom": 0.66,
+      "classification": "El Niño"
+    },
+    {
+      "year": 2020,
+      "month": 1,
+      "season": "DJF",
+      "anom": 0.64,
+      "classification": "El Niño"
+    },
+    {
+      "year": 2020,
+      "month": 2,
+      "season": "JFM",
+      "anom": 0.63,
+      "classification": "El Niño"
+    },
+    {
+      "year": 2020,
+      "month": 3,
+      "season": "FMA",
+      "anom": 0.53,
+      "classification": "El Niño"
+    },
+    {
+      "year": 2020,
+      "month": 4,
+      "season": "MAM",
+      "anom": 0.3,
+      "classification": "Neutral"
+    },
+    {
+      "year": 2020,
+      "month": 5,
+      "season": "AMJ",
+      "anom": 0.01,
+      "classification": "Neutral"
+    },
+    {
+      "year": 2020,
+      "month": 6,
+      "season": "MJJ",
+      "anom": -0.23,
+      "classification": "Neutral"
+    },
+    {
+      "year": 2020,
+      "month": 7,
+      "season": "JJA",
+      "anom": -0.36,
+      "classification": "Neutral"
+    },
+    {
+      "year": 2020,
+      "month": 8,
+      "season": "JAS",
+      "anom": -0.53,
+      "classification": "La Niña"
+    },
+    {
+      "year": 2020,
+      "month": 9,
+      "season": "ASO",
+      "anom": -0.85,
+      "classification": "La Niña"
+    },
+    {
+      "year": 2020,
+      "month": 10,
+      "season": "SON",
+      "anom": -1.12,
+      "classification": "La Niña"
+    },
+    {
+      "year": 2020,
+      "month": 11,
+      "season": "OND",
+      "anom": -1.2,
+      "classification": "La Niña"
+    },
+    {
+      "year": 2020,
+      "month": 12,
+      "season": "NDJ",
+      "anom": -1.08,
+      "classification": "La Niña"
+    },
+    {
+      "year": 2021,
+      "month": 1,
+      "season": "DJF",
+      "anom": -0.91,
+      "classification": "La Niña"
+    },
+    {
+      "year": 2021,
+      "month": 2,
+      "season": "JFM",
+      "anom": -0.79,
+      "classification": "La Niña"
+    },
+    {
+      "year": 2021,
+      "month": 3,
+      "season": "FMA",
+      "anom": -0.71,
+      "classification": "La Niña"
+    },
+    {
+      "year": 2021,
+      "month": 4,
+      "season": "MAM",
+      "anom": -0.55,
+      "classification": "La Niña"
+    },
+    {
+      "year": 2021,
+      "month": 5,
+      "season": "AMJ",
+      "anom": -0.39,
+      "classification": "Neutral"
+    },
+    {
+      "year": 2021,
+      "month": 6,
+      "season": "MJJ",
+      "anom": -0.3,
+      "classification": "Neutral"
+    },
+    {
+      "year": 2021,
+      "month": 7,
+      "season": "JJA",
+      "anom": -0.35,
+      "classification": "Neutral"
+    },
+    {
+      "year": 2021,
+      "month": 8,
+      "season": "JAS",
+      "anom": -0.45,
+      "classification": "Neutral"
+    },
+    {
+      "year": 2021,
+      "month": 9,
+      "season": "ASO",
+      "anom": -0.63,
+      "classification": "La Niña"
+    },
+    {
+      "year": 2021,
+      "month": 10,
+      "season": "SON",
+      "anom": -0.76,
+      "classification": "La Niña"
+    },
+    {
+      "year": 2021,
+      "month": 11,
+      "season": "OND",
+      "anom": -0.91,
+      "classification": "La Niña"
+    },
+    {
+      "year": 2021,
+      "month": 12,
+      "season": "NDJ",
+      "anom": -0.87,
+      "classification": "La Niña"
+    },
+    {
+      "year": 2022,
+      "month": 1,
+      "season": "DJF",
+      "anom": -0.82,
+      "classification": "La Niña"
+    },
+    {
+      "year": 2022,
+      "month": 2,
+      "season": "JFM",
+      "anom": -0.79,
+      "classification": "La Niña"
+    },
+    {
+      "year": 2022,
+      "month": 3,
+      "season": "FMA",
+      "anom": -0.86,
+      "classification": "La Niña"
+    },
+    {
+      "year": 2022,
+      "month": 4,
+      "season": "MAM",
+      "anom": -0.95,
+      "classification": "La Niña"
+    },
+    {
+      "year": 2022,
+      "month": 5,
+      "season": "AMJ",
+      "anom": -0.9,
+      "classification": "La Niña"
+    },
+    {
+      "year": 2022,
+      "month": 6,
+      "season": "MJJ",
+      "anom": -0.78,
+      "classification": "La Niña"
+    },
+    {
+      "year": 2022,
+      "month": 7,
+      "season": "JJA",
+      "anom": -0.76,
+      "classification": "La Niña"
+    },
+    {
+      "year": 2022,
+      "month": 8,
+      "season": "JAS",
+      "anom": -0.87,
+      "classification": "La Niña"
+    },
+    {
+      "year": 2022,
+      "month": 9,
+      "season": "ASO",
+      "anom": -0.97,
+      "classification": "La Niña"
+    },
+    {
+      "year": 2022,
+      "month": 10,
+      "season": "SON",
+      "anom": -0.94,
+      "classification": "La Niña"
+    },
+    {
+      "year": 2022,
+      "month": 11,
+      "season": "OND",
+      "anom": -0.85,
+      "classification": "La Niña"
+    },
+    {
+      "year": 2022,
+      "month": 12,
+      "season": "NDJ",
+      "anom": -0.71,
+      "classification": "La Niña"
+    },
+    {
+      "year": 2023,
+      "month": 1,
+      "season": "DJF",
+      "anom": -0.54,
+      "classification": "La Niña"
+    },
+    {
+      "year": 2023,
+      "month": 2,
+      "season": "JFM",
+      "anom": -0.29,
+      "classification": "Neutral"
+    },
+    {
+      "year": 2023,
+      "month": 3,
+      "season": "FMA",
+      "anom": -0.02,
+      "classification": "Neutral"
+    },
+    {
+      "year": 2023,
+      "month": 4,
+      "season": "MAM",
+      "anom": 0.27,
+      "classification": "Neutral"
+    },
+    {
+      "year": 2023,
+      "month": 5,
+      "season": "AMJ",
+      "anom": 0.57,
+      "classification": "El Niño"
+    },
+    {
+      "year": 2023,
+      "month": 6,
+      "season": "MJJ",
+      "anom": 0.84,
+      "classification": "El Niño"
+    },
+    {
+      "year": 2023,
+      "month": 7,
+      "season": "JJA",
+      "anom": 1.12,
+      "classification": "El Niño"
+    },
+    {
+      "year": 2023,
+      "month": 8,
+      "season": "JAS",
+      "anom": 1.37,
+      "classification": "El Niño"
+    },
+    {
+      "year": 2023,
+      "month": 9,
+      "season": "ASO",
+      "anom": 1.6,
+      "classification": "El Niño"
+    },
+    {
+      "year": 2023,
+      "month": 10,
+      "season": "SON",
+      "anom": 1.83,
+      "classification": "El Niño"
+    },
+    {
+      "year": 2023,
+      "month": 11,
+      "season": "OND",
+      "anom": 1.99,
+      "classification": "El Niño"
+    },
+    {
+      "year": 2023,
+      "month": 12,
+      "season": "NDJ",
+      "anom": 2.06,
+      "classification": "El Niño"
+    },
+    {
+      "year": 2024,
+      "month": 1,
+      "season": "DJF",
+      "anom": 1.92,
+      "classification": "El Niño"
+    },
+    {
+      "year": 2024,
+      "month": 2,
+      "season": "JFM",
+      "anom": 1.62,
+      "classification": "El Niño"
+    },
+    {
+      "year": 2024,
+      "month": 3,
+      "season": "FMA",
+      "anom": 1.26,
+      "classification": "El Niño"
+    },
+    {
+      "year": 2024,
+      "month": 4,
+      "season": "MAM",
+      "anom": 0.82,
+      "classification": "El Niño"
+    },
+    {
+      "year": 2024,
+      "month": 5,
+      "season": "AMJ",
+      "anom": 0.49,
+      "classification": "Neutral"
+    },
+    {
+      "year": 2024,
+      "month": 6,
+      "season": "MJJ",
+      "anom": 0.22,
+      "classification": "Neutral"
+    },
+    {
+      "year": 2024,
+      "month": 7,
+      "season": "JJA",
+      "anom": 0.08,
+      "classification": "Neutral"
+    },
+    {
+      "year": 2024,
+      "month": 8,
+      "season": "JAS",
+      "anom": -0.07,
+      "classification": "Neutral"
+    },
+    {
+      "year": 2024,
+      "month": 9,
+      "season": "ASO",
+      "anom": -0.17,
+      "classification": "Neutral"
+    },
+    {
+      "year": 2024,
+      "month": 10,
+      "season": "SON",
+      "anom": -0.21,
+      "classification": "Neutral"
+    },
+    {
+      "year": 2024,
+      "month": 11,
+      "season": "OND",
+      "anom": -0.3,
+      "classification": "Neutral"
+    },
+    {
+      "year": 2024,
+      "month": 12,
+      "season": "NDJ",
+      "anom": -0.42,
+      "classification": "Neutral"
+    },
+    {
+      "year": 2025,
+      "month": 1,
+      "season": "DJF",
+      "anom": -0.45,
+      "classification": "Neutral"
+    },
+    {
+      "year": 2025,
+      "month": 2,
+      "season": "JFM",
+      "anom": -0.24,
+      "classification": "Neutral"
+    },
+    {
+      "year": 2025,
+      "month": 3,
+      "season": "FMA",
+      "anom": -0.06,
+      "classification": "Neutral"
+    },
+    {
+      "year": 2025,
+      "month": 4,
+      "season": "MAM",
+      "anom": 0.02,
+      "classification": "Neutral"
+    },
+    {
+      "year": 2025,
+      "month": 5,
+      "season": "AMJ",
+      "anom": -0.02,
+      "classification": "Neutral"
+    },
+    {
+      "year": 2025,
+      "month": 6,
+      "season": "MJJ",
+      "anom": -0.04,
+      "classification": "Neutral"
+    },
+    {
+      "year": 2025,
+      "month": 7,
+      "season": "JJA",
+      "anom": -0.14,
+      "classification": "Neutral"
+    },
+    {
+      "year": 2025,
+      "month": 8,
+      "season": "JAS",
+      "anom": -0.28,
+      "classification": "Neutral"
+    },
+    {
+      "year": 2025,
+      "month": 9,
+      "season": "ASO",
+      "anom": -0.4,
+      "classification": "Neutral"
+    },
+    {
+      "year": 2025,
+      "month": 10,
+      "season": "SON",
+      "anom": -0.51,
+      "classification": "La Niña"
+    },
+    {
+      "year": 2025,
+      "month": 11,
+      "season": "OND",
+      "anom": -0.55,
+      "classification": "La Niña"
+    },
+    {
+      "year": 2025,
+      "month": 12,
+      "season": "NDJ",
+      "anom": -0.54,
+      "classification": "La Niña"
+    },
+    {
+      "year": 2026,
+      "month": 1,
+      "season": "DJF",
+      "anom": -0.37,
+      "classification": "Neutral"
+    },
+    {
+      "year": 2026,
+      "month": 2,
+      "season": "JFM",
+      "anom": -0.15,
+      "classification": "Neutral"
+    },
+    {
+      "year": 2026,
+      "month": 3,
+      "season": "FMA",
+      "anom": 0.11,
+      "classification": "Neutral"
+    }
   ]
 }
