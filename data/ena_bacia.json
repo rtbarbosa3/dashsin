@@ -1,5 +1,5 @@
 {
-  "generated_at_utc": "2026-05-12T19:21:17Z",
+  "generated_at_utc": "2026-05-13T19:24:43Z",
   "source": {
     "name": "ONS Dados Abertos — ENA Diário por Bacia",
     "url_template": "https://ons-aws-prod-opendata.s3.amazonaws.com/dataset/ena_bacia_di/ENA_DIARIO_BACIAS_{year}.csv",
@@ -9,7 +9,7 @@
       2026
     ],
     "fetch_errors": [],
-    "records_count": 6896,
+    "records_count": 6904,
     "note": "ENA Bruta (MWmed) is the runoff energy equivalent — proxy for precipitation accumulation per basin."
   },
   "basin_order": [
@@ -58,50 +58,50 @@
   },
   "now": {
     "grande": {
-      "mwmed": 2408,
-      "date": "2026-05-11",
+      "mwmed": 2394,
+      "date": "2026-05-12",
       "sub": "SECO",
       "name": "Grande"
     },
     "iguacu": {
-      "mwmed": 6699,
-      "date": "2026-05-11",
+      "mwmed": 6411,
+      "date": "2026-05-12",
       "sub": "SUL",
       "name": "Iguaçu"
     },
     "parana": {
-      "mwmed": 10864,
-      "date": "2026-05-11",
+      "mwmed": 12002,
+      "date": "2026-05-12",
       "sub": "SECO",
       "name": "Paraná"
     },
     "paranaiba": {
-      "mwmed": 3036,
-      "date": "2026-05-11",
+      "mwmed": 3035,
+      "date": "2026-05-12",
       "sub": "SECO",
       "name": "Paranaíba"
     },
     "parnaiba": {
       "mwmed": 124,
-      "date": "2026-05-11",
+      "date": "2026-05-12",
       "sub": "NE",
       "name": "Parnaíba"
     },
     "sao_francisco": {
-      "mwmed": 3588,
-      "date": "2026-05-11",
+      "mwmed": 3327,
+      "date": "2026-05-12",
       "sub": "NE",
       "name": "São Francisco"
     },
     "tocantins": {
-      "mwmed": 9058,
-      "date": "2026-05-11",
+      "mwmed": 9035,
+      "date": "2026-05-12",
       "sub": "N",
       "name": "Tocantins"
     },
     "uruguai": {
-      "mwmed": 1909,
-      "date": "2026-05-11",
+      "mwmed": 1818,
+      "date": "2026-05-12",
       "sub": "SUL",
       "name": "Uruguai"
     }
@@ -141,7 +141,7 @@
         8848,
         6764,
         4422,
-        2568,
+        2556,
         null,
         null,
         null,
@@ -184,8 +184,8 @@
         2147,
         1865,
         1423,
-        1490,
-        6179,
+        1489,
+        6187,
         null,
         null,
         null,
@@ -228,8 +228,8 @@
         12462,
         20894,
         19433,
-        14178,
-        10706,
+        14175,
+        10773,
         null,
         null,
         null,
@@ -272,8 +272,8 @@
         5550,
         8732,
         8420,
-        5188,
-        3231,
+        5187,
+        3215,
         null,
         null,
         null,
@@ -317,7 +317,7 @@
         212,
         364,
         220,
-        137,
+        136,
         null,
         null,
         null,
@@ -361,7 +361,7 @@
         13651,
         14347,
         10048,
-        4505,
+        4395,
         null,
         null,
         null,
@@ -404,8 +404,8 @@
         7133,
         9727,
         18604,
-        15182,
-        10581,
+        15174,
+        10460,
         null,
         null,
         null,
@@ -449,7 +449,7 @@
         1619,
         1193,
         1194,
-        2608,
+        2539,
         null,
         null,
         null,
