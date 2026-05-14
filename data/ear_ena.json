@@ -1,5 +1,5 @@
 {
-  "generated_at_utc": "2026-05-13T19:24:41Z",
+  "generated_at_utc": "2026-05-14T19:23:08Z",
   "source": {
     "ear": "ONS Dados Abertos — EAR Diário por Subsistema",
     "ena": "ONS Dados Abertos — ENA Diário por Subsistema",
@@ -9,65 +9,65 @@
       2026
     ],
     "fetch_errors": [],
-    "ear_records_count": 3452,
-    "ena_records_count": 3452
+    "ear_records_count": 3456,
+    "ena_records_count": 3456
   },
   "ear_now": {
     "NE": {
-      "pct": 94.96,
-      "mwmes": 49088,
+      "pct": 95.05,
+      "mwmes": 49133,
       "max": 51691,
-      "date": "2026-05-12"
+      "date": "2026-05-13"
     },
     "N": {
-      "pct": 97.47,
-      "mwmes": 14916,
+      "pct": 97.61,
+      "mwmes": 14937,
       "max": 15302,
-      "date": "2026-05-12"
+      "date": "2026-05-13"
     },
     "SECO": {
-      "pct": 65.71,
-      "mwmes": 134453,
+      "pct": 65.68,
+      "mwmes": 134399,
       "max": 204615,
-      "date": "2026-05-12"
+      "date": "2026-05-13"
     },
     "SUL": {
-      "pct": 44.85,
-      "mwmes": 9177,
+      "pct": 45.74,
+      "mwmes": 9357,
       "max": 20459,
-      "date": "2026-05-12"
+      "date": "2026-05-13"
     },
     "SIN": {
-      "pct": 71.09,
-      "mwmes": 207634,
+      "pct": 71.16,
+      "mwmes": 207827,
       "max": 292068,
-      "date": "2026-05-12"
+      "date": "2026-05-13"
     }
   },
   "ena_now": {
     "N": {
-      "mwmed": 17458,
-      "pct_mlt_bruta": 85.3,
-      "pct_mlt_armaz": 68.1,
-      "date": "2026-05-12"
+      "mwmed": 17365,
+      "pct_mlt_bruta": 84.8,
+      "pct_mlt_armaz": 59.6,
+      "date": "2026-05-13"
     },
     "NE": {
-      "mwmed": 3325,
-      "pct_mlt_bruta": 48.4,
-      "pct_mlt_armaz": 48.0,
-      "date": "2026-05-12"
+      "mwmed": 3214,
+      "pct_mlt_bruta": 47.3,
+      "pct_mlt_armaz": 46.9,
+      "date": "2026-05-13"
     },
     "SUL": {
-      "mwmed": 9646,
-      "pct_mlt_bruta": 112.3,
-      "pct_mlt_armaz": 104.5,
-      "date": "2026-05-12"
+      "mwmed": 8902,
+      "pct_mlt_bruta": 103.6,
+      "pct_mlt_armaz": 96.5,
+      "date": "2026-05-13"
     },
     "SECO": {
-      "mwmed": 35611,
-      "pct_mlt_bruta": 89.2,
-      "pct_mlt_armaz": 80.5,
-      "date": "2026-05-12"
+      "mwmed": 36674,
+      "pct_mlt_bruta": 91.9,
+      "pct_mlt_armaz": 82.6,
+      "date": "2026-05-13"
     }
   },
   "ear_monthly_pct": {
@@ -105,7 +105,7 @@
         72.22,
         89.6,
         96.42,
-        94.96,
+        95.05,
         null,
         null,
         null,
@@ -149,7 +149,7 @@
         67.76,
         94.21,
         96.62,
-        97.47,
+        97.61,
         null,
         null,
         null,
@@ -193,7 +193,7 @@
         57.32,
         65.27,
         66.13,
-        65.71,
+        65.68,
         null,
         null,
         null,
@@ -237,7 +237,7 @@
         40.05,
         31.62,
         31.61,
-        44.85,
+        45.74,
         null,
         null,
         null,
@@ -281,7 +281,7 @@
         59.29,
         68.74,
         70.67,
-        71.09,
+        71.16,
         null,
         null,
         null,
@@ -327,7 +327,7 @@
         14093.77,
         26111.46,
         22562.24,
-        19340.26,
+        19172.36,
         null,
         null,
         null,
@@ -371,7 +371,7 @@
         13285.15,
         14806.44,
         10047.39,
-        4396.63,
+        4305.48,
         null,
         null,
         null,
@@ -415,7 +415,7 @@
         4284.26,
         3199.16,
         3455.78,
-        10389.54,
+        10233.77,
         null,
         null,
         null,
@@ -459,7 +459,7 @@
         63326.56,
         62045.08,
         45610.7,
-        34371.16,
+        34530.8,
         null,
         null,
         null,
@@ -505,7 +505,7 @@
         61.79,
         96.79,
         83.03,
-        94.45,
+        93.63,
         null,
         null,
         null,
@@ -549,7 +549,7 @@
         93.33,
         105.16,
         88.36,
-        63.99,
+        62.7,
         null,
         null,
         null,
@@ -593,7 +593,7 @@
         51.87,
         45.2,
         52.83,
-        120.91,
+        119.1,
         null,
         null,
         null,
@@ -637,7 +637,7 @@
         89.02,
         89.51,
         83.15,
-        86.11,
+        86.51,
         null,
         null,
         null,
