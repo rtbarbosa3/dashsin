@@ -1,1726 +1,1380 @@
 {
-  "generated_at_utc": "2026-05-15T13:00:00Z",
+  "generated_at_utc": "2026-05-15T14:18:15Z",
   "source": {
-    "name": "INITIAL SEED v2 — will be replaced by ANEEL data on first Action run",
-    "url": "https://dadosabertos.aneel.gov.br/dataset/relacao-de-empreendimentos-de-geracao-distribuida",
-    "rows_read": 0,
-    "rows_kept": 0,
-    "note": "Aligned with ANEEL panel: 3.481.157 GDs, ~34.28 GW. Modalidades: propria_uc dominant."
+    "name": "ANEEL Dados Abertos — Empreendimentos MMGD",
+    "url": "https://dadosabertos.aneel.gov.br/dataset/5e0fafd2-21b9-4d5b-b622-40438d40aba2/resource/b1bd71e7-d0ad-4214-9053-cbd58e9564a7/download/empreendimento-geracao-distribuida.csv",
+    "rows_read": 4384910,
+    "rows_kept": 4384867,
+    "note": "Empreendimentos de MMGD conectados (Lei 14.300/2022). Modalidades: propria_uc, autoconsumo_remoto, compartilhada, condominio."
   },
   "totals": {
-    "kw": 35272206,
-    "mw": 35272.2,
-    "gw": 35.272,
-    "count": 3475810
+    "kw": 48405910,
+    "mw": 48405.9,
+    "gw": 48.406,
+    "count": 4384867
   },
   "by_uf": [
     {
-      "uf": "MG",
-      "kw": 5996275,
-      "mw": 5996.3,
-      "count": 590887
-    },
-    {
       "uf": "SP",
-      "kw": 5114469,
-      "mw": 5114.5,
-      "count": 503992
+      "kw": 6683433,
+      "mw": 6683.4,
+      "count": 710820
     },
     {
-      "uf": "RS",
-      "kw": 3703581,
-      "mw": 3703.6,
-      "count": 364960
+      "uf": "MG",
+      "kw": 5918343,
+      "mw": 5918.3,
+      "count": 434470
     },
     {
       "uf": "PR",
-      "kw": 2998137,
-      "mw": 2998.1,
-      "count": 295443
+      "kw": 4376659,
+      "mw": 4376.7,
+      "count": 331086
+    },
+    {
+      "uf": "RS",
+      "kw": 3720358,
+      "mw": 3720.4,
+      "count": 405809
     },
     {
       "uf": "MT",
-      "kw": 2116332,
-      "mw": 2116.3,
-      "count": 208548
-    },
-    {
-      "uf": "GO",
-      "kw": 1939971,
-      "mw": 1940.0,
-      "count": 191169
+      "kw": 3133381,
+      "mw": 3133.4,
+      "count": 235621
     },
     {
       "uf": "BA",
-      "kw": 1763610,
-      "mw": 1763.6,
-      "count": 173790
+      "kw": 2804510,
+      "mw": 2804.5,
+      "count": 312707
     },
     {
-      "uf": "CE",
-      "kw": 1587249,
-      "mw": 1587.2,
-      "count": 156411
+      "uf": "GO",
+      "kw": 2355596,
+      "mw": 2355.6,
+      "count": 178958
     },
     {
       "uf": "SC",
-      "kw": 1410888,
-      "mw": 1410.9,
-      "count": 139032
-    },
-    {
-      "uf": "PE",
-      "kw": 1234527,
-      "mw": 1234.5,
-      "count": 121653
-    },
-    {
-      "uf": "PI",
-      "kw": 1058166,
-      "mw": 1058.2,
-      "count": 104274
-    },
-    {
-      "uf": "MA",
-      "kw": 987621,
-      "mw": 987.6,
-      "count": 97322
-    },
-    {
-      "uf": "PB",
-      "kw": 881805,
-      "mw": 881.8,
-      "count": 86895
-    },
-    {
-      "uf": "ES",
-      "kw": 811260,
-      "mw": 811.3,
-      "count": 79943
+      "kw": 2252681,
+      "mw": 2252.7,
+      "count": 194044
     },
     {
       "uf": "RJ",
-      "kw": 775988,
-      "mw": 776.0,
-      "count": 76467
-    },
-    {
-      "uf": "RN",
-      "kw": 634899,
-      "mw": 634.9,
-      "count": 62564
+      "kw": 1895360,
+      "mw": 1895.4,
+      "count": 190011
     },
     {
       "uf": "MS",
-      "kw": 564355,
-      "mw": 564.4,
-      "count": 55612
+      "kw": 1854250,
+      "mw": 1854.3,
+      "count": 169639
     },
     {
-      "uf": "TO",
-      "kw": 352722,
-      "mw": 352.7,
-      "count": 34758
-    },
-    {
-      "uf": "AL",
-      "kw": 282177,
-      "mw": 282.2,
-      "count": 27806
+      "uf": "CE",
+      "kw": 1724341,
+      "mw": 1724.3,
+      "count": 144659
     },
     {
       "uf": "PA",
-      "kw": 246905,
-      "mw": 246.9,
-      "count": 24330
+      "kw": 1658494,
+      "mw": 1658.5,
+      "count": 160739
     },
     {
-      "uf": "SE",
-      "kw": 211633,
-      "mw": 211.6,
-      "count": 20854
+      "uf": "PE",
+      "kw": 1498114,
+      "mw": 1498.1,
+      "count": 163643
     },
     {
-      "uf": "DF",
-      "kw": 211633,
-      "mw": 211.6,
-      "count": 20854
+      "uf": "ES",
+      "kw": 1269158,
+      "mw": 1269.2,
+      "count": 97748
+    },
+    {
+      "uf": "RN",
+      "kw": 1063408,
+      "mw": 1063.4,
+      "count": 124082
+    },
+    {
+      "uf": "MA",
+      "kw": 1023921,
+      "mw": 1023.9,
+      "count": 90063
+    },
+    {
+      "uf": "PI",
+      "kw": 853174,
+      "mw": 853.2,
+      "count": 88564
+    },
+    {
+      "uf": "TO",
+      "kw": 723656,
+      "mw": 723.7,
+      "count": 63658
     },
     {
       "uf": "RO",
-      "kw": 141088,
-      "mw": 141.1,
-      "count": 13903
+      "kw": 681519,
+      "mw": 681.5,
+      "count": 62114
     },
     {
-      "uf": "AC",
-      "kw": 70544,
-      "mw": 70.5,
-      "count": 6951
+      "uf": "AL",
+      "kw": 636335,
+      "mw": 636.3,
+      "count": 55530
+    },
+    {
+      "uf": "PB",
+      "kw": 618137,
+      "mw": 618.1,
+      "count": 52676
+    },
+    {
+      "uf": "DF",
+      "kw": 580885,
+      "mw": 580.9,
+      "count": 35930
     },
     {
       "uf": "AM",
-      "kw": 52908,
-      "mw": 52.9,
-      "count": 5213
+      "kw": 313202,
+      "mw": 313.2,
+      "count": 17318
+    },
+    {
+      "uf": "SE",
+      "kw": 303565,
+      "mw": 303.6,
+      "count": 25695
+    },
+    {
+      "uf": "AC",
+      "kw": 182815,
+      "mw": 182.8,
+      "count": 16808
     },
     {
       "uf": "AP",
-      "kw": 28217,
-      "mw": 28.2,
-      "count": 2780
+      "kw": 159320,
+      "mw": 159.3,
+      "count": 13578
     },
     {
       "uf": "RR",
-      "kw": 24690,
-      "mw": 24.7,
-      "count": 2433
+      "kw": 121296,
+      "mw": 121.3,
+      "count": 8897
     }
   ],
   "by_fonte": [
     {
       "fonte": "solar",
-      "kw": 34743122,
-      "mw": 34743.1,
-      "gw": 34.743,
-      "count": 3423672,
-      "pct_kw": 98.5
+      "kw": 48096753,
+      "mw": 48096.8,
+      "gw": 48.097,
+      "count": 4384020,
+      "pct_kw": 99.36
     },
     {
       "fonte": "biomassa",
-      "kw": 335085,
-      "mw": 335.1,
-      "gw": 0.335,
-      "count": 33020,
-      "pct_kw": 0.95
-    },
-    {
-      "fonte": "eolica",
-      "kw": 105816,
-      "mw": 105.8,
-      "gw": 0.106,
-      "count": 10427,
-      "pct_kw": 0.3
+      "kw": 205159,
+      "mw": 205.2,
+      "gw": 0.205,
+      "count": 608,
+      "pct_kw": 0.42
     },
     {
       "fonte": "hidrica",
-      "kw": 70544,
-      "mw": 70.5,
-      "gw": 0.071,
-      "count": 6951,
-      "pct_kw": 0.2
+      "kw": 73955,
+      "mw": 74.0,
+      "gw": 0.074,
+      "count": 77,
+      "pct_kw": 0.15
+    },
+    {
+      "fonte": "eolica",
+      "kw": 17577,
+      "mw": 17.6,
+      "gw": 0.018,
+      "count": 97,
+      "pct_kw": 0.04
     },
     {
       "fonte": "outras",
-      "kw": 17636,
-      "mw": 17.6,
-      "gw": 0.018,
-      "count": 1737,
-      "pct_kw": 0.05
+      "kw": 12466,
+      "mw": 12.5,
+      "gw": 0.012,
+      "count": 65,
+      "pct_kw": 0.03
     }
   ],
   "by_modalidade": [
     {
       "modalidade": "propria_uc",
-      "kw": 34143495,
-      "mw": 34143.5,
-      "gw": 34.143,
-      "count": 3364584,
-      "pct_kw": 96.8
+      "kw": 34280885,
+      "mw": 34280.9,
+      "gw": 34.281,
+      "count": 3481115,
+      "pct_kw": 70.82
     },
     {
       "modalidade": "autoconsumo_remoto",
-      "kw": 846532,
-      "mw": 846.5,
-      "gw": 0.847,
-      "count": 83419,
-      "pct_kw": 2.4
+      "kw": 11348556,
+      "mw": 11348.6,
+      "gw": 11.349,
+      "count": 882315,
+      "pct_kw": 23.44
     },
     {
       "modalidade": "compartilhada",
-      "kw": 193997,
-      "mw": 194.0,
-      "gw": 0.194,
-      "count": 19116,
-      "pct_kw": 0.55
-    },
-    {
-      "modalidade": "condominio",
-      "kw": 70544,
-      "mw": 70.5,
-      "gw": 0.071,
-      "count": 6951,
-      "pct_kw": 0.2
-    },
-    {
-      "modalidade": "multipla_uc",
-      "kw": 14108,
-      "mw": 14.1,
-      "gw": 0.014,
-      "count": 1390,
-      "pct_kw": 0.04
+      "kw": 2737649,
+      "mw": 2737.6,
+      "gw": 2.738,
+      "count": 19835,
+      "pct_kw": 5.66
     },
     {
       "modalidade": "outras",
-      "kw": 3527,
-      "mw": 3.5,
-      "gw": 0.004,
-      "count": 347,
-      "pct_kw": 0.01
+      "kw": 22787,
+      "mw": 22.8,
+      "gw": 0.023,
+      "count": 606,
+      "pct_kw": 0.05
+    },
+    {
+      "modalidade": "condominio",
+      "kw": 16033,
+      "mw": 16.0,
+      "gw": 0.016,
+      "count": 996,
+      "pct_kw": 0.03
     }
   ],
   "by_year": [
     {
-      "year": 2014,
-      "added_kw": 150,
-      "added_mw": 0.1,
-      "added_gw": 0.0,
-      "added_count": 30,
-      "cumulative_mw": 0.1,
-      "cumulative_gw": 0.0,
-      "cumulative_count": 30
-    },
-    {
       "year": 2015,
-      "added_kw": 1210,
-      "added_mw": 1.2,
-      "added_gw": 0.001,
-      "added_count": 220,
-      "cumulative_mw": 1.4,
-      "cumulative_gw": 0.001,
-      "cumulative_count": 250
+      "added_kw": 15432,
+      "added_mw": 15.4,
+      "added_gw": 0.015,
+      "added_count": 1302,
+      "cumulative_mw": 15.4,
+      "cumulative_gw": 0.015,
+      "cumulative_count": 1302
     },
     {
       "year": 2016,
-      "added_kw": 10200,
-      "added_mw": 10.2,
-      "added_gw": 0.01,
-      "added_count": 1700,
-      "cumulative_mw": 11.6,
-      "cumulative_gw": 0.012,
-      "cumulative_count": 1950
+      "added_kw": 62695,
+      "added_mw": 62.7,
+      "added_gw": 0.063,
+      "added_count": 6285,
+      "cumulative_mw": 78.1,
+      "cumulative_gw": 0.078,
+      "cumulative_count": 7587
     },
     {
       "year": 2017,
-      "added_kw": 87022,
-      "added_mw": 87.0,
-      "added_gw": 0.087,
-      "added_count": 11603,
-      "cumulative_mw": 98.6,
-      "cumulative_gw": 0.099,
-      "cumulative_count": 13553
+      "added_kw": 154513,
+      "added_mw": 154.5,
+      "added_gw": 0.155,
+      "added_count": 13238,
+      "cumulative_mw": 232.6,
+      "cumulative_gw": 0.233,
+      "cumulative_count": 20825
     },
     {
       "year": 2018,
-      "added_kw": 251600,
-      "added_mw": 251.6,
-      "added_gw": 0.252,
-      "added_count": 29600,
-      "cumulative_mw": 350.2,
-      "cumulative_gw": 0.35,
-      "cumulative_count": 43153
+      "added_kw": 432130,
+      "added_mw": 432.1,
+      "added_gw": 0.432,
+      "added_count": 35464,
+      "cumulative_mw": 664.8,
+      "cumulative_gw": 0.665,
+      "cumulative_count": 56289
     },
     {
       "year": 2019,
-      "added_kw": 905463,
-      "added_mw": 905.5,
-      "added_gw": 0.905,
-      "added_count": 100607,
-      "cumulative_mw": 1255.6,
-      "cumulative_gw": 1.256,
-      "cumulative_count": 143760
+      "added_kw": 1600376,
+      "added_mw": 1600.4,
+      "added_gw": 1.6,
+      "added_count": 121344,
+      "cumulative_mw": 2265.1,
+      "cumulative_gw": 2.265,
+      "cumulative_count": 177633
     },
     {
       "year": 2020,
-      "added_kw": 1813617,
-      "added_mw": 1813.6,
-      "added_gw": 1.814,
-      "added_count": 185063,
-      "cumulative_mw": 3069.3,
-      "cumulative_gw": 3.069,
-      "cumulative_count": 328823
+      "added_kw": 2967765,
+      "added_mw": 2967.8,
+      "added_gw": 2.968,
+      "added_count": 223307,
+      "cumulative_mw": 5232.9,
+      "cumulative_gw": 5.233,
+      "cumulative_count": 400940
     },
     {
       "year": 2021,
-      "added_kw": 3861648,
-      "added_mw": 3861.6,
-      "added_gw": 3.862,
-      "added_count": 367776,
-      "cumulative_mw": 6930.9,
-      "cumulative_gw": 6.931,
-      "cumulative_count": 696599
+      "added_kw": 4687518,
+      "added_mw": 4687.5,
+      "added_gw": 4.688,
+      "added_count": 451357,
+      "cumulative_mw": 9920.4,
+      "cumulative_gw": 9.92,
+      "cumulative_count": 852297
     },
     {
       "year": 2022,
-      "added_kw": 6623988,
-      "added_mw": 6624.0,
-      "added_gw": 6.624,
-      "added_count": 630856,
-      "cumulative_mw": 13554.9,
-      "cumulative_gw": 13.555,
-      "cumulative_count": 1327455
+      "added_kw": 8190014,
+      "added_mw": 8190.0,
+      "added_gw": 8.19,
+      "added_count": 798049,
+      "cumulative_mw": 18110.4,
+      "cumulative_gw": 18.11,
+      "cumulative_count": 1650346
     },
     {
       "year": 2023,
-      "added_kw": 5694192,
-      "added_mw": 5694.2,
-      "added_gw": 5.694,
-      "added_count": 542304,
-      "cumulative_mw": 19249.1,
-      "cumulative_gw": 19.249,
-      "cumulative_count": 1869759
+      "added_kw": 8509127,
+      "added_mw": 8509.1,
+      "added_gw": 8.509,
+      "added_count": 685585,
+      "cumulative_mw": 26619.6,
+      "cumulative_gw": 26.62,
+      "cumulative_count": 2335931
     },
     {
       "year": 2024,
-      "added_kw": 7237348,
-      "added_mw": 7237.3,
-      "added_gw": 7.237,
-      "added_count": 709544,
-      "cumulative_mw": 26486.4,
-      "cumulative_gw": 26.486,
-      "cumulative_count": 2579303
+      "added_kw": 10250413,
+      "added_mw": 10250.4,
+      "added_gw": 10.25,
+      "added_count": 907206,
+      "cumulative_mw": 36870.0,
+      "cumulative_gw": 36.87,
+      "cumulative_count": 3243137
     },
     {
       "year": 2025,
-      "added_kw": 6818938,
-      "added_mw": 6818.9,
-      "added_gw": 6.819,
-      "added_count": 695810,
-      "cumulative_mw": 33305.4,
-      "cumulative_gw": 33.305,
-      "cumulative_count": 3275113
+      "added_kw": 9348907,
+      "added_mw": 9348.9,
+      "added_gw": 9.349,
+      "added_count": 896084,
+      "cumulative_mw": 46218.9,
+      "cumulative_gw": 46.219,
+      "cumulative_count": 4139221
     },
     {
       "year": 2026,
-      "added_kw": 1966830,
-      "added_mw": 1966.8,
-      "added_gw": 1.967,
-      "added_count": 200697,
-      "cumulative_mw": 35272.2,
-      "cumulative_gw": 35.272,
-      "cumulative_count": 3475810
+      "added_kw": 2181774,
+      "added_mw": 2181.8,
+      "added_gw": 2.182,
+      "added_count": 245143,
+      "cumulative_mw": 48400.7,
+      "cumulative_gw": 48.401,
+      "cumulative_count": 4384364
     }
   ],
   "monthly_last_24m": [
     {
       "month": "2024-05",
-      "kw": 832300,
-      "mw": 832.3,
-      "count": 81597
+      "kw": 803034,
+      "mw": 803.0,
+      "count": 78126
     },
     {
       "month": "2024-06",
-      "kw": 832300,
-      "mw": 832.3,
-      "count": 81597
+      "kw": 831455,
+      "mw": 831.5,
+      "count": 73143
     },
     {
       "month": "2024-07",
-      "kw": 832300,
-      "mw": 832.3,
-      "count": 81597
+      "kw": 914822,
+      "mw": 914.8,
+      "count": 77546
     },
     {
       "month": "2024-08",
-      "kw": 832300,
-      "mw": 832.3,
-      "count": 81597
+      "kw": 923640,
+      "mw": 923.6,
+      "count": 73543
     },
     {
       "month": "2024-09",
-      "kw": 832300,
-      "mw": 832.3,
-      "count": 81597
+      "kw": 787026,
+      "mw": 787.0,
+      "count": 66826
     },
     {
       "month": "2024-10",
-      "kw": 832300,
-      "mw": 832.3,
-      "count": 81597
+      "kw": 901631,
+      "mw": 901.6,
+      "count": 75518
     },
     {
       "month": "2024-11",
-      "kw": 723700,
-      "mw": 723.7,
-      "count": 70954
+      "kw": 864107,
+      "mw": 864.1,
+      "count": 76541
     },
     {
       "month": "2024-12",
-      "kw": 434200,
-      "mw": 434.2,
-      "count": 42572
+      "kw": 1026388,
+      "mw": 1026.4,
+      "count": 88379
     },
     {
       "month": "2025-01",
-      "kw": 409100,
-      "mw": 409.1,
-      "count": 41748
+      "kw": 972207,
+      "mw": 972.2,
+      "count": 87552
     },
     {
       "month": "2025-02",
-      "kw": 409100,
-      "mw": 409.1,
-      "count": 41748
+      "kw": 898175,
+      "mw": 898.2,
+      "count": 85029
     },
     {
       "month": "2025-03",
-      "kw": 681900,
-      "mw": 681.9,
-      "count": 69581
+      "kw": 905784,
+      "mw": 905.8,
+      "count": 85464
     },
     {
       "month": "2025-04",
-      "kw": 681900,
-      "mw": 681.9,
-      "count": 69581
+      "kw": 836329,
+      "mw": 836.3,
+      "count": 79730
     },
     {
       "month": "2025-05",
-      "kw": 784200,
-      "mw": 784.2,
-      "count": 80018
+      "kw": 789520,
+      "mw": 789.5,
+      "count": 79906
     },
     {
       "month": "2025-06",
-      "kw": 784200,
-      "mw": 784.2,
-      "count": 80018
+      "kw": 728454,
+      "mw": 728.5,
+      "count": 67996
     },
     {
       "month": "2025-07",
-      "kw": 784200,
-      "mw": 784.2,
-      "count": 80018
+      "kw": 833058,
+      "mw": 833.1,
+      "count": 74682
     },
     {
       "month": "2025-08",
-      "kw": 784200,
-      "mw": 784.2,
-      "count": 80018
+      "kw": 712658,
+      "mw": 712.7,
+      "count": 64760
     },
     {
       "month": "2025-09",
-      "kw": 784200,
-      "mw": 784.2,
-      "count": 80018
+      "kw": 613010,
+      "mw": 613.0,
+      "count": 60490
     },
     {
       "month": "2025-10",
-      "kw": 784200,
-      "mw": 784.2,
-      "count": 80018
+      "kw": 704085,
+      "mw": 704.1,
+      "count": 66752
     },
     {
       "month": "2025-11",
-      "kw": 681900,
-      "mw": 681.9,
-      "count": 69581
+      "kw": 659918,
+      "mw": 659.9,
+      "count": 68339
     },
     {
       "month": "2025-12",
-      "kw": 409100,
-      "mw": 409.1,
-      "count": 41748
+      "kw": 695710,
+      "mw": 695.7,
+      "count": 75384
     },
     {
       "month": "2026-01",
-      "kw": 118000,
-      "mw": 118.0,
-      "count": 12041
+      "kw": 669846,
+      "mw": 669.8,
+      "count": 69603
     },
     {
       "month": "2026-02",
-      "kw": 118000,
-      "mw": 118.0,
-      "count": 12041
+      "kw": 618925,
+      "mw": 618.9,
+      "count": 72268
     },
     {
       "month": "2026-03",
-      "kw": 196700,
-      "mw": 196.7,
-      "count": 20069
+      "kw": 562493,
+      "mw": 562.5,
+      "count": 66819
     },
     {
       "month": "2026-04",
-      "kw": 196700,
-      "mw": 196.7,
-      "count": 20069
+      "kw": 330511,
+      "mw": 330.5,
+      "count": 36453
     }
   ],
   "cross_tabs": {
     "uf_by_modalidade": {
-      "MG": {
+      "AC": {
         "propria_uc": {
-          "kw": 5804394,
-          "count": 571978
+          "kw": 165670,
+          "count": 15863
         },
         "autoconsumo_remoto": {
-          "kw": 143910,
-          "count": 14181
+          "kw": 17122,
+          "count": 942
         },
         "compartilhada": {
-          "kw": 32979,
-          "count": 3249
-        },
-        "condominio": {
-          "kw": 11992,
-          "count": 1181
-        },
-        "multipla_uc": {
-          "kw": 2398,
-          "count": 236
-        },
-        "outras": {
-          "kw": 599,
-          "count": 59
-        }
-      },
-      "SP": {
-        "propria_uc": {
-          "kw": 4950805,
-          "count": 487864
-        },
-        "autoconsumo_remoto": {
-          "kw": 122747,
-          "count": 12095
-        },
-        "compartilhada": {
-          "kw": 28129,
-          "count": 2771
-        },
-        "condominio": {
-          "kw": 10228,
-          "count": 1007
-        },
-        "multipla_uc": {
-          "kw": 2045,
-          "count": 201
-        },
-        "outras": {
-          "kw": 511,
-          "count": 50
-        }
-      },
-      "RS": {
-        "propria_uc": {
-          "kw": 3585066,
-          "count": 353281
-        },
-        "autoconsumo_remoto": {
-          "kw": 88885,
-          "count": 8759
-        },
-        "compartilhada": {
-          "kw": 20369,
-          "count": 2007
-        },
-        "condominio": {
-          "kw": 7407,
-          "count": 729
-        },
-        "multipla_uc": {
-          "kw": 1481,
-          "count": 145
-        },
-        "outras": {
-          "kw": 370,
-          "count": 36
-        }
-      },
-      "PR": {
-        "propria_uc": {
-          "kw": 2902196,
-          "count": 285988
-        },
-        "autoconsumo_remoto": {
-          "kw": 71955,
-          "count": 7090
-        },
-        "compartilhada": {
-          "kw": 16489,
-          "count": 1624
-        },
-        "condominio": {
-          "kw": 5996,
-          "count": 590
-        },
-        "multipla_uc": {
-          "kw": 1199,
-          "count": 118
-        },
-        "outras": {
-          "kw": 299,
-          "count": 29
-        }
-      },
-      "MT": {
-        "propria_uc": {
-          "kw": 2048609,
-          "count": 201874
-        },
-        "autoconsumo_remoto": {
-          "kw": 50791,
-          "count": 5005
-        },
-        "compartilhada": {
-          "kw": 11639,
-          "count": 1147
-        },
-        "condominio": {
-          "kw": 4232,
-          "count": 417
-        },
-        "multipla_uc": {
-          "kw": 846,
-          "count": 83
-        },
-        "outras": {
-          "kw": 211,
-          "count": 20
-        }
-      },
-      "GO": {
-        "propria_uc": {
-          "kw": 1877891,
-          "count": 185051
-        },
-        "autoconsumo_remoto": {
-          "kw": 46559,
-          "count": 4588
-        },
-        "compartilhada": {
-          "kw": 10669,
-          "count": 1051
-        },
-        "condominio": {
-          "kw": 3879,
-          "count": 382
-        },
-        "multipla_uc": {
-          "kw": 775,
-          "count": 76
-        },
-        "outras": {
-          "kw": 193,
-          "count": 19
-        }
-      },
-      "BA": {
-        "propria_uc": {
-          "kw": 1707174,
-          "count": 168228
-        },
-        "autoconsumo_remoto": {
-          "kw": 42326,
-          "count": 4170
-        },
-        "compartilhada": {
-          "kw": 9699,
-          "count": 955
-        },
-        "condominio": {
-          "kw": 3527,
-          "count": 347
-        },
-        "multipla_uc": {
-          "kw": 705,
-          "count": 69
-        },
-        "outras": {
-          "kw": 176,
-          "count": 17
-        }
-      },
-      "CE": {
-        "propria_uc": {
-          "kw": 1536457,
-          "count": 151405
-        },
-        "autoconsumo_remoto": {
-          "kw": 38093,
-          "count": 3753
-        },
-        "compartilhada": {
-          "kw": 8729,
-          "count": 860
-        },
-        "condominio": {
-          "kw": 3174,
-          "count": 312
-        },
-        "multipla_uc": {
-          "kw": 634,
-          "count": 62
-        },
-        "outras": {
-          "kw": 158,
-          "count": 15
-        }
-      },
-      "SC": {
-        "propria_uc": {
-          "kw": 1365739,
-          "count": 134582
-        },
-        "autoconsumo_remoto": {
-          "kw": 33861,
-          "count": 3336
-        },
-        "compartilhada": {
-          "kw": 7759,
-          "count": 764
-        },
-        "condominio": {
-          "kw": 2821,
-          "count": 278
-        },
-        "multipla_uc": {
-          "kw": 564,
-          "count": 55
-        },
-        "outras": {
-          "kw": 141,
-          "count": 13
-        }
-      },
-      "PE": {
-        "propria_uc": {
-          "kw": 1195022,
-          "count": 117760
-        },
-        "autoconsumo_remoto": {
-          "kw": 29628,
-          "count": 2919
-        },
-        "compartilhada": {
-          "kw": 6789,
-          "count": 669
-        },
-        "condominio": {
-          "kw": 2469,
-          "count": 243
-        },
-        "multipla_uc": {
-          "kw": 493,
-          "count": 48
-        },
-        "outras": {
-          "kw": 123,
-          "count": 12
-        }
-      },
-      "PI": {
-        "propria_uc": {
-          "kw": 1024304,
-          "count": 100937
-        },
-        "autoconsumo_remoto": {
-          "kw": 25395,
-          "count": 2502
-        },
-        "compartilhada": {
-          "kw": 5819,
-          "count": 573
-        },
-        "condominio": {
-          "kw": 2116,
-          "count": 208
-        },
-        "multipla_uc": {
-          "kw": 423,
-          "count": 41
-        },
-        "outras": {
-          "kw": 105,
-          "count": 10
-        }
-      },
-      "MA": {
-        "propria_uc": {
-          "kw": 956017,
-          "count": 94207
-        },
-        "autoconsumo_remoto": {
-          "kw": 23702,
-          "count": 2335
-        },
-        "compartilhada": {
-          "kw": 5431,
-          "count": 535
-        },
-        "condominio": {
-          "kw": 1975,
-          "count": 194
-        },
-        "multipla_uc": {
-          "kw": 395,
-          "count": 38
-        },
-        "outras": {
-          "kw": 98,
-          "count": 9
-        }
-      },
-      "PB": {
-        "propria_uc": {
-          "kw": 853587,
-          "count": 84114
-        },
-        "autoconsumo_remoto": {
-          "kw": 21163,
-          "count": 2085
-        },
-        "compartilhada": {
-          "kw": 4849,
-          "count": 477
-        },
-        "condominio": {
-          "kw": 1763,
-          "count": 173
-        },
-        "multipla_uc": {
-          "kw": 352,
-          "count": 34
-        },
-        "outras": {
-          "kw": 88,
-          "count": 8
-        }
-      },
-      "ES": {
-        "propria_uc": {
-          "kw": 785299,
-          "count": 77384
-        },
-        "autoconsumo_remoto": {
-          "kw": 19470,
-          "count": 1918
-        },
-        "compartilhada": {
-          "kw": 4461,
-          "count": 439
-        },
-        "condominio": {
-          "kw": 1622,
-          "count": 159
-        },
-        "multipla_uc": {
-          "kw": 324,
-          "count": 31
-        },
-        "outras": {
-          "kw": 81,
-          "count": 7
-        }
-      },
-      "RJ": {
-        "propria_uc": {
-          "kw": 751156,
-          "count": 74020
-        },
-        "autoconsumo_remoto": {
-          "kw": 18623,
-          "count": 1835
-        },
-        "compartilhada": {
-          "kw": 4267,
-          "count": 420
-        },
-        "condominio": {
-          "kw": 1551,
-          "count": 152
-        },
-        "multipla_uc": {
-          "kw": 310,
-          "count": 30
-        },
-        "outras": {
-          "kw": 77,
-          "count": 7
-        }
-      },
-      "RN": {
-        "propria_uc": {
-          "kw": 614582,
-          "count": 60561
-        },
-        "autoconsumo_remoto": {
-          "kw": 15237,
-          "count": 1501
-        },
-        "compartilhada": {
-          "kw": 3491,
-          "count": 344
-        },
-        "condominio": {
-          "kw": 1269,
-          "count": 125
-        },
-        "multipla_uc": {
-          "kw": 253,
-          "count": 25
-        },
-        "outras": {
-          "kw": 63,
-          "count": 6
-        }
-      },
-      "MS": {
-        "propria_uc": {
-          "kw": 546295,
-          "count": 53832
-        },
-        "autoconsumo_remoto": {
-          "kw": 13544,
-          "count": 1334
-        },
-        "compartilhada": {
-          "kw": 3103,
-          "count": 305
-        },
-        "condominio": {
-          "kw": 1128,
-          "count": 111
-        },
-        "multipla_uc": {
-          "kw": 225,
-          "count": 22
-        },
-        "outras": {
-          "kw": 56,
-          "count": 5
-        }
-      },
-      "TO": {
-        "propria_uc": {
-          "kw": 341434,
-          "count": 33645
-        },
-        "autoconsumo_remoto": {
-          "kw": 8465,
-          "count": 834
-        },
-        "compartilhada": {
-          "kw": 1939,
-          "count": 191
-        },
-        "condominio": {
-          "kw": 705,
-          "count": 69
-        },
-        "multipla_uc": {
-          "kw": 141,
-          "count": 13
-        },
-        "outras": {
-          "kw": 35,
+          "kw": 22,
           "count": 3
         }
       },
       "AL": {
         "propria_uc": {
-          "kw": 273147,
-          "count": 26916
+          "kw": 446344,
+          "count": 40694
         },
         "autoconsumo_remoto": {
-          "kw": 6772,
-          "count": 667
+          "kw": 189301,
+          "count": 14800
         },
         "compartilhada": {
-          "kw": 1551,
-          "count": 152
-        },
-        "condominio": {
-          "kw": 564,
-          "count": 55
-        },
-        "multipla_uc": {
-          "kw": 112,
-          "count": 11
+          "kw": 619,
+          "count": 35
         },
         "outras": {
-          "kw": 28,
-          "count": 2
+          "kw": 70,
+          "count": 1
         }
       },
       "PA": {
         "propria_uc": {
-          "kw": 239004,
-          "count": 23551
-        },
-        "autoconsumo_remoto": {
-          "kw": 5925,
-          "count": 583
+          "kw": 1279568,
+          "count": 133722
         },
         "compartilhada": {
-          "kw": 1357,
-          "count": 133
+          "kw": 4461,
+          "count": 80
         },
-        "condominio": {
-          "kw": 493,
-          "count": 48
-        },
-        "multipla_uc": {
-          "kw": 98,
-          "count": 9
+        "autoconsumo_remoto": {
+          "kw": 374393,
+          "count": 26933
         },
         "outras": {
-          "kw": 24,
-          "count": 2
+          "kw": 72,
+          "count": 4
         }
       },
-      "SE": {
+      "PI": {
         "propria_uc": {
-          "kw": 204860,
-          "count": 20186
+          "kw": 580494,
+          "count": 65922
         },
         "autoconsumo_remoto": {
-          "kw": 5079,
-          "count": 500
+          "kw": 264154,
+          "count": 22539
         },
         "compartilhada": {
-          "kw": 1163,
-          "count": 114
-        },
-        "condominio": {
-          "kw": 423,
-          "count": 41
-        },
-        "multipla_uc": {
-          "kw": 84,
-          "count": 8
+          "kw": 8355,
+          "count": 100
         },
         "outras": {
-          "kw": 21,
+          "kw": 168,
           "count": 2
-        }
-      },
-      "DF": {
-        "propria_uc": {
-          "kw": 204860,
-          "count": 20186
-        },
-        "autoconsumo_remoto": {
-          "kw": 5079,
-          "count": 500
-        },
-        "compartilhada": {
-          "kw": 1163,
-          "count": 114
         },
         "condominio": {
-          "kw": 423,
-          "count": 41
-        },
-        "multipla_uc": {
-          "kw": 84,
-          "count": 8
-        },
-        "outras": {
-          "kw": 21,
-          "count": 2
-        }
-      },
-      "RO": {
-        "propria_uc": {
-          "kw": 136573,
-          "count": 13458
-        },
-        "autoconsumo_remoto": {
-          "kw": 3386,
-          "count": 333
-        },
-        "compartilhada": {
-          "kw": 775,
-          "count": 76
-        },
-        "condominio": {
-          "kw": 282,
-          "count": 27
-        },
-        "multipla_uc": {
-          "kw": 56,
-          "count": 5
-        },
-        "outras": {
-          "kw": 14,
+          "kw": 3,
           "count": 1
-        }
-      },
-      "AC": {
-        "propria_uc": {
-          "kw": 68286,
-          "count": 6728
-        },
-        "autoconsumo_remoto": {
-          "kw": 1693,
-          "count": 166
-        },
-        "compartilhada": {
-          "kw": 387,
-          "count": 38
-        },
-        "condominio": {
-          "kw": 141,
-          "count": 13
-        },
-        "multipla_uc": {
-          "kw": 28,
-          "count": 2
-        },
-        "outras": {
-          "kw": 7,
-          "count": 0
         }
       },
       "AM": {
         "propria_uc": {
-          "kw": 51214,
-          "count": 5046
+          "kw": 270784,
+          "count": 15712
         },
         "autoconsumo_remoto": {
-          "kw": 1269,
-          "count": 125
+          "kw": 38150,
+          "count": 1578
         },
         "compartilhada": {
-          "kw": 290,
-          "count": 28
+          "kw": 4192,
+          "count": 26
         },
         "condominio": {
-          "kw": 105,
-          "count": 10
-        },
-        "multipla_uc": {
-          "kw": 21,
+          "kw": 75,
           "count": 2
-        },
-        "outras": {
-          "kw": 5,
-          "count": 0
         }
       },
       "AP": {
         "propria_uc": {
-          "kw": 27314,
-          "count": 2691
+          "kw": 143651,
+          "count": 12880
         },
         "autoconsumo_remoto": {
-          "kw": 677,
-          "count": 66
+          "kw": 15649,
+          "count": 696
         },
         "compartilhada": {
-          "kw": 155,
-          "count": 15
+          "kw": 19,
+          "count": 2
+        }
+      },
+      "BA": {
+        "propria_uc": {
+          "kw": 1551667,
+          "count": 189001
         },
-        "condominio": {
-          "kw": 56,
-          "count": 5
+        "autoconsumo_remoto": {
+          "kw": 1203370,
+          "count": 122937
         },
-        "multipla_uc": {
-          "kw": 11,
-          "count": 1
+        "compartilhada": {
+          "kw": 49439,
+          "count": 767
         },
         "outras": {
-          "kw": 2,
-          "count": 0
+          "kw": 35,
+          "count": 2
+        }
+      },
+      "PE": {
+        "propria_uc": {
+          "kw": 769882,
+          "count": 92843
+        },
+        "autoconsumo_remoto": {
+          "kw": 727613,
+          "count": 70795
+        },
+        "compartilhada": {
+          "kw": 619,
+          "count": 5
+        }
+      },
+      "CE": {
+        "propria_uc": {
+          "kw": 1308763,
+          "count": 111842
+        },
+        "autoconsumo_remoto": {
+          "kw": 410197,
+          "count": 32803
+        },
+        "compartilhada": {
+          "kw": 5382,
+          "count": 14
+        }
+      },
+      "MG": {
+        "propria_uc": {
+          "kw": 3495881,
+          "count": 365067
+        },
+        "autoconsumo_remoto": {
+          "kw": 951716,
+          "count": 66428
+        },
+        "compartilhada": {
+          "kw": 1459158,
+          "count": 2552
+        },
+        "outras": {
+          "kw": 4515,
+          "count": 116
+        },
+        "condominio": {
+          "kw": 7074,
+          "count": 307
+        }
+      },
+      "DF": {
+        "propria_uc": {
+          "kw": 546607,
+          "count": 35226
+        },
+        "autoconsumo_remoto": {
+          "kw": 27322,
+          "count": 513
+        },
+        "compartilhada": {
+          "kw": 6513,
+          "count": 189
+        },
+        "outras": {
+          "kw": 400,
+          "count": 1
+        },
+        "condominio": {
+          "kw": 43,
+          "count": 1
+        }
+      },
+      "ES": {
+        "autoconsumo_remoto": {
+          "kw": 359701,
+          "count": 24285
+        },
+        "propria_uc": {
+          "kw": 823925,
+          "count": 73109
+        },
+        "compartilhada": {
+          "kw": 85417,
+          "count": 347
+        },
+        "outras": {
+          "kw": 114,
+          "count": 7
+        }
+      },
+      "GO": {
+        "propria_uc": {
+          "kw": 1937324,
+          "count": 152266
+        },
+        "autoconsumo_remoto": {
+          "kw": 394641,
+          "count": 25855
+        },
+        "compartilhada": {
+          "kw": 19827,
+          "count": 687
+        },
+        "outras": {
+          "kw": 3804,
+          "count": 150
+        }
+      },
+      "MA": {
+        "propria_uc": {
+          "kw": 698397,
+          "count": 68922
+        },
+        "autoconsumo_remoto": {
+          "kw": 315748,
+          "count": 21012
+        },
+        "compartilhada": {
+          "kw": 9594,
+          "count": 122
+        },
+        "outras": {
+          "kw": 82,
+          "count": 5
+        },
+        "condominio": {
+          "kw": 100,
+          "count": 2
+        }
+      },
+      "SP": {
+        "propria_uc": {
+          "kw": 5388013,
+          "count": 625758
+        },
+        "autoconsumo_remoto": {
+          "kw": 993231,
+          "count": 77312
+        },
+        "compartilhada": {
+          "kw": 294913,
+          "count": 7536
+        },
+        "outras": {
+          "kw": 6880,
+          "count": 189
+        },
+        "condominio": {
+          "kw": 396,
+          "count": 25
+        }
+      },
+      "RJ": {
+        "propria_uc": {
+          "kw": 1445236,
+          "count": 168214
+        },
+        "autoconsumo_remoto": {
+          "kw": 424144,
+          "count": 20118
+        },
+        "compartilhada": {
+          "kw": 17222,
+          "count": 1089
+        },
+        "condominio": {
+          "kw": 7301,
+          "count": 574
+        },
+        "outras": {
+          "kw": 1457,
+          "count": 16
+        }
+      },
+      "PR": {
+        "propria_uc": {
+          "kw": 3104871,
+          "count": 270561
+        },
+        "autoconsumo_remoto": {
+          "kw": 1002312,
+          "count": 59400
+        },
+        "compartilhada": {
+          "kw": 269216,
+          "count": 1122
+        },
+        "outras": {
+          "kw": 260,
+          "count": 3
+        }
+      },
+      "MS": {
+        "propria_uc": {
+          "kw": 1260728,
+          "count": 136023
+        },
+        "autoconsumo_remoto": {
+          "kw": 472572,
+          "count": 32730
+        },
+        "compartilhada": {
+          "kw": 117444,
+          "count": 847
+        },
+        "outras": {
+          "kw": 3466,
+          "count": 34
+        },
+        "condominio": {
+          "kw": 40,
+          "count": 5
+        }
+      },
+      "SC": {
+        "propria_uc": {
+          "kw": 1483149,
+          "count": 147907
+        },
+        "autoconsumo_remoto": {
+          "kw": 602365,
+          "count": 44486
+        },
+        "compartilhada": {
+          "kw": 165788,
+          "count": 1562
+        },
+        "outras": {
+          "kw": 600,
+          "count": 36
+        },
+        "condominio": {
+          "kw": 779,
+          "count": 53
+        }
+      },
+      "MT": {
+        "autoconsumo_remoto": {
+          "kw": 337474,
+          "count": 21268
+        },
+        "propria_uc": {
+          "kw": 2654761,
+          "count": 214012
+        },
+        "compartilhada": {
+          "kw": 141141,
+          "count": 340
+        },
+        "outras": {
+          "kw": 4,
+          "count": 1
+        }
+      },
+      "PB": {
+        "propria_uc": {
+          "kw": 355826,
+          "count": 32504
+        },
+        "autoconsumo_remoto": {
+          "kw": 254064,
+          "count": 20065
+        },
+        "outras": {
+          "kw": 397,
+          "count": 11
+        },
+        "compartilhada": {
+          "kw": 7840,
+          "count": 95
+        },
+        "condominio": {
+          "kw": 10,
+          "count": 1
+        }
+      },
+      "RN": {
+        "propria_uc": {
+          "kw": 463916,
+          "count": 58261
+        },
+        "autoconsumo_remoto": {
+          "kw": 596539,
+          "count": 65573
+        },
+        "compartilhada": {
+          "kw": 2837,
+          "count": 231
+        },
+        "condominio": {
+          "kw": 116,
+          "count": 17
+        }
+      },
+      "RO": {
+        "propria_uc": {
+          "kw": 559708,
+          "count": 53539
+        },
+        "compartilhada": {
+          "kw": 11269,
+          "count": 330
+        },
+        "autoconsumo_remoto": {
+          "kw": 110527,
+          "count": 8244
+        },
+        "outras": {
+          "kw": 15,
+          "count": 1
         }
       },
       "RR": {
         "propria_uc": {
-          "kw": 23899,
-          "count": 2355
+          "kw": 77680,
+          "count": 6770
         },
         "autoconsumo_remoto": {
-          "kw": 592,
-          "count": 58
+          "kw": 42343,
+          "count": 2108
         },
         "compartilhada": {
-          "kw": 135,
-          "count": 13
+          "kw": 1272,
+          "count": 19
+        }
+      },
+      "RS": {
+        "propria_uc": {
+          "kw": 2712387,
+          "count": 324584
         },
-        "condominio": {
-          "kw": 49,
-          "count": 4
+        "autoconsumo_remoto": {
+          "kw": 963616,
+          "count": 80405
         },
-        "multipla_uc": {
-          "kw": 9,
-          "count": 0
+        "compartilhada": {
+          "kw": 43873,
+          "count": 789
         },
         "outras": {
-          "kw": 2,
-          "count": 0
+          "kw": 448,
+          "count": 27
+        },
+        "condominio": {
+          "kw": 34,
+          "count": 4
+        }
+      },
+      "SE": {
+        "propria_uc": {
+          "kw": 188799,
+          "count": 16873
+        },
+        "autoconsumo_remoto": {
+          "kw": 104515,
+          "count": 7936
+        },
+        "compartilhada": {
+          "kw": 10195,
+          "count": 883
+        },
+        "condominio": {
+          "kw": 56,
+          "count": 3
+        }
+      },
+      "TO": {
+        "propria_uc": {
+          "kw": 566852,
+          "count": 53040
+        },
+        "autoconsumo_remoto": {
+          "kw": 155777,
+          "count": 10554
+        },
+        "compartilhada": {
+          "kw": 1021,
+          "count": 63
+        },
+        "condominio": {
+          "kw": 6,
+          "count": 1
         }
       }
     },
     "fonte_by_modalidade": {
       "solar": {
         "propria_uc": {
-          "kw": 33631342,
-          "count": 3314114
+          "kw": 34125107,
+          "count": 3480544
         },
         "autoconsumo_remoto": {
-          "kw": 833834,
-          "count": 82168
+          "kw": 11260026,
+          "count": 882102
         },
         "compartilhada": {
-          "kw": 191087,
-          "count": 18830
-        },
-        "condominio": {
-          "kw": 69486,
-          "count": 6847
-        },
-        "multipla_uc": {
-          "kw": 13897,
-          "count": 1369
+          "kw": 2672800,
+          "count": 19772
         },
         "outras": {
-          "kw": 3474,
-          "count": 342
+          "kw": 22787,
+          "count": 606
+        },
+        "condominio": {
+          "kw": 16033,
+          "count": 996
         }
       },
       "biomassa": {
         "propria_uc": {
-          "kw": 324362,
-          "count": 31963
+          "kw": 133663,
+          "count": 429
         },
         "autoconsumo_remoto": {
-          "kw": 8042,
-          "count": 792
+          "kw": 46515,
+          "count": 144
         },
         "compartilhada": {
-          "kw": 1842,
-          "count": 181
-        },
-        "condominio": {
-          "kw": 670,
-          "count": 66
-        },
-        "multipla_uc": {
-          "kw": 134,
-          "count": 13
-        },
-        "outras": {
-          "kw": 33,
-          "count": 3
+          "kw": 24982,
+          "count": 35
         }
       },
       "eolica": {
-        "propria_uc": {
-          "kw": 102429,
-          "count": 10093
-        },
         "autoconsumo_remoto": {
-          "kw": 2539,
-          "count": 250
-        },
-        "compartilhada": {
-          "kw": 581,
-          "count": 57
-        },
-        "condominio": {
-          "kw": 211,
-          "count": 20
-        },
-        "multipla_uc": {
-          "kw": 42,
-          "count": 4
-        },
-        "outras": {
-          "kw": 10,
-          "count": 1
-        }
-      },
-      "hidrica": {
-        "propria_uc": {
-          "kw": 68286,
-          "count": 6728
-        },
-        "autoconsumo_remoto": {
-          "kw": 1693,
-          "count": 166
-        },
-        "compartilhada": {
-          "kw": 387,
-          "count": 38
-        },
-        "condominio": {
-          "kw": 141,
+          "kw": 11128,
           "count": 13
         },
-        "multipla_uc": {
-          "kw": 28,
-          "count": 2
+        "propria_uc": {
+          "kw": 1449,
+          "count": 83
         },
-        "outras": {
-          "kw": 7,
-          "count": 0
+        "compartilhada": {
+          "kw": 5000,
+          "count": 1
         }
       },
       "outras": {
         "propria_uc": {
-          "kw": 17071,
-          "count": 1681
+          "kw": 3673,
+          "count": 33
         },
         "autoconsumo_remoto": {
-          "kw": 423,
-          "count": 41
+          "kw": 533,
+          "count": 24
         },
         "compartilhada": {
-          "kw": 96,
-          "count": 9
+          "kw": 8260,
+          "count": 8
+        }
+      },
+      "hidrica": {
+        "compartilhada": {
+          "kw": 26607,
+          "count": 19
         },
-        "condominio": {
-          "kw": 35,
-          "count": 3
+        "autoconsumo_remoto": {
+          "kw": 30354,
+          "count": 32
         },
-        "multipla_uc": {
-          "kw": 7,
-          "count": 0
-        },
-        "outras": {
-          "kw": 1,
-          "count": 0
+        "propria_uc": {
+          "kw": 16993,
+          "count": 26
         }
       }
     },
     "year_by_modalidade": {
-      "2014": {
-        "propria_uc": {
-          "kw": 145,
-          "count": 29
-        },
-        "autoconsumo_remoto": {
-          "kw": 3,
-          "count": 0
-        },
-        "compartilhada": {
-          "kw": 0,
-          "count": 0
-        },
-        "condominio": {
-          "kw": 0,
-          "count": 0
-        },
-        "multipla_uc": {
-          "kw": 0,
-          "count": 0
-        },
-        "outras": {
-          "kw": 0,
-          "count": 0
-        }
-      },
-      "2015": {
-        "propria_uc": {
-          "kw": 1171,
-          "count": 212
-        },
-        "autoconsumo_remoto": {
-          "kw": 29,
-          "count": 5
-        },
-        "compartilhada": {
-          "kw": 6,
-          "count": 1
-        },
-        "condominio": {
-          "kw": 2,
-          "count": 0
-        },
-        "multipla_uc": {
-          "kw": 0,
-          "count": 0
-        },
-        "outras": {
-          "kw": 0,
-          "count": 0
-        }
-      },
       "2016": {
         "propria_uc": {
-          "kw": 9873,
-          "count": 1645
+          "kw": 44020,
+          "count": 5682
         },
         "autoconsumo_remoto": {
-          "kw": 244,
-          "count": 40
+          "kw": 18471,
+          "count": 581
         },
         "compartilhada": {
-          "kw": 56,
-          "count": 9
-        },
-        "condominio": {
-          "kw": 20,
-          "count": 3
-        },
-        "multipla_uc": {
-          "kw": 4,
-          "count": 0
+          "kw": 187,
+          "count": 21
         },
         "outras": {
-          "kw": 1,
-          "count": 0
+          "kw": 18,
+          "count": 1
         }
       },
       "2017": {
         "propria_uc": {
-          "kw": 84237,
-          "count": 11231
+          "kw": 106566,
+          "count": 11603
         },
         "autoconsumo_remoto": {
-          "kw": 2088,
-          "count": 278
+          "kw": 38510,
+          "count": 1561
         },
         "compartilhada": {
-          "kw": 478,
-          "count": 63
-        },
-        "condominio": {
-          "kw": 174,
-          "count": 23
-        },
-        "multipla_uc": {
-          "kw": 34,
-          "count": 4
+          "kw": 9358,
+          "count": 71
         },
         "outras": {
-          "kw": 8,
-          "count": 1
+          "kw": 79,
+          "count": 3
         }
       },
       "2018": {
         "propria_uc": {
-          "kw": 243548,
-          "count": 28652
+          "kw": 322625,
+          "count": 29600
         },
         "autoconsumo_remoto": {
-          "kw": 6038,
-          "count": 710
+          "kw": 96953,
+          "count": 5701
         },
         "compartilhada": {
-          "kw": 1383,
-          "count": 162
-        },
-        "condominio": {
-          "kw": 503,
-          "count": 59
-        },
-        "multipla_uc": {
-          "kw": 100,
-          "count": 11
+          "kw": 11923,
+          "count": 134
         },
         "outras": {
-          "kw": 25,
-          "count": 2
+          "kw": 628,
+          "count": 29
         }
       },
       "2019": {
         "propria_uc": {
-          "kw": 876488,
-          "count": 97387
+          "kw": 1224435,
+          "count": 100607
         },
         "autoconsumo_remoto": {
-          "kw": 21731,
-          "count": 2414
+          "kw": 315347,
+          "count": 20419
         },
         "compartilhada": {
-          "kw": 4980,
-          "count": 553
-        },
-        "condominio": {
-          "kw": 1810,
-          "count": 201
-        },
-        "multipla_uc": {
-          "kw": 362,
-          "count": 40
+          "kw": 59746,
+          "count": 286
         },
         "outras": {
-          "kw": 90,
-          "count": 10
+          "kw": 822,
+          "count": 31
+        },
+        "condominio": {
+          "kw": 25,
+          "count": 1
         }
       },
       "2020": {
         "propria_uc": {
-          "kw": 1755581,
-          "count": 179140
+          "kw": 2122192,
+          "count": 185062
         },
         "autoconsumo_remoto": {
-          "kw": 43526,
-          "count": 4441
+          "kw": 650360,
+          "count": 37434
         },
         "compartilhada": {
-          "kw": 9974,
-          "count": 1017
-        },
-        "condominio": {
-          "kw": 3627,
-          "count": 370
-        },
-        "multipla_uc": {
-          "kw": 725,
-          "count": 74
+          "kw": 191414,
+          "count": 661
         },
         "outras": {
-          "kw": 181,
-          "count": 18
-        }
-      },
-      "2021": {
-        "propria_uc": {
-          "kw": 3738075,
-          "count": 356007
-        },
-        "autoconsumo_remoto": {
-          "kw": 92679,
-          "count": 8826
-        },
-        "compartilhada": {
-          "kw": 21239,
-          "count": 2022
+          "kw": 3718,
+          "count": 144
         },
         "condominio": {
-          "kw": 7723,
-          "count": 735
-        },
-        "multipla_uc": {
-          "kw": 1544,
-          "count": 147
-        },
-        "outras": {
-          "kw": 386,
-          "count": 36
-        }
-      },
-      "2022": {
-        "propria_uc": {
-          "kw": 6412020,
-          "count": 610668
-        },
-        "autoconsumo_remoto": {
-          "kw": 158975,
-          "count": 15140
-        },
-        "compartilhada": {
-          "kw": 36431,
-          "count": 3469
-        },
-        "condominio": {
-          "kw": 13247,
-          "count": 1261
-        },
-        "multipla_uc": {
-          "kw": 2649,
-          "count": 252
-        },
-        "outras": {
-          "kw": 662,
-          "count": 63
-        }
-      },
-      "2023": {
-        "propria_uc": {
-          "kw": 5511977,
-          "count": 524950
-        },
-        "autoconsumo_remoto": {
-          "kw": 136660,
-          "count": 13015
-        },
-        "compartilhada": {
-          "kw": 31318,
-          "count": 2982
-        },
-        "condominio": {
-          "kw": 11388,
-          "count": 1084
-        },
-        "multipla_uc": {
-          "kw": 2277,
-          "count": 216
-        },
-        "outras": {
-          "kw": 569,
-          "count": 54
-        }
-      },
-      "2024": {
-        "propria_uc": {
-          "kw": 7005752,
-          "count": 686838
-        },
-        "autoconsumo_remoto": {
-          "kw": 173696,
-          "count": 17029
-        },
-        "compartilhada": {
-          "kw": 39805,
-          "count": 3902
-        },
-        "condominio": {
-          "kw": 14474,
-          "count": 1419
-        },
-        "multipla_uc": {
-          "kw": 2894,
-          "count": 283
-        },
-        "outras": {
-          "kw": 723,
-          "count": 70
+          "kw": 81,
+          "count": 6
         }
       },
       "2025": {
         "propria_uc": {
-          "kw": 6600731,
-          "count": 673544
+          "kw": 6723521,
+          "count": 695803
         },
         "autoconsumo_remoto": {
-          "kw": 163654,
-          "count": 16699
+          "kw": 2207025,
+          "count": 196336
         },
         "compartilhada": {
-          "kw": 37504,
-          "count": 3826
+          "kw": 408533,
+          "count": 3479
         },
         "condominio": {
-          "kw": 13637,
-          "count": 1391
-        },
-        "multipla_uc": {
-          "kw": 2727,
-          "count": 278
+          "kw": 9295,
+          "count": 432
         },
         "outras": {
-          "kw": 681,
-          "count": 69
+          "kw": 534,
+          "count": 34
+        }
+      },
+      "2021": {
+        "propria_uc": {
+          "kw": 3298371,
+          "count": 367773
+        },
+        "autoconsumo_remoto": {
+          "kw": 1156198,
+          "count": 82615
+        },
+        "compartilhada": {
+          "kw": 231805,
+          "count": 926
+        },
+        "outras": {
+          "kw": 1082,
+          "count": 36
+        },
+        "condominio": {
+          "kw": 61,
+          "count": 7
         }
       },
       "2026": {
-        "propria_uc": {
-          "kw": 1903891,
-          "count": 194274
-        },
         "autoconsumo_remoto": {
-          "kw": 47203,
-          "count": 4816
+          "kw": 415448,
+          "count": 42893
+        },
+        "propria_uc": {
+          "kw": 1737890,
+          "count": 200697
         },
         "compartilhada": {
-          "kw": 10817,
-          "count": 1103
+          "kw": 24262,
+          "count": 1215
         },
         "condominio": {
-          "kw": 3933,
-          "count": 401
+          "kw": 4174,
+          "count": 338
+        }
+      },
+      "2024": {
+        "propria_uc": {
+          "kw": 7070859,
+          "count": 709528
         },
-        "multipla_uc": {
-          "kw": 786,
-          "count": 80
+        "autoconsumo_remoto": {
+          "kw": 2362507,
+          "count": 192705
+        },
+        "compartilhada": {
+          "kw": 809623,
+          "count": 4918
         },
         "outras": {
-          "kw": 196,
-          "count": 20
+          "kw": 7293,
+          "count": 50
+        },
+        "condominio": {
+          "kw": 132,
+          "count": 5
+        }
+      },
+      "2022": {
+        "propria_uc": {
+          "kw": 5773884,
+          "count": 630850
+        },
+        "autoconsumo_remoto": {
+          "kw": 2099707,
+          "count": 163474
+        },
+        "compartilhada": {
+          "kw": 312707,
+          "count": 3445
+        },
+        "outras": {
+          "kw": 1549,
+          "count": 83
+        },
+        "condominio": {
+          "kw": 2167,
+          "count": 197
+        }
+      },
+      "2023": {
+        "propria_uc": {
+          "kw": 5839593,
+          "count": 542295
+        },
+        "autoconsumo_remoto": {
+          "kw": 1984879,
+          "count": 138410
+        },
+        "compartilhada": {
+          "kw": 677555,
+          "count": 4676
+        },
+        "outras": {
+          "kw": 7003,
+          "count": 194
+        },
+        "condominio": {
+          "kw": 98,
+          "count": 10
+        }
+      },
+      "2015": {
+        "autoconsumo_remoto": {
+          "kw": 2287,
+          "count": 145
+        },
+        "propria_uc": {
+          "kw": 12588,
+          "count": 1155
+        },
+        "outras": {
+          "kw": 60,
+          "count": 1
+        },
+        "compartilhada": {
+          "kw": 497,
+          "count": 1
+        }
+      },
+      "2014": {
+        "propria_uc": {
+          "kw": 2186,
+          "count": 261
+        },
+        "autoconsumo_remoto": {
+          "kw": 564,
+          "count": 23
+        },
+        "compartilhada": {
+          "kw": 6,
+          "count": 1
         }
       }
     }

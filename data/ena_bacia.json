@@ -1,5 +1,5 @@
 {
-  "generated_at_utc": "2026-05-15T12:43:52Z",
+  "generated_at_utc": "2026-05-15T14:10:48Z",
   "source": {
     "name": "ONS Dados Abertos — ENA Diário por Bacia",
     "url_template": "https://ons-aws-prod-opendata.s3.amazonaws.com/dataset/ena_bacia_di/ENA_DIARIO_BACIAS_{year}.csv",
