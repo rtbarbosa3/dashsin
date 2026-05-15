@@ -1,67 +1,435 @@
 {
-  "generated_at_utc": "2026-05-12T13:00:00Z",
+  "generated_at_utc": "2026-05-15T13:00:00Z",
   "source": {
-    "name": "INITIAL SEED — will be replaced by ANEEL data on first Action run",
+    "name": "INITIAL SEED v2 — will be replaced by ANEEL data on first Action run",
     "url": "https://dadosabertos.aneel.gov.br/dataset/tarifas-distribuidoras-energia-eletrica",
     "rows_read": 0,
     "rows_kept": 0,
-    "note": "Tarifa total (TE + TUSD) em R$/kWh para classe convencional. Top 25 distribuidoras."
+    "note": "B1: te+tusd consumo unico (R$/kWh). A4 Verde: te/tusd ponta+fora_ponta + demanda unica (R$/kW). A4 Azul: + demanda ponta/FP segregada."
   },
   "classes": {
     "B1": {
       "label": "B1 - Residencial",
       "distribuidoras": [
-        {"distribuidora": "CPFL PAULISTA",      "ultima_homologacao": "2026-04-08", "reajuste_pct":  4.32, "total_atual_rs_kwh": 0.62845, "total_anterior_rs_kwh": 0.60245, "te_atual": 0.31420, "tusd_atual": 0.31425},
-        {"distribuidora": "ENEL SP",            "ultima_homologacao": "2026-07-04", "reajuste_pct":  3.85, "total_atual_rs_kwh": 0.65120, "total_anterior_rs_kwh": 0.62705, "te_atual": 0.32200, "tusd_atual": 0.32920},
-        {"distribuidora": "ENEL RJ",            "ultima_homologacao": "2026-03-15", "reajuste_pct":  8.21, "total_atual_rs_kwh": 0.71240, "total_anterior_rs_kwh": 0.65830, "te_atual": 0.33820, "tusd_atual": 0.37420},
-        {"distribuidora": "LIGHT",              "ultima_homologacao": "2025-11-07", "reajuste_pct": 11.45, "total_atual_rs_kwh": 0.78950, "total_anterior_rs_kwh": 0.70840, "te_atual": 0.36410, "tusd_atual": 0.42540},
-        {"distribuidora": "CEMIG D",            "ultima_homologacao": "2026-05-28", "reajuste_pct":  6.18, "total_atual_rs_kwh": 0.68420, "total_anterior_rs_kwh": 0.64435, "te_atual": 0.33210, "tusd_atual": 0.35210},
-        {"distribuidora": "COPEL DIS",          "ultima_homologacao": "2025-06-24", "reajuste_pct":  3.41, "total_atual_rs_kwh": 0.58420, "total_anterior_rs_kwh": 0.56495, "te_atual": 0.29110, "tusd_atual": 0.29310},
-        {"distribuidora": "CELESC DIS",         "ultima_homologacao": "2025-08-22", "reajuste_pct":  5.92, "total_atual_rs_kwh": 0.61210, "total_anterior_rs_kwh": 0.57790, "te_atual": 0.30420, "tusd_atual": 0.30790},
-        {"distribuidora": "RGE",                "ultima_homologacao": "2026-06-19", "reajuste_pct":  4.78, "total_atual_rs_kwh": 0.64230, "total_anterior_rs_kwh": 0.61300, "te_atual": 0.32120, "tusd_atual": 0.32110},
-        {"distribuidora": "COELBA",             "ultima_homologacao": "2026-04-22", "reajuste_pct":  9.12, "total_atual_rs_kwh": 0.74230, "total_anterior_rs_kwh": 0.68030, "te_atual": 0.35420, "tusd_atual": 0.38810},
-        {"distribuidora": "ENEL CE",            "ultima_homologacao": "2025-04-22", "reajuste_pct":  7.34, "total_atual_rs_kwh": 0.69845, "total_anterior_rs_kwh": 0.65070, "te_atual": 0.34120, "tusd_atual": 0.35725},
-        {"distribuidora": "CELPE",              "ultima_homologacao": "2026-04-29", "reajuste_pct":  6.45, "total_atual_rs_kwh": 0.72145, "total_anterior_rs_kwh": 0.67770, "te_atual": 0.35210, "tusd_atual": 0.36935},
-        {"distribuidora": "COSERN",             "ultima_homologacao": "2026-04-22", "reajuste_pct":  5.82, "total_atual_rs_kwh": 0.66820, "total_anterior_rs_kwh": 0.63140, "te_atual": 0.33420, "tusd_atual": 0.33400},
-        {"distribuidora": "EQUATORIAL PA",      "ultima_homologacao": "2025-08-07", "reajuste_pct": 10.85, "total_atual_rs_kwh": 0.71235, "total_anterior_rs_kwh": 0.64265, "te_atual": 0.34810, "tusd_atual": 0.36425},
-        {"distribuidora": "EQUATORIAL MA",      "ultima_homologacao": "2025-08-28", "reajuste_pct":  4.92, "total_atual_rs_kwh": 0.67430, "total_anterior_rs_kwh": 0.64265, "te_atual": 0.33120, "tusd_atual": 0.34310},
-        {"distribuidora": "AMAZONAS ENERGIA",   "ultima_homologacao": "2025-11-30", "reajuste_pct": 12.15, "total_atual_rs_kwh": 0.81230, "total_anterior_rs_kwh": 0.72432, "te_atual": 0.39820, "tusd_atual": 0.41410},
-        {"distribuidora": "ENERGISA MT",        "ultima_homologacao": "2026-04-08", "reajuste_pct":  3.62, "total_atual_rs_kwh": 0.63820, "total_anterior_rs_kwh": 0.61590, "te_atual": 0.31920, "tusd_atual": 0.31900},
-        {"distribuidora": "ENERGISA MS",        "ultima_homologacao": "2026-04-08", "reajuste_pct":  4.18, "total_atual_rs_kwh": 0.65120, "total_anterior_rs_kwh": 0.62506, "te_atual": 0.32420, "tusd_atual": 0.32700},
-        {"distribuidora": "ENERGISA MG",        "ultima_homologacao": "2025-12-22", "reajuste_pct":  5.78, "total_atual_rs_kwh": 0.66830, "total_anterior_rs_kwh": 0.63178, "te_atual": 0.33210, "tusd_atual": 0.33620},
-        {"distribuidora": "EDP SP",             "ultima_homologacao": "2025-10-23", "reajuste_pct":  6.85, "total_atual_rs_kwh": 0.69230, "total_anterior_rs_kwh": 0.64790, "te_atual": 0.34410, "tusd_atual": 0.34820},
-        {"distribuidora": "EDP ES",             "ultima_homologacao": "2025-08-07", "reajuste_pct":  4.45, "total_atual_rs_kwh": 0.61920, "total_anterior_rs_kwh": 0.59285, "te_atual": 0.30810, "tusd_atual": 0.31110},
-        {"distribuidora": "ELEKTRO",            "ultima_homologacao": "2025-08-27", "reajuste_pct":  3.92, "total_atual_rs_kwh": 0.60230, "total_anterior_rs_kwh": 0.57960, "te_atual": 0.29910, "tusd_atual": 0.30320},
-        {"distribuidora": "CPFL PIRATININGA",   "ultima_homologacao": "2025-10-23", "reajuste_pct":  4.65, "total_atual_rs_kwh": 0.61820, "total_anterior_rs_kwh": 0.59072, "te_atual": 0.30810, "tusd_atual": 0.31010},
-        {"distribuidora": "CEEE EQUATORIAL",    "ultima_homologacao": "2025-10-24", "reajuste_pct":  8.72, "total_atual_rs_kwh": 0.72130, "total_anterior_rs_kwh": 0.66346, "te_atual": 0.35610, "tusd_atual": 0.36520}
+        {
+          "distribuidora": "ENEL SP",
+          "ultima_homologacao": "2026-07-04",
+          "homologacao_anterior": "2025-07-04",
+          "total_atual_rs_kwh": 0.65120,
+          "total_anterior_rs_kwh": 0.62488,
+          "reajuste_pct": 4.21,
+          "componentes": {
+            "convencional": { "te_consumo_unico": 0.32140, "tusd_consumo_unico": 0.32980 }
+          },
+          "componentes_anteriores": {
+            "convencional": { "te_consumo_unico": 0.30844, "tusd_consumo_unico": 0.31644 }
+          }
+        },
+        {
+          "distribuidora": "RGE",
+          "ultima_homologacao": "2026-06-19",
+          "homologacao_anterior": "2025-06-19",
+          "total_atual_rs_kwh": 0.63871,
+          "total_anterior_rs_kwh": 0.60643,
+          "reajuste_pct": 5.32,
+          "componentes": {
+            "convencional": { "te_consumo_unico": 0.31420, "tusd_consumo_unico": 0.32451 }
+          },
+          "componentes_anteriores": {
+            "convencional": { "te_consumo_unico": 0.29822, "tusd_consumo_unico": 0.30821 }
+          }
+        },
+        {
+          "distribuidora": "CEMIG D",
+          "ultima_homologacao": "2026-05-28",
+          "homologacao_anterior": "2025-05-28",
+          "total_atual_rs_kwh": 0.68420,
+          "total_anterior_rs_kwh": 0.63696,
+          "reajuste_pct": 7.42,
+          "componentes": {
+            "convencional": { "te_consumo_unico": 0.33980, "tusd_consumo_unico": 0.34440 }
+          },
+          "componentes_anteriores": {
+            "convencional": { "te_consumo_unico": 0.31628, "tusd_consumo_unico": 0.32068 }
+          }
+        },
+        {
+          "distribuidora": "COELBA",
+          "ultima_homologacao": "2026-04-22",
+          "homologacao_anterior": "2025-04-22",
+          "total_atual_rs_kwh": 0.72540,
+          "total_anterior_rs_kwh": 0.65696,
+          "reajuste_pct": 10.42,
+          "componentes": {
+            "convencional": { "te_consumo_unico": 0.35820, "tusd_consumo_unico": 0.36720 }
+          },
+          "componentes_anteriores": {
+            "convencional": { "te_consumo_unico": 0.32443, "tusd_consumo_unico": 0.33253 }
+          }
+        },
+        {
+          "distribuidora": "CPFL PAULISTA",
+          "ultima_homologacao": "2026-04-08",
+          "homologacao_anterior": "2025-04-08",
+          "total_atual_rs_kwh": 0.61840,
+          "total_anterior_rs_kwh": 0.58794,
+          "reajuste_pct": 5.18,
+          "componentes": {
+            "convencional": { "te_consumo_unico": 0.30620, "tusd_consumo_unico": 0.31220 }
+          },
+          "componentes_anteriores": {
+            "convencional": { "te_consumo_unico": 0.29110, "tusd_consumo_unico": 0.29684 }
+          }
+        },
+        {
+          "distribuidora": "ENEL RJ",
+          "ultima_homologacao": "2026-03-15",
+          "homologacao_anterior": "2025-03-15",
+          "total_atual_rs_kwh": 0.75240,
+          "total_anterior_rs_kwh": 0.68492,
+          "reajuste_pct": 9.85,
+          "componentes": {
+            "convencional": { "te_consumo_unico": 0.37120, "tusd_consumo_unico": 0.38120 }
+          },
+          "componentes_anteriores": {
+            "convencional": { "te_consumo_unico": 0.33793, "tusd_consumo_unico": 0.34699 }
+          }
+        },
+        {
+          "distribuidora": "CELESC DIS",
+          "ultima_homologacao": "2025-08-22",
+          "homologacao_anterior": "2024-08-22",
+          "total_atual_rs_kwh": 0.61240,
+          "total_anterior_rs_kwh": 0.57530,
+          "reajuste_pct": 6.45,
+          "componentes": {
+            "convencional": { "te_consumo_unico": 0.30420, "tusd_consumo_unico": 0.30820 }
+          },
+          "componentes_anteriores": {
+            "convencional": { "te_consumo_unico": 0.28572, "tusd_consumo_unico": 0.28958 }
+          }
+        },
+        {
+          "distribuidora": "LIGHT",
+          "ultima_homologacao": "2025-11-07",
+          "homologacao_anterior": "2024-11-07",
+          "total_atual_rs_kwh": 0.84320,
+          "total_anterior_rs_kwh": 0.74721,
+          "reajuste_pct": 12.85,
+          "componentes": {
+            "convencional": { "te_consumo_unico": 0.41820, "tusd_consumo_unico": 0.42500 }
+          },
+          "componentes_anteriores": {
+            "convencional": { "te_consumo_unico": 0.37070, "tusd_consumo_unico": 0.37651 }
+          }
+        },
+        {
+          "distribuidora": "COPEL DIS",
+          "ultima_homologacao": "2025-06-24",
+          "homologacao_anterior": "2024-06-24",
+          "total_atual_rs_kwh": 0.57420,
+          "total_anterior_rs_kwh": 0.55115,
+          "reajuste_pct": 4.18,
+          "componentes": {
+            "convencional": { "te_consumo_unico": 0.28420, "tusd_consumo_unico": 0.29000 }
+          },
+          "componentes_anteriores": {
+            "convencional": { "te_consumo_unico": 0.27282, "tusd_consumo_unico": 0.27833 }
+          }
+        }
       ]
     },
     "A4": {
       "label": "A4 - Industrial 2,3-25 kV",
       "distribuidoras": [
-        {"distribuidora": "CPFL PAULISTA",      "ultima_homologacao": "2026-04-08", "reajuste_pct":  5.18, "total_atual_rs_kwh": 0.38420, "total_anterior_rs_kwh": 0.36527, "te_atual": 0.18210, "tusd_atual": 0.20210},
-        {"distribuidora": "ENEL SP",            "ultima_homologacao": "2026-07-04", "reajuste_pct":  4.21, "total_atual_rs_kwh": 0.39820, "total_anterior_rs_kwh": 0.38211, "te_atual": 0.19020, "tusd_atual": 0.20800},
-        {"distribuidora": "ENEL RJ",            "ultima_homologacao": "2026-03-15", "reajuste_pct":  9.85, "total_atual_rs_kwh": 0.46210, "total_anterior_rs_kwh": 0.42066, "te_atual": 0.21210, "tusd_atual": 0.25000},
-        {"distribuidora": "LIGHT",              "ultima_homologacao": "2025-11-07", "reajuste_pct": 12.85, "total_atual_rs_kwh": 0.52130, "total_anterior_rs_kwh": 0.46196, "te_atual": 0.23210, "tusd_atual": 0.28920},
-        {"distribuidora": "CEMIG D",            "ultima_homologacao": "2026-05-28", "reajuste_pct":  7.42, "total_atual_rs_kwh": 0.42120, "total_anterior_rs_kwh": 0.39213, "te_atual": 0.20420, "tusd_atual": 0.21700},
-        {"distribuidora": "COPEL DIS",          "ultima_homologacao": "2025-06-24", "reajuste_pct":  4.18, "total_atual_rs_kwh": 0.35420, "total_anterior_rs_kwh": 0.34001, "te_atual": 0.17310, "tusd_atual": 0.18110},
-        {"distribuidora": "CELESC DIS",         "ultima_homologacao": "2025-08-22", "reajuste_pct":  6.45, "total_atual_rs_kwh": 0.37810, "total_anterior_rs_kwh": 0.35518, "te_atual": 0.18410, "tusd_atual": 0.19400},
-        {"distribuidora": "RGE",                "ultima_homologacao": "2026-06-19", "reajuste_pct":  5.32, "total_atual_rs_kwh": 0.39120, "total_anterior_rs_kwh": 0.37144, "te_atual": 0.19210, "tusd_atual": 0.19910},
-        {"distribuidora": "COELBA",             "ultima_homologacao": "2026-04-22", "reajuste_pct": 10.42, "total_atual_rs_kwh": 0.45120, "total_anterior_rs_kwh": 0.40862, "te_atual": 0.21420, "tusd_atual": 0.23700},
-        {"distribuidora": "ENEL CE",            "ultima_homologacao": "2025-04-22", "reajuste_pct":  8.18, "total_atual_rs_kwh": 0.42320, "total_anterior_rs_kwh": 0.39120, "te_atual": 0.20410, "tusd_atual": 0.21910},
-        {"distribuidora": "CELPE",              "ultima_homologacao": "2026-04-29", "reajuste_pct":  7.21, "total_atual_rs_kwh": 0.43820, "total_anterior_rs_kwh": 0.40872, "te_atual": 0.21320, "tusd_atual": 0.22500},
-        {"distribuidora": "COSERN",             "ultima_homologacao": "2026-04-22", "reajuste_pct":  6.18, "total_atual_rs_kwh": 0.40420, "total_anterior_rs_kwh": 0.38068, "te_atual": 0.19720, "tusd_atual": 0.20700},
-        {"distribuidora": "EQUATORIAL PA",      "ultima_homologacao": "2025-08-07", "reajuste_pct": 11.72, "total_atual_rs_kwh": 0.43520, "total_anterior_rs_kwh": 0.38953, "te_atual": 0.20820, "tusd_atual": 0.22700},
-        {"distribuidora": "EQUATORIAL MA",      "ultima_homologacao": "2025-08-28", "reajuste_pct":  5.42, "total_atual_rs_kwh": 0.41120, "total_anterior_rs_kwh": 0.39008, "te_atual": 0.20120, "tusd_atual": 0.21000},
-        {"distribuidora": "AMAZONAS ENERGIA",   "ultima_homologacao": "2025-11-30", "reajuste_pct": 13.85, "total_atual_rs_kwh": 0.51820, "total_anterior_rs_kwh": 0.45518, "te_atual": 0.24820, "tusd_atual": 0.27000},
-        {"distribuidora": "ENERGISA MT",        "ultima_homologacao": "2026-04-08", "reajuste_pct":  4.85, "total_atual_rs_kwh": 0.39120, "total_anterior_rs_kwh": 0.37310, "te_atual": 0.19310, "tusd_atual": 0.19810},
-        {"distribuidora": "ENERGISA MS",        "ultima_homologacao": "2026-04-08", "reajuste_pct":  5.18, "total_atual_rs_kwh": 0.40220, "total_anterior_rs_kwh": 0.38240, "te_atual": 0.19820, "tusd_atual": 0.20400},
-        {"distribuidora": "ENERGISA MG",        "ultima_homologacao": "2025-12-22", "reajuste_pct":  6.42, "total_atual_rs_kwh": 0.41120, "total_anterior_rs_kwh": 0.38641, "te_atual": 0.20310, "tusd_atual": 0.20810},
-        {"distribuidora": "EDP SP",             "ultima_homologacao": "2025-10-23", "reajuste_pct":  7.32, "total_atual_rs_kwh": 0.42220, "total_anterior_rs_kwh": 0.39341, "te_atual": 0.20910, "tusd_atual": 0.21310},
-        {"distribuidora": "EDP ES",             "ultima_homologacao": "2025-08-07", "reajuste_pct":  5.18, "total_atual_rs_kwh": 0.38120, "total_anterior_rs_kwh": 0.36242, "te_atual": 0.18820, "tusd_atual": 0.19300},
-        {"distribuidora": "ELEKTRO",            "ultima_homologacao": "2025-08-27", "reajuste_pct":  4.62, "total_atual_rs_kwh": 0.36820, "total_anterior_rs_kwh": 0.35194, "te_atual": 0.18120, "tusd_atual": 0.18700},
-        {"distribuidora": "CPFL PIRATININGA",   "ultima_homologacao": "2025-10-23", "reajuste_pct":  5.42, "total_atual_rs_kwh": 0.37820, "total_anterior_rs_kwh": 0.35876, "te_atual": 0.18810, "tusd_atual": 0.19010},
-        {"distribuidora": "CEEE EQUATORIAL",    "ultima_homologacao": "2025-10-24", "reajuste_pct":  9.85, "total_atual_rs_kwh": 0.45230, "total_anterior_rs_kwh": 0.41174, "te_atual": 0.22310, "tusd_atual": 0.22920}
+        {
+          "distribuidora": "ENEL SP",
+          "ultima_homologacao": "2026-07-04",
+          "homologacao_anterior": "2025-07-04",
+          "total_atual_rs_kwh": 0.39820,
+          "total_anterior_rs_kwh": 0.38211,
+          "reajuste_pct": 4.21,
+          "componentes": {
+            "verde": {
+              "te_consumo_ponta": 0.62420, "te_consumo_fora_ponta": 0.20420,
+              "tusd_consumo_ponta": 0.42800, "tusd_consumo_fora_ponta": 0.19400,
+              "tusd_demanda_unica": 32.84
+            },
+            "azul": {
+              "te_consumo_ponta": 0.62420, "te_consumo_fora_ponta": 0.20420,
+              "tusd_consumo_ponta": 0.08200, "tusd_consumo_fora_ponta": 0.08200,
+              "tusd_demanda_ponta": 68.20, "tusd_demanda_fora_ponta": 21.40
+            }
+          },
+          "componentes_anteriores": {
+            "verde": {
+              "te_consumo_ponta": 0.59895, "te_consumo_fora_ponta": 0.19596,
+              "tusd_consumo_ponta": 0.41105, "tusd_consumo_fora_ponta": 0.18615,
+              "tusd_demanda_unica": 31.52
+            },
+            "azul": {
+              "te_consumo_ponta": 0.59895, "te_consumo_fora_ponta": 0.19596,
+              "tusd_consumo_ponta": 0.07868, "tusd_consumo_fora_ponta": 0.07868,
+              "tusd_demanda_ponta": 65.45, "tusd_demanda_fora_ponta": 20.54
+            }
+          }
+        },
+        {
+          "distribuidora": "RGE",
+          "ultima_homologacao": "2026-06-19",
+          "homologacao_anterior": "2025-06-19",
+          "total_atual_rs_kwh": 0.39120,
+          "total_anterior_rs_kwh": 0.37144,
+          "reajuste_pct": 5.32,
+          "componentes": {
+            "verde": {
+              "te_consumo_ponta": 0.60840, "te_consumo_fora_ponta": 0.19980,
+              "tusd_consumo_ponta": 0.41200, "tusd_consumo_fora_ponta": 0.19140,
+              "tusd_demanda_unica": 30.45
+            },
+            "azul": {
+              "te_consumo_ponta": 0.60840, "te_consumo_fora_ponta": 0.19980,
+              "tusd_consumo_ponta": 0.07800, "tusd_consumo_fora_ponta": 0.07800,
+              "tusd_demanda_ponta": 64.80, "tusd_demanda_fora_ponta": 20.40
+            }
+          },
+          "componentes_anteriores": {
+            "verde": {
+              "te_consumo_ponta": 0.57767, "te_consumo_fora_ponta": 0.18972,
+              "tusd_consumo_ponta": 0.39119, "tusd_consumo_fora_ponta": 0.18172,
+              "tusd_demanda_unica": 28.92
+            },
+            "azul": {
+              "te_consumo_ponta": 0.57767, "te_consumo_fora_ponta": 0.18972,
+              "tusd_consumo_ponta": 0.07406, "tusd_consumo_fora_ponta": 0.07406,
+              "tusd_demanda_ponta": 61.53, "tusd_demanda_fora_ponta": 19.37
+            }
+          }
+        },
+        {
+          "distribuidora": "CEMIG D",
+          "ultima_homologacao": "2026-05-28",
+          "homologacao_anterior": "2025-05-28",
+          "total_atual_rs_kwh": 0.42120,
+          "total_anterior_rs_kwh": 0.39213,
+          "reajuste_pct": 7.42,
+          "componentes": {
+            "verde": {
+              "te_consumo_ponta": 0.66420, "te_consumo_fora_ponta": 0.21420,
+              "tusd_consumo_ponta": 0.44820, "tusd_consumo_fora_ponta": 0.20700,
+              "tusd_demanda_unica": 35.62
+            },
+            "azul": {
+              "te_consumo_ponta": 0.66420, "te_consumo_fora_ponta": 0.21420,
+              "tusd_consumo_ponta": 0.08620, "tusd_consumo_fora_ponta": 0.08620,
+              "tusd_demanda_ponta": 73.80, "tusd_demanda_fora_ponta": 22.40
+            }
+          },
+          "componentes_anteriores": {
+            "verde": {
+              "te_consumo_ponta": 0.61832, "te_consumo_fora_ponta": 0.19940,
+              "tusd_consumo_ponta": 0.41723, "tusd_consumo_fora_ponta": 0.19273,
+              "tusd_demanda_unica": 33.16
+            },
+            "azul": {
+              "te_consumo_ponta": 0.61832, "te_consumo_fora_ponta": 0.19940,
+              "tusd_consumo_ponta": 0.08025, "tusd_consumo_fora_ponta": 0.08025,
+              "tusd_demanda_ponta": 68.71, "tusd_demanda_fora_ponta": 20.85
+            }
+          }
+        },
+        {
+          "distribuidora": "COELBA",
+          "ultima_homologacao": "2026-04-22",
+          "homologacao_anterior": "2025-04-22",
+          "total_atual_rs_kwh": 0.45120,
+          "total_anterior_rs_kwh": 0.40862,
+          "reajuste_pct": 10.42,
+          "componentes": {
+            "verde": {
+              "te_consumo_ponta": 0.71220, "te_consumo_fora_ponta": 0.23420,
+              "tusd_consumo_ponta": 0.47820, "tusd_consumo_fora_ponta": 0.21700,
+              "tusd_demanda_unica": 38.92
+            },
+            "azul": {
+              "te_consumo_ponta": 0.71220, "te_consumo_fora_ponta": 0.23420,
+              "tusd_consumo_ponta": 0.09220, "tusd_consumo_fora_ponta": 0.09220,
+              "tusd_demanda_ponta": 78.40, "tusd_demanda_fora_ponta": 23.80
+            }
+          },
+          "componentes_anteriores": {
+            "verde": {
+              "te_consumo_ponta": 0.64497, "te_consumo_fora_ponta": 0.21208,
+              "tusd_consumo_ponta": 0.43308, "tusd_consumo_fora_ponta": 0.19654,
+              "tusd_demanda_unica": 35.25
+            },
+            "azul": {
+              "te_consumo_ponta": 0.64497, "te_consumo_fora_ponta": 0.21208,
+              "tusd_consumo_ponta": 0.08350, "tusd_consumo_fora_ponta": 0.08350,
+              "tusd_demanda_ponta": 71.00, "tusd_demanda_fora_ponta": 21.55
+            }
+          }
+        },
+        {
+          "distribuidora": "CPFL PAULISTA",
+          "ultima_homologacao": "2026-04-08",
+          "homologacao_anterior": "2025-04-08",
+          "total_atual_rs_kwh": 0.38420,
+          "total_anterior_rs_kwh": 0.36527,
+          "reajuste_pct": 5.18,
+          "componentes": {
+            "verde": {
+              "te_consumo_ponta": 0.58420, "te_consumo_fora_ponta": 0.19420,
+              "tusd_consumo_ponta": 0.40200, "tusd_consumo_fora_ponta": 0.19000,
+              "tusd_demanda_unica": 30.42
+            },
+            "azul": {
+              "te_consumo_ponta": 0.58420, "te_consumo_fora_ponta": 0.19420,
+              "tusd_consumo_ponta": 0.07820, "tusd_consumo_fora_ponta": 0.07820,
+              "tusd_demanda_ponta": 64.20, "tusd_demanda_fora_ponta": 20.42
+            }
+          },
+          "componentes_anteriores": {
+            "verde": {
+              "te_consumo_ponta": 0.55545, "te_consumo_fora_ponta": 0.18465,
+              "tusd_consumo_ponta": 0.38221, "tusd_consumo_fora_ponta": 0.18062,
+              "tusd_demanda_unica": 28.92
+            },
+            "azul": {
+              "te_consumo_ponta": 0.55545, "te_consumo_fora_ponta": 0.18465,
+              "tusd_consumo_ponta": 0.07435, "tusd_consumo_fora_ponta": 0.07435,
+              "tusd_demanda_ponta": 61.04, "tusd_demanda_fora_ponta": 19.41
+            }
+          }
+        },
+        {
+          "distribuidora": "ENEL RJ",
+          "ultima_homologacao": "2026-03-15",
+          "homologacao_anterior": "2025-03-15",
+          "total_atual_rs_kwh": 0.46210,
+          "total_anterior_rs_kwh": 0.42066,
+          "reajuste_pct": 9.85,
+          "componentes": {
+            "verde": {
+              "te_consumo_ponta": 0.72420, "te_consumo_fora_ponta": 0.23920,
+              "tusd_consumo_ponta": 0.48820, "tusd_consumo_fora_ponta": 0.22290,
+              "tusd_demanda_unica": 39.84
+            },
+            "azul": {
+              "te_consumo_ponta": 0.72420, "te_consumo_fora_ponta": 0.23920,
+              "tusd_consumo_ponta": 0.09420, "tusd_consumo_fora_ponta": 0.09420,
+              "tusd_demanda_ponta": 80.20, "tusd_demanda_fora_ponta": 24.40
+            }
+          },
+          "componentes_anteriores": {
+            "verde": {
+              "te_consumo_ponta": 0.65924, "te_consumo_fora_ponta": 0.21777,
+              "tusd_consumo_ponta": 0.44443, "tusd_consumo_fora_ponta": 0.20289,
+              "tusd_demanda_unica": 36.27
+            },
+            "azul": {
+              "te_consumo_ponta": 0.65924, "te_consumo_fora_ponta": 0.21777,
+              "tusd_consumo_ponta": 0.08576, "tusd_consumo_fora_ponta": 0.08576,
+              "tusd_demanda_ponta": 73.01, "tusd_demanda_fora_ponta": 22.21
+            }
+          }
+        },
+        {
+          "distribuidora": "CELESC DIS",
+          "ultima_homologacao": "2025-08-22",
+          "homologacao_anterior": "2024-08-22",
+          "total_atual_rs_kwh": 0.37810,
+          "total_anterior_rs_kwh": 0.35518,
+          "reajuste_pct": 6.45,
+          "componentes": {
+            "verde": {
+              "te_consumo_ponta": 0.58320, "te_consumo_fora_ponta": 0.19420,
+              "tusd_consumo_ponta": 0.39800, "tusd_consumo_fora_ponta": 0.18390,
+              "tusd_demanda_unica": 30.12
+            },
+            "azul": {
+              "te_consumo_ponta": 0.58320, "te_consumo_fora_ponta": 0.19420,
+              "tusd_consumo_ponta": 0.07720, "tusd_consumo_fora_ponta": 0.07720,
+              "tusd_demanda_ponta": 63.40, "tusd_demanda_fora_ponta": 20.10
+            }
+          },
+          "componentes_anteriores": {
+            "verde": {
+              "te_consumo_ponta": 0.54787, "te_consumo_fora_ponta": 0.18244,
+              "tusd_consumo_ponta": 0.37388, "tusd_consumo_fora_ponta": 0.17276,
+              "tusd_demanda_unica": 28.30
+            },
+            "azul": {
+              "te_consumo_ponta": 0.54787, "te_consumo_fora_ponta": 0.18244,
+              "tusd_consumo_ponta": 0.07252, "tusd_consumo_fora_ponta": 0.07252,
+              "tusd_demanda_ponta": 59.55, "tusd_demanda_fora_ponta": 18.88
+            }
+          }
+        },
+        {
+          "distribuidora": "LIGHT",
+          "ultima_homologacao": "2025-11-07",
+          "homologacao_anterior": "2024-11-07",
+          "total_atual_rs_kwh": 0.52130,
+          "total_anterior_rs_kwh": 0.46196,
+          "reajuste_pct": 12.85,
+          "componentes": {
+            "verde": {
+              "te_consumo_ponta": 0.81820, "te_consumo_fora_ponta": 0.27020,
+              "tusd_consumo_ponta": 0.55020, "tusd_consumo_fora_ponta": 0.25110,
+              "tusd_demanda_unica": 44.92
+            },
+            "azul": {
+              "te_consumo_ponta": 0.81820, "te_consumo_fora_ponta": 0.27020,
+              "tusd_consumo_ponta": 0.10620, "tusd_consumo_fora_ponta": 0.10620,
+              "tusd_demanda_ponta": 91.20, "tusd_demanda_fora_ponta": 27.50
+            }
+          },
+          "componentes_anteriores": {
+            "verde": {
+              "te_consumo_ponta": 0.72504, "te_consumo_fora_ponta": 0.23944,
+              "tusd_consumo_ponta": 0.48756, "tusd_consumo_fora_ponta": 0.22253,
+              "tusd_demanda_unica": 39.81
+            },
+            "azul": {
+              "te_consumo_ponta": 0.72504, "te_consumo_fora_ponta": 0.23944,
+              "tusd_consumo_ponta": 0.09411, "tusd_consumo_fora_ponta": 0.09411,
+              "tusd_demanda_ponta": 80.81, "tusd_demanda_fora_ponta": 24.37
+            }
+          }
+        },
+        {
+          "distribuidora": "COPEL DIS",
+          "ultima_homologacao": "2025-06-24",
+          "homologacao_anterior": "2024-06-24",
+          "total_atual_rs_kwh": 0.35420,
+          "total_anterior_rs_kwh": 0.34001,
+          "reajuste_pct": 4.18,
+          "componentes": {
+            "verde": {
+              "te_consumo_ponta": 0.54420, "te_consumo_fora_ponta": 0.18120,
+              "tusd_consumo_ponta": 0.37200, "tusd_consumo_fora_ponta": 0.17300,
+              "tusd_demanda_unica": 28.20
+            },
+            "azul": {
+              "te_consumo_ponta": 0.54420, "te_consumo_fora_ponta": 0.18120,
+              "tusd_consumo_ponta": 0.07120, "tusd_consumo_fora_ponta": 0.07120,
+              "tusd_demanda_ponta": 59.40, "tusd_demanda_fora_ponta": 18.80
+            }
+          },
+          "componentes_anteriores": {
+            "verde": {
+              "te_consumo_ponta": 0.52237, "te_consumo_fora_ponta": 0.17393,
+              "tusd_consumo_ponta": 0.35707, "tusd_consumo_fora_ponta": 0.16606,
+              "tusd_demanda_unica": 27.07
+            },
+            "azul": {
+              "te_consumo_ponta": 0.52237, "te_consumo_fora_ponta": 0.17393,
+              "tusd_consumo_ponta": 0.06835, "tusd_consumo_fora_ponta": 0.06835,
+              "tusd_demanda_ponta": 57.02, "tusd_demanda_fora_ponta": 18.05
+            }
+          }
+        }
       ]
     }
   }
