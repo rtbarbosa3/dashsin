@@ -1,62 +1,60 @@
 name: update-data
 
-# Roda 1x/dia às 13h UTC = 10h BRT
-# Também pode ser disparado manualmente em Actions > update-data > Run workflow
+# Daily refresh of all pipelines + manual trigger
 on:
   schedule:
+    # 10:00 BRT (13:00 UTC) daily
     - cron: '0 13 * * *'
   workflow_dispatch:
+
+# Only allow one instance of this workflow at a time per branch.
+# If a new run starts, cancel any in-progress run on the same branch.
+# Prevents race conditions on `git push` when two runs overlap.
+concurrency:
+  group: update-data-${{ github.ref }}
+  cancel-in-progress: true
 
 permissions:
   contents: write
 
 jobs:
   fetch-and-commit:
-    runs-on: ubuntu-latest
-    timeout-minutes: 60
-
+    runs-on: ubuntu-24.04
     steps:
-      - name: Checkout repo
+      - name: Checkout
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
 
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-          cache: 'pip'
+          cache: pip
 
       - name: Install dependencies
         run: pip install -r requirements.txt
 
-      - name: Run ONS EAR/ENA pipeline
+      - name: Run ONS EAR/ENA pipeline (2010+)
         run: python pipelines/ons_ear_ena.py
-        continue-on-error: true
 
-      - name: Run ONS ENA bruta por bacia pipeline
+      - name: Run ONS ENA bacia pipeline (2010+)
         run: python pipelines/ons_ena_bacia.py
-        continue-on-error: true
 
-      - name: Run NASA POWER precipitation by basin pipeline
+      - name: Run NASA POWER basin precipitation pipeline
         run: python pipelines/nasa_power_basin_precip.py
-        continue-on-error: true
 
-      - name: Run NOAA CPC ONI pipeline
+      - name: Run NOAA ONI pipeline
         run: python pipelines/noaa_oni.py
-        continue-on-error: true
 
-      - name: Run ANEEL Bandeira Tarifaria pipeline
+      - name: Run ANEEL bandeira pipeline
         run: python pipelines/aneel_bandeira.py
-        continue-on-error: true
 
-      - name: Run ANEEL Tarifas Homologadas pipeline
+      - name: Run ANEEL tarifas pipeline (may take 5-10 min)
         run: python pipelines/aneel_tarifas.py
-        continue-on-error: true
-        timeout-minutes: 20
 
-      - name: Run ANEEL MMGD pipeline (large, may take a while)
+      - name: Run ANEEL MMGD pipeline (large, may take 8-15 min)
         run: python pipelines/aneel_mmgd.py
-        continue-on-error: true
-        timeout-minutes: 30
 
       - name: Commit and push data updates
         run: |
@@ -66,6 +64,8 @@ jobs:
           if git diff --cached --quiet; then
             echo "No data changes to commit."
           else
+            # Pull latest first to avoid push rejection if another commit landed
+            git pull --rebase origin main || echo "Rebase had nothing to do"
             git commit -m "data: refresh $(date -u +'%Y-%m-%d %H:%MZ')"
             git push
           fi
