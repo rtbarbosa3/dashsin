@@ -139,6 +139,17 @@ html, body { background: var(--bg); color: var(--text); font-family: var(--font-
 .mc-axis { font-family: var(--font-mono); font-size: 9px; fill: var(--text-dim); letter-spacing: 0.04em; }
 .mc-grid { stroke: var(--border-soft); stroke-width: 1; shape-rendering: crispEdges; }
 .mc-mlt-ref { stroke: var(--warn); stroke-width: 1; stroke-dasharray: 3 3; shape-rendering: crispEdges; opacity: 0.55; }
+
+/* Year selector */
+.year-selector { display: flex; flex-wrap: wrap; gap: 4px; align-items: center; margin-bottom: 14px; padding: 10px 12px; background: var(--bg-elev); border: 1px solid var(--border); border-radius: 4px; }
+.year-selector-label { font-family: var(--font-mono); font-size: 10px; color: var(--text-dim); letter-spacing: 0.06em; text-transform: uppercase; margin-right: 12px; white-space: nowrap; }
+.year-chip { padding: 4px 9px; font-family: var(--font-mono); font-size: 10px; color: var(--text-muted); border: 1px solid var(--border); background: var(--bg); cursor: pointer; user-select: none; border-radius: 2px; transition: all 0.1s; letter-spacing: 0.03em; }
+.year-chip:hover { color: var(--text); border-color: var(--text-dim); }
+.year-chip.active { background: var(--text); color: var(--bg); border-color: var(--text); }
+.year-chip.active-recent { background: var(--seco); color: #fff; border-color: var(--seco); }
+.year-presets { margin-left: auto; display: flex; gap: 6px; }
+.year-preset-btn { padding: 4px 10px; font-family: var(--font-mono); font-size: 9px; color: var(--text-dim); border: 1px solid var(--border); background: transparent; cursor: pointer; letter-spacing: 0.05em; text-transform: uppercase; }
+.year-preset-btn:hover { color: var(--text); border-color: var(--text-dim); }
 .mc-mlt-label { font-family: var(--font-mono); font-size: 9px; fill: var(--warn); letter-spacing: 0.04em; opacity: 0.8; }
 .mc-crosshair { stroke: var(--text-dim); stroke-width: 1; stroke-dasharray: 2 3; opacity: 0; pointer-events: none; }
 .mc-hover-dot { stroke: var(--bg); stroke-width: 2; opacity: 0; pointer-events: none; }
@@ -294,7 +305,18 @@ html, body { background: var(--bg); color: var(--text); font-family: var(--font-
   <div class="section">
     <div class="section-head">
       <h2 data-i18n="seasonalityTitle">EAR seasonality · % stored per month</h2>
-      <div class="hint" data-i18n="seasonalityHint">Lines: 2024 / 2025 / 2026 ytd · y-axis 0-100%</div>
+      <div class="hint" data-i18n="seasonalityHint">Pick years to compare · current year highlighted in subsystem color</div>
+    </div>
+    <div class="year-selector" id="year-selector">
+      <span class="year-selector-label" data-i18n="yearSelectorLbl">Compare years</span>
+      <div class="year-chips-wrap" id="year-chips"></div>
+      <div class="year-presets">
+        <button class="year-preset-btn" data-preset="recent3" data-i18n="presetRecent3">Last 3y</button>
+        <button class="year-preset-btn" data-preset="recent5" data-i18n="presetRecent5">Last 5y</button>
+        <button class="year-preset-btn" data-preset="droughts" data-i18n="presetDroughts">Drought years</button>
+        <button class="year-preset-btn" data-preset="all" data-i18n="presetAll">All</button>
+        <button class="year-preset-btn" data-preset="clear" data-i18n="presetClear">Clear</button>
+      </div>
     </div>
     <div class="small-mult-grid" id="ear-multiples"></div>
   </div>
@@ -362,6 +384,29 @@ let ENA_MWMED = {};        // monthly MWmed values per sub/year
 let ENA_PCT_MLT = {};      // monthly % MLT bruta per sub/year
 let DATA_GENERATED_AT = null;
 
+// Multi-year selection state for charts
+let AVAILABLE_YEARS = [];        // all years present in any dataset, sorted ascending
+let selectedYears = new Set();   // which years to plot
+const DROUGHT_YEARS = [2014, 2015, 2017, 2021];  // historical reference years
+
+function colorForYear(year) {
+  /* Returns SVG stroke color and width for a given year.
+     - Current year: subsystem color (high contrast, thickest)
+     - Previous 2 years: warm grays (medium contrast)
+     - Older years: progressively cooler/lighter grays
+  */
+  const now = new Date().getUTCFullYear();
+  if (year === now) return { color: 'CURRENT', width: 2 };  // sentinel — replaced per sub
+  if (year === now - 1) return { color: '#9aa0a8', width: 1.6 };
+  if (year === now - 2) return { color: '#6b7280', width: 1.4 };
+  if (year === now - 3) return { color: '#525964', width: 1.2 };
+  // Older: fade by age, but distinguishable
+  const age = now - year;
+  // age 4 → #4a505a, age 14 → #2b3038
+  const lightness = Math.max(20, 36 - (age - 4) * 1.2);  // hsl lightness
+  return { color: `hsl(220, 6%, ${lightness}%)`, width: 1.1 };
+}
+
 // Basin data (populated from data/ena_bacia.json - ONS source)
 let BASIN_DATA = {};       // monthly_mwmed[basin][year] = [12 values]
 let BASIN_META = {};       // {basin_id: {name, sub}}
@@ -396,6 +441,12 @@ async function loadBasinData() {
     BASIN_META = j.basin_meta || {};
     BASIN_NOW  = j.now || {};
     BASIN_DATA_GENERATED_AT = j.generated_at_utc || null;
+    // Add basin years to AVAILABLE_YEARS (some may not be in EAR/ENA)
+    Object.values(BASIN_DATA).forEach(byYear => Object.keys(byYear || {}).forEach(y => {
+      const yi = parseInt(y);
+      if (!isNaN(yi) && !AVAILABLE_YEARS.includes(yi)) AVAILABLE_YEARS.push(yi);
+    }));
+    AVAILABLE_YEARS.sort((a, b) => a - b);
     console.log('Basin data loaded:', BASIN_DATA_GENERATED_AT);
   } catch (e) {
     console.error('Failed to load ena_bacia.json:', e);
@@ -432,7 +483,15 @@ async function loadData() {
     ENA_MWMED     = j.ena_monthly_mwmed || {};
     ENA_PCT_MLT   = j.ena_monthly_pct_mlt_bruta || {};
     DATA_GENERATED_AT = j.generated_at_utc || null;
-    console.log('Data loaded:', DATA_GENERATED_AT);
+    // Collect ALL years available in any dataset
+    const yearSet = new Set();
+    Object.values(EAR_MONTHLY).forEach(byYear => Object.keys(byYear || {}).forEach(y => yearSet.add(parseInt(y))));
+    Object.values(ENA_PCT_MLT).forEach(byYear => Object.keys(byYear || {}).forEach(y => yearSet.add(parseInt(y))));
+    AVAILABLE_YEARS = Array.from(yearSet).filter(y => !isNaN(y)).sort((a, b) => a - b);
+    // Default: most recent 3 years selected
+    const recent3 = AVAILABLE_YEARS.slice(-3);
+    selectedYears = new Set(recent3);
+    console.log('Data loaded:', DATA_GENERATED_AT, '| years available:', AVAILABLE_YEARS, '| selected:', recent3);
   } catch (e) {
     console.error('Failed to load ear_ena.json:', e);
     const statusEl = document.getElementById('data-status');
@@ -482,7 +541,10 @@ const I18N = {
     insightInflow: '<strong>Inflow is reversing the picture for Sul.</strong> ENA bruta in Sul is running at <span class="v up">123% of long-term mean</span> for the month-to-date — the highest of any subsystem. SE/CO is at 84%, NE only at 72%, N at 99%. If sustained, the wet-period recovery for Sul will widen the NE→SE/CO transmission stress: NE/N reservoirs already at cap means most incremental ENA has nowhere to be stored.',
     insightSF: '<strong>São Francisco basin at 95.5% storage</strong> — Sobradinho specifically at 98.83% useful volume. The basin alone supplies 96.7% of the NE subsystem\'s hydro storage, which makes the NE the most resilient subsystem in the SIN for the dry season ahead.',
     seasonalityTitle: 'EAR seasonality · % stored per month',
-    seasonalityHint: 'Lines: 2024 / 2025 / 2026 ytd · y-axis 0-100%',
+    seasonalityHint: 'Pick years to compare · current year highlighted in subsystem color',
+    yearSelectorLbl: 'Compare years',
+    presetRecent3: 'Last 3y', presetRecent5: 'Last 5y',
+    presetDroughts: 'Drought yrs', presetAll: 'All', presetClear: 'Clear',
     enaTitle: 'ENA bruta · MWmed per month',
     enaHint: 'Lines: 2024 / 2025 / 2026 ytd · hover for detail',
     enaBaciaTitle: 'ENA bruta by basin · MWmed per month (8 main basins)',
@@ -505,7 +567,10 @@ const I18N = {
     insightInflow: '<strong>Afluência está virando o jogo para o Sul.</strong> ENA bruta no Sul está em <span class="v up">123% da MLT</span> no acumulado do mês — a maior entre os submercados. SE/CO em 84%, NE em apenas 72%, N em 99%. Se sustentado, a recuperação do período úmido no Sul amplia o estresse de intercâmbio NE→SE/CO: reservatórios NE/N já no teto significam que ENA marginal não tem onde ser armazenada.',
     insightSF: '<strong>Bacia do São Francisco em 95,5% de armazenamento</strong> — Sobradinho especificamente em 98,83% de volume útil. A bacia sozinha contribui 96,7% do armazenamento hidro do NE, o que faz do NE o submercado mais resiliente do SIN para o período seco que se aproxima.',
     seasonalityTitle: 'Sazonalidade do EAR · % armazenado por mês',
-    seasonalityHint: 'Linhas: 2024 / 2025 / 2026 ytd · eixo y 0-100%',
+    seasonalityHint: 'Escolha anos para comparar · ano corrente destacado na cor do subsistema',
+    yearSelectorLbl: 'Comparar anos',
+    presetRecent3: 'Últ. 3 anos', presetRecent5: 'Últ. 5 anos',
+    presetDroughts: 'Anos de seca', presetAll: 'Todos', presetClear: 'Limpar',
     enaTitle: 'ENA bruta · MWmed por mês',
     enaHint: 'Linhas: 2024 / 2025 / 2026 ytd · passe o mouse para detalhe',
     enaBaciaTitle: 'ENA bruta por bacia · MWmed por mês (8 bacias principais)',
@@ -532,6 +597,7 @@ function setLang(lang) {
     b.classList.toggle('active', b.dataset.lang === lang);
   });
   renderKPIs();
+  renderYearChips();
   renderEARMultiples();
   renderENAMultiples();
   renderBasinMultiples();
@@ -584,6 +650,69 @@ function renderKPIs() {
 }
 
 // ── EAR small multiples ──
+// ── Year chip selector ──
+function renderYearChips() {
+  const wrap = document.getElementById('year-chips');
+  if (!wrap) return;
+  if (!AVAILABLE_YEARS.length) {
+    wrap.innerHTML = '<span style="color:var(--text-dim);font-size:10px;font-family:var(--font-mono)">no data</span>';
+    return;
+  }
+  const currentYear = new Date().getUTCFullYear();
+  wrap.innerHTML = AVAILABLE_YEARS.map(y => {
+    const active = selectedYears.has(y);
+    const isCurrent = y === currentYear;
+    let cls = 'year-chip';
+    if (active) cls += isCurrent ? ' active-recent' : ' active';
+    return `<button class="${cls}" data-year="${y}">${y}</button>`;
+  }).join('');
+}
+
+function applyYearPreset(preset) {
+  const currentYear = new Date().getUTCFullYear();
+  if (preset === 'recent3') {
+    selectedYears = new Set(AVAILABLE_YEARS.slice(-3));
+  } else if (preset === 'recent5') {
+    selectedYears = new Set(AVAILABLE_YEARS.slice(-5));
+  } else if (preset === 'droughts') {
+    // Brazilian drought years: 2014, 2015, 2017, 2021 + current for context
+    const droughts = [2014, 2015, 2017, 2021].filter(y => AVAILABLE_YEARS.includes(y));
+    droughts.push(currentYear);
+    selectedYears = new Set(droughts);
+  } else if (preset === 'all') {
+    selectedYears = new Set(AVAILABLE_YEARS);
+  } else if (preset === 'clear') {
+    selectedYears = new Set([currentYear]);  // keep at least the current year
+  }
+  renderYearChips();
+  renderEARMultiples();
+  renderENAMultiples();
+  renderBasinMultiples();
+}
+
+// Click handler for year chips and presets (delegated)
+document.addEventListener('click', (e) => {
+  const chip = e.target.closest('.year-chip');
+  if (chip) {
+    const y = parseInt(chip.dataset.year);
+    if (selectedYears.has(y)) {
+      // Don't allow deselecting the only remaining year — keep at least 1
+      if (selectedYears.size > 1) selectedYears.delete(y);
+    } else {
+      selectedYears.add(y);
+    }
+    renderYearChips();
+    renderEARMultiples();
+    renderENAMultiples();
+    renderBasinMultiples();
+    return;
+  }
+  const preset = e.target.closest('.year-preset-btn');
+  if (preset) {
+    applyYearPreset(preset.dataset.preset);
+  }
+});
+
 function renderEARMultiples() {
   const container = document.getElementById('ear-multiples');
   const W = 540, H = 160, padL = 32, padR = 12, padT = 12, padB = 22;
@@ -595,35 +724,51 @@ function renderEARMultiples() {
   const xScale = m => padL + ((m-1)/11)*innerW;
   const yScale = v => padT + innerH - (v/yMax)*innerH;
 
+  const yearsToPlot = Array.from(selectedYears).sort((a, b) => a - b);
+  const currentYear = new Date().getUTCFullYear();
+
   container.innerHTML = SUBS.map(sub => {
     const data = EAR_MONTHLY[sub];
     if (!data) return '';
     const now = EAR_NOW[sub];
-    const yr24 = [], yr25 = [], yr26 = [];
-    for (let m = 1; m <= 12; m++) {
-      const v24 = data['2024'] ? data['2024'][m-1] : null;
-      const v25 = data['2025'] ? data['2025'][m-1] : null;
-      const v26 = data['2026'] ? data['2026'][m-1] : null;
-      if (v24 !== null && v24 !== undefined) yr24.push({x:xScale(m), y:yScale(v24)});
-      if (v25 !== null && v25 !== undefined) yr25.push({x:xScale(m), y:yScale(v25)});
-      if (v26 !== null && v26 !== undefined) yr26.push({x:xScale(m), y:yScale(v26)});
+    const subColor = `var(--${sub.toLowerCase()})`;
+
+    // Build paths for each selected year
+    let paths = '';
+    let recentDots = '';
+    const yearLegendItems = [];
+    for (const yr of yearsToPlot) {
+      const series = data[String(yr)];
+      if (!series) continue;
+      const pts = [];
+      for (let m = 1; m <= 12; m++) {
+        const v = series[m - 1];
+        if (v !== null && v !== undefined) pts.push({x: xScale(m), y: yScale(v)});
+      }
+      if (!pts.length) continue;
+      const d = pts.map((p, i) => `${i===0?'M':'L'} ${p.x.toFixed(1)} ${p.y.toFixed(1)}`).join(' ');
+      const cfg = colorForYear(yr);
+      const stroke = cfg.color === 'CURRENT' ? subColor : cfg.color;
+      const opacity = (currentYear - yr) > 6 ? 0.55 : (yr === currentYear ? 1.0 : 0.85);
+      paths += `<path d="${d}" stroke="${stroke}" stroke-width="${cfg.width}" fill="none" opacity="${opacity}"/>`;
+      // For current year, draw dots
+      if (yr === currentYear) {
+        recentDots += pts.map(p => `<circle cx="${p.x}" cy="${p.y}" r="2.5" fill="${subColor}" stroke="var(--bg)" stroke-width="0.5"/>`).join('');
+      }
+      yearLegendItems.push(`<span class="ml-item"><span class="ml-swatch" style="background:${stroke};height:${cfg.width >= 2 ? 3 : 2}px;width:14px"></span> ${yr}${yr === currentYear ? ' YTD' : ''}</span>`);
     }
-    const path = pts => pts.length ? pts.map((p,i) => `${i===0?'M':'L'} ${p.x.toFixed(1)} ${p.y.toFixed(1)}`).join(' ') : '';
 
     let grid = '';
     for (const t of [25, 50, 75, 100]) {
       grid += `<line class="mc-grid" x1="${padL}" x2="${W-padR}" y1="${yScale(t)}" y2="${yScale(t)}" />`;
       grid += `<text class="mc-axis" x="${padL-6}" y="${yScale(t)+3}" text-anchor="end">${t}</text>`;
     }
-
     let xlab = '';
     for (let m = 1; m <= 12; m++) {
       const x = xScale(m);
       const label = MONTH_LABELS[m-1][0].toUpperCase();
       xlab += `<text class="mc-axis" x="${x}" y="${H-padB+13}" text-anchor="middle">${label}</text>`;
     }
-
-    const dots = yr26.map(p => `<circle class="mc-dot-y26" cx="${p.x}" cy="${p.y}" r="2.5" />`).join('');
 
     return `
       <div class="mini-chart">
@@ -634,63 +779,65 @@ function renderEARMultiples() {
         <svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none">
           ${grid}
           ${xlab}
-          <path class="mc-y24" d="${path(yr24)}" />
-          <path class="mc-y25" d="${path(yr25)}" />
-          <path class="mc-y26" d="${path(yr26)}" />
-          ${dots}
+          ${paths}
+          ${recentDots}
         </svg>
-        <div class="mc-legend">
-          <span class="ml-item"><span class="ml-swatch y24"></span> 2024</span>
-          <span class="ml-item"><span class="ml-swatch y25"></span> 2025</span>
-          <span class="ml-item"><span class="ml-swatch y26"></span> 2026 YTD</span>
-        </div>
+        <div class="mc-legend">${yearLegendItems.join('')}</div>
       </div>
     `;
   }).join('');
 }
 
-// ── ENA small multiples (MWmed) — interactive ──
+// ── ENA small multiples (MWmed) — interactive, multi-year ──
 function renderENAMultiples() {
   const container = document.getElementById('ena-multiples');
   const W = 540, H = 160, padL = 44, padR = 12, padT = 12, padB = 22;
   const innerW = W - padL - padR, innerH = H - padT - padB;
   const MONTH_LABELS = currentLang === 'PT' ? MONTH_ABBR_PT : MONTH_ABBR_EN;
   const xScale = m => padL + ((m-1)/11)*innerW;
-
-  // y-axis label formatter: e.g. 30000 -> "30k", 4000 -> "4k"
   const fmtK = v => v >= 1000 ? (v/1000) + 'k' : String(v);
+
+  const yearsToPlot = Array.from(selectedYears).sort((a, b) => a - b);
+  const currentYear = new Date().getUTCFullYear();
 
   container.innerHTML = SUBS.map(sub => {
     const yMax = ENA_YAXIS[sub].max;
     const yScale = v => padT + innerH - (v/yMax)*innerH;
+    const subColor = `var(--${sub.toLowerCase()})`;
 
-    const yr24 = [], yr25 = [], yr26 = [];
-    for (let m = 1; m <= 12; m++) {
-      const p24 = enaPoint(sub, '2024', m-1);
-      const p25 = enaPoint(sub, '2025', m-1);
-      const p26 = enaPoint(sub, '2026', m-1);
-      if (p24) yr24.push({m, x:xScale(m), y:yScale(p24.mwmed), v:p24});
-      if (p25) yr25.push({m, x:xScale(m), y:yScale(p25.mwmed), v:p25});
-      if (p26) yr26.push({m, x:xScale(m), y:yScale(p26.mwmed), v:p26});
+    // Build paths for each selected year
+    let paths = '';
+    let recentDots = '';
+    const yearLegendItems = [];
+    for (const yr of yearsToPlot) {
+      const pts = [];
+      for (let m = 1; m <= 12; m++) {
+        const p = enaPoint(sub, String(yr), m-1);
+        if (p) pts.push({m, x: xScale(m), y: yScale(p.mwmed), v: p});
+      }
+      if (!pts.length) continue;
+      const d = pts.map((p, i) => `${i===0?'M':'L'} ${p.x.toFixed(1)} ${p.y.toFixed(1)}`).join(' ');
+      const cfg = colorForYear(yr);
+      const stroke = cfg.color === 'CURRENT' ? subColor : cfg.color;
+      const opacity = (currentYear - yr) > 6 ? 0.55 : (yr === currentYear ? 1.0 : 0.85);
+      paths += `<path d="${d}" stroke="${stroke}" stroke-width="${cfg.width}" fill="none" opacity="${opacity}"/>`;
+      if (yr === currentYear) {
+        recentDots += pts.map(p => `<circle cx="${p.x}" cy="${p.y}" r="2.5" fill="${subColor}" stroke="var(--bg)" stroke-width="0.5"/>`).join('');
+      }
+      yearLegendItems.push(`<span class="ml-item"><span class="ml-swatch" style="background:${stroke};height:${cfg.width >= 2 ? 3 : 2}px;width:14px"></span> ${yr}${yr === currentYear ? ' YTD' : ''}</span>`);
     }
-    const path = pts => pts.length ? pts.map((p,i) => `${i===0?'M':'L'} ${p.x.toFixed(1)} ${p.y.toFixed(1)}`).join(' ') : '';
 
-    // gridlines + y-axis labels
     let grid = '';
     for (const tv of ENA_YAXIS[sub].ticks) {
       grid += `<line class="mc-grid" x1="${padL}" x2="${W-padR}" y1="${yScale(tv)}" y2="${yScale(tv)}" />`;
       grid += `<text class="mc-axis" x="${padL-6}" y="${yScale(tv)+3}" text-anchor="end">${fmtK(tv)}</text>`;
     }
 
-    // x-axis labels
     let xlab = '';
     for (let m = 1; m <= 12; m++) {
       xlab += `<text class="mc-axis" x="${xScale(m)}" y="${H-padB+13}" text-anchor="middle">${MONTH_LABELS[m-1][0].toUpperCase()}</text>`;
     }
 
-    const dots = yr26.map(p => `<circle class="mc-dot-y26" cx="${p.x}" cy="${p.y}" r="2.5" />`).join('');
-
-    // Current header: now MWmed (primary), pct MLT (secondary)
     const now = ENA_NOW[sub] || {};
     const pctMlt = now.pct_mlt_bruta !== undefined ? now.pct_mlt_bruta : null;
     const nowColor = pctMlt === null ? 'var(--text-dim)' : (pctMlt >= 100 ? 'var(--ok)' : (pctMlt >= 80 ? 'var(--warn)' : 'var(--danger)'));
@@ -706,38 +853,28 @@ function renderENAMultiples() {
         <svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none">
           ${grid}
           ${xlab}
-          <path class="mc-y24" d="${path(yr24)}" />
-          <path class="mc-y25" d="${path(yr25)}" />
-          <path class="mc-y26" d="${path(yr26)}" />
-          ${dots}
+          ${paths}
+          ${recentDots}
           <line class="mc-crosshair" x1="0" y1="${padT}" x2="0" y2="${padT+innerH}" />
-          <circle class="mc-hover-dot y24" r="3.5" cx="0" cy="0" />
-          <circle class="mc-hover-dot y25" r="3.5" cx="0" cy="0" />
-          <circle class="mc-hover-dot y26" r="4" cx="0" cy="0" />
           <rect class="mc-hover-overlay" x="${padL}" y="${padT}" width="${innerW}" height="${innerH}" fill="transparent" />
         </svg>
         <div class="mc-tooltip"></div>
-        <div class="mc-legend">
-          <span class="ml-item"><span class="ml-swatch y24"></span> 2024</span>
-          <span class="ml-item"><span class="ml-swatch y25"></span> 2025</span>
-          <span class="ml-item"><span class="ml-swatch y26"></span> 2026 YTD</span>
-        </div>
+        <div class="mc-legend">${yearLegendItems.join('')}</div>
       </div>
     `;
   }).join('');
 
-  // ── Attach hover interactivity to each chart ──
+  // Hover interactivity per subsystem chart
   SUBS.forEach(sub => {
     const chartEl = container.querySelector(`.mini-chart[data-sub="${sub}"]`);
+    if (!chartEl) return;
     const svg = chartEl.querySelector('svg');
     const overlay = chartEl.querySelector('.mc-hover-overlay');
     const crosshair = chartEl.querySelector('.mc-crosshair');
-    const dot24 = chartEl.querySelector('.mc-hover-dot.y24');
-    const dot25 = chartEl.querySelector('.mc-hover-dot.y25');
-    const dot26 = chartEl.querySelector('.mc-hover-dot.y26');
     const tooltip = chartEl.querySelector('.mc-tooltip');
     const yMax = ENA_YAXIS[sub].max;
     const yScale = v => padT + innerH - (v/yMax)*innerH;
+    const subColor = `var(--${sub.toLowerCase()})`;
     const MONTH_TT = currentLang === 'PT'
       ? ['janeiro','fevereiro','março','abril','maio','junho','julho','agosto','setembro','outubro','novembro','dezembro']
       : ['January','February','March','April','May','June','July','August','September','October','November','December'];
@@ -754,27 +891,17 @@ function renderENAMultiples() {
       crosshair.setAttribute('x2', xPos);
       crosshair.style.opacity = 0.7;
 
-      const p24 = enaPoint(sub, '2024', monthIdx);
-      const p25 = enaPoint(sub, '2025', monthIdx);
-      const p26 = enaPoint(sub, '2026', monthIdx);
-
-      const setDot = (dot, p) => {
-        if (p) {
-          dot.setAttribute('cx', xPos);
-          dot.setAttribute('cy', yScale(p.mwmed));
-          dot.style.opacity = 1;
-        } else dot.style.opacity = 0;
-      };
-      setDot(dot24, p24); setDot(dot25, p25); setDot(dot26, p26);
-
-      // Build tooltip content
+      // Build tooltip rows for each selected year that has data
       const rows = [];
-      if (p24) rows.push(`<div class="mctt-row y24"><span class="mctt-lbl"><span class="mctt-sw"></span>2024</span><span><span class="mctt-val">${fmtInt(p24.mwmed)}</span><span class="mctt-pct">${p24.pct}%</span></span></div>`);
-      if (p25) rows.push(`<div class="mctt-row y25"><span class="mctt-lbl"><span class="mctt-sw"></span>2025</span><span><span class="mctt-val">${fmtInt(p25.mwmed)}</span><span class="mctt-pct">${p25.pct}%</span></span></div>`);
-      if (p26) rows.push(`<div class="mctt-row y26"><span class="mctt-lbl"><span class="mctt-sw"></span>2026</span><span><span class="mctt-val">${fmtInt(p26.mwmed)}</span><span class="mctt-pct">${p26.pct}%</span></span></div>`);
+      for (const yr of yearsToPlot) {
+        const p = enaPoint(sub, String(yr), monthIdx);
+        if (!p) continue;
+        const cfg = colorForYear(yr);
+        const stroke = cfg.color === 'CURRENT' ? subColor : cfg.color;
+        rows.push(`<div class="mctt-row"><span class="mctt-lbl"><span class="mctt-sw" style="background:${stroke}"></span>${yr}</span><span><span class="mctt-val">${fmtInt(p.mwmed)}</span><span class="mctt-pct">${p.pct}%</span></span></div>`);
+      }
       tooltip.innerHTML = `<div class="mctt-month">${MONTH_TT[monthIdx]} · MWmed (% MLT)</div>${rows.join('')}`;
 
-      // Position tooltip within chart container
       const chartRect = chartEl.getBoundingClientRect();
       const tooltipW = 180;
       const cursorX = e.clientX - chartRect.left;
@@ -789,15 +916,12 @@ function renderENAMultiples() {
 
     overlay.addEventListener('mouseleave', () => {
       crosshair.style.opacity = 0;
-      dot24.style.opacity = 0;
-      dot25.style.opacity = 0;
-      dot26.style.opacity = 0;
       tooltip.style.opacity = 0;
     });
   });
 }
 
-// ── ENA Bruta by basin (8 main basins, ONS data) ──
+// ── ENA Bruta by basin (8 main basins, ONS data) — multi-year ──
 function renderBasinMultiples() {
   const container = document.getElementById('ena-bacia-multiples');
   if (!container) return;
@@ -806,24 +930,38 @@ function renderBasinMultiples() {
   const MONTH_LABELS = currentLang === 'PT' ? MONTH_ABBR_PT : MONTH_ABBR_EN;
   const xScale = m => padL + ((m-1)/11)*innerW;
   const fmtK = v => v >= 1000 ? (v/1000) + 'k' : String(v);
-  const fmtInt = n => n.toLocaleString(currentLang === 'PT' ? 'pt-BR' : 'en-US');
+  const fmtIntLocal = n => n.toLocaleString(currentLang === 'PT' ? 'pt-BR' : 'en-US');
+
+  const yearsToPlot = Array.from(selectedYears).sort((a, b) => a - b);
+  const currentYear = new Date().getUTCFullYear();
 
   container.innerHTML = BASIN_ORDER.map(basinId => {
     const meta = BASIN_META[basinId];
     if (!meta) return '';
     const yMax = BASIN_YAXIS[basinId].max;
     const yScale = v => padT + innerH - (v/yMax)*innerH;
+    const subColor = `var(--${meta.sub.toLowerCase()})`;
 
-    const yr24 = [], yr25 = [], yr26 = [];
-    for (let m = 1; m <= 12; m++) {
-      const p24 = basinPoint(basinId, '2024', m-1);
-      const p25 = basinPoint(basinId, '2025', m-1);
-      const p26 = basinPoint(basinId, '2026', m-1);
-      if (p24) yr24.push({m, x:xScale(m), y:yScale(p24.mwmed)});
-      if (p25) yr25.push({m, x:xScale(m), y:yScale(p25.mwmed)});
-      if (p26) yr26.push({m, x:xScale(m), y:yScale(p26.mwmed)});
+    let paths = '';
+    let recentDots = '';
+    const yearLegendItems = [];
+    for (const yr of yearsToPlot) {
+      const pts = [];
+      for (let m = 1; m <= 12; m++) {
+        const p = basinPoint(basinId, String(yr), m-1);
+        if (p) pts.push({m, x: xScale(m), y: yScale(p.mwmed)});
+      }
+      if (!pts.length) continue;
+      const d = pts.map((p, i) => `${i===0?'M':'L'} ${p.x.toFixed(1)} ${p.y.toFixed(1)}`).join(' ');
+      const cfg = colorForYear(yr);
+      const stroke = cfg.color === 'CURRENT' ? subColor : cfg.color;
+      const opacity = (currentYear - yr) > 6 ? 0.55 : (yr === currentYear ? 1.0 : 0.85);
+      paths += `<path d="${d}" stroke="${stroke}" stroke-width="${cfg.width}" fill="none" opacity="${opacity}"/>`;
+      if (yr === currentYear) {
+        recentDots += pts.map(p => `<circle cx="${p.x}" cy="${p.y}" r="2.5" fill="${subColor}" stroke="var(--bg)" stroke-width="0.5"/>`).join('');
+      }
+      yearLegendItems.push(`<span class="ml-item"><span class="ml-swatch" style="background:${stroke};height:${cfg.width >= 2 ? 3 : 2}px;width:14px"></span> ${yr}${yr === currentYear ? ' YTD' : ''}</span>`);
     }
-    const path = pts => pts.length ? pts.map((p,i) => `${i===0?'M':'L'} ${p.x.toFixed(1)} ${p.y.toFixed(1)}`).join(' ') : '';
 
     let grid = '';
     for (const tv of BASIN_YAXIS[basinId].ticks) {
@@ -834,55 +972,47 @@ function renderBasinMultiples() {
     for (let m = 1; m <= 12; m++) {
       xlab += `<text class="mc-axis" x="${xScale(m)}" y="${H-padB+13}" text-anchor="middle">${MONTH_LABELS[m-1][0].toUpperCase()}</text>`;
     }
-    const dots = yr26.map(p => `<circle class="mc-dot-y26" cx="${p.x}" cy="${p.y}" r="2.5" />`).join('');
 
-    const now = BASIN_NOW[basinId];
-    const nowMwmed = now ? now.mwmed : null;
-    const subClass = meta.sub.toLowerCase();
-    const subLabel = SUB_LABELS[meta.sub];
+    const now = BASIN_NOW[basinId] || {};
+    const mwmedFmt = now.mwmed !== undefined ? fmtIntLocal(now.mwmed) : '—';
+    const basinName = meta.name || basinId;
 
     return `
       <div class="mini-chart" data-basin="${basinId}">
         <div class="mini-chart-head">
-          <span class="mc-name ${subClass}">${meta.name}<span class="basin-tag ${subClass}">${subLabel}</span></span>
-          <span class="mc-avg">${nowMwmed !== null ? '<strong>'+fmtInt(nowMwmed)+'</strong> MWmed' : '—'}</span>
+          <span class="mc-name ${meta.sub.toLowerCase()}">${basinName} · ${meta.sub}</span>
+          <span class="mc-avg">${currentLang === 'PT' ? 'hoje' : 'now'}: <strong>${mwmedFmt}</strong> MWmed</span>
         </div>
         <svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none">
           ${grid}
           ${xlab}
-          <path class="mc-y24" d="${path(yr24)}" />
-          <path class="mc-y25" d="${path(yr25)}" />
-          <path class="mc-y26" d="${path(yr26)}" />
-          ${dots}
+          ${paths}
+          ${recentDots}
           <line class="mc-crosshair" x1="0" y1="${padT}" x2="0" y2="${padT+innerH}" />
-          <circle class="mc-hover-dot y24" r="3.5" cx="0" cy="0" />
-          <circle class="mc-hover-dot y25" r="3.5" cx="0" cy="0" />
-          <circle class="mc-hover-dot y26" r="4" cx="0" cy="0" />
           <rect class="mc-hover-overlay" x="${padL}" y="${padT}" width="${innerW}" height="${innerH}" fill="transparent" />
         </svg>
         <div class="mc-tooltip"></div>
-        <div class="mc-legend">
-          <span class="ml-item"><span class="ml-swatch y24"></span> 2024</span>
-          <span class="ml-item"><span class="ml-swatch y25"></span> 2025</span>
-          <span class="ml-item"><span class="ml-swatch y26"></span> 2026 YTD</span>
-        </div>
+        <div class="mc-legend">${yearLegendItems.join('')}</div>
       </div>
     `;
   }).join('');
 
-  // Hover interactivity per basin
+  // Hover interactivity for basins
   BASIN_ORDER.forEach(basinId => {
     const chartEl = container.querySelector(`.mini-chart[data-basin="${basinId}"]`);
     if (!chartEl) return;
+    const meta = BASIN_META[basinId];
+    if (!meta) return;
     const svg = chartEl.querySelector('svg');
     const overlay = chartEl.querySelector('.mc-hover-overlay');
     const crosshair = chartEl.querySelector('.mc-crosshair');
-    const dot24 = chartEl.querySelector('.mc-hover-dot.y24');
-    const dot25 = chartEl.querySelector('.mc-hover-dot.y25');
-    const dot26 = chartEl.querySelector('.mc-hover-dot.y26');
     const tooltip = chartEl.querySelector('.mc-tooltip');
     const yMax = BASIN_YAXIS[basinId].max;
     const yScale = v => padT + innerH - (v/yMax)*innerH;
+    const subColor = `var(--${meta.sub.toLowerCase()})`;
+    const MONTH_TT = currentLang === 'PT'
+      ? ['janeiro','fevereiro','março','abril','maio','junho','julho','agosto','setembro','outubro','novembro','dezembro']
+      : ['January','February','March','April','May','June','July','August','September','October','November','December'];
 
     overlay.addEventListener('mousemove', (e) => {
       const rect = svg.getBoundingClientRect();
@@ -896,29 +1026,23 @@ function renderBasinMultiples() {
       crosshair.setAttribute('x2', xPos);
       crosshair.style.opacity = 0.7;
 
-      const p24 = basinPoint(basinId, '2024', monthIdx);
-      const p25 = basinPoint(basinId, '2025', monthIdx);
-      const p26 = basinPoint(basinId, '2026', monthIdx);
-
-      const setDot = (dot, p) => {
-        if (p) { dot.setAttribute('cx', xPos); dot.setAttribute('cy', yScale(p.mwmed)); dot.style.opacity = 1; }
-        else dot.style.opacity = 0;
-      };
-      setDot(dot24, p24); setDot(dot25, p25); setDot(dot26, p26);
-
-      const MONTH_TT = currentLang === 'PT' ? MONTH_FULL_PT : MONTH_FULL_EN;
       const rows = [];
-      if (p24) rows.push(`<div class="mctt-row y24"><span class="mctt-lbl"><span class="mctt-sw"></span>2024</span><span><span class="mctt-val">${fmtInt(p24.mwmed)} MWmed</span></span></div>`);
-      if (p25) rows.push(`<div class="mctt-row y25"><span class="mctt-lbl"><span class="mctt-sw"></span>2025</span><span><span class="mctt-val">${fmtInt(p25.mwmed)} MWmed</span></span></div>`);
-      if (p26) rows.push(`<div class="mctt-row y26"><span class="mctt-lbl"><span class="mctt-sw"></span>2026</span><span><span class="mctt-val">${fmtInt(p26.mwmed)} MWmed</span></span></div>`);
-      tooltip.innerHTML = `<div class="mctt-month">${MONTH_TT[monthIdx]} · ENA bruta</div>${rows.join('')}`;
+      for (const yr of yearsToPlot) {
+        const p = basinPoint(basinId, String(yr), monthIdx);
+        if (!p) continue;
+        const cfg = colorForYear(yr);
+        const stroke = cfg.color === 'CURRENT' ? subColor : cfg.color;
+        rows.push(`<div class="mctt-row"><span class="mctt-lbl"><span class="mctt-sw" style="background:${stroke}"></span>${yr}</span><span><span class="mctt-val">${fmtIntLocal(p.mwmed)}</span></span></div>`);
+      }
+      tooltip.innerHTML = `<div class="mctt-month">${MONTH_TT[monthIdx]} · MWmed</div>${rows.join('')}`;
 
       const chartRect = chartEl.getBoundingClientRect();
       const tooltipW = 180;
       const cursorX = e.clientX - chartRect.left;
       const cursorY = e.clientY - chartRect.top;
       const left = cursorX + tooltipW + 12 > chartRect.width
-        ? Math.max(4, cursorX - tooltipW - 12) : cursorX + 12;
+        ? Math.max(4, cursorX - tooltipW - 12)
+        : cursorX + 12;
       tooltip.style.left = left + 'px';
       tooltip.style.top = Math.max(4, cursorY - 60) + 'px';
       tooltip.style.opacity = 1;
@@ -926,7 +1050,6 @@ function renderBasinMultiples() {
 
     overlay.addEventListener('mouseleave', () => {
       crosshair.style.opacity = 0;
-      dot24.style.opacity = 0; dot25.style.opacity = 0; dot26.style.opacity = 0;
       tooltip.style.opacity = 0;
     });
   });
