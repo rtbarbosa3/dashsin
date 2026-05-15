@@ -1,5 +1,5 @@
 {
-  "generated_at_utc": "2026-05-14T19:23:09Z",
+  "generated_at_utc": "2026-05-15T12:39:25Z",
   "source": {
     "name": "ONS Dados Abertos — ENA Diário por Bacia",
     "url_template": "https://ons-aws-prod-opendata.s3.amazonaws.com/dataset/ena_bacia_di/ENA_DIARIO_BACIAS_{year}.csv",
@@ -58,49 +58,49 @@
   },
   "now": {
     "grande": {
-      "mwmed": 2710,
+      "mwmed": 2408,
       "date": "2026-05-13",
       "sub": "SECO",
       "name": "Grande"
     },
     "iguacu": {
-      "mwmed": 5939,
+      "mwmed": 5995,
       "date": "2026-05-13",
       "sub": "SUL",
       "name": "Iguaçu"
     },
     "parana": {
-      "mwmed": 14417,
+      "mwmed": 13043,
       "date": "2026-05-13",
       "sub": "SECO",
       "name": "Paraná"
     },
     "paranaiba": {
-      "mwmed": 3179,
+      "mwmed": 2999,
       "date": "2026-05-13",
       "sub": "SECO",
       "name": "Paranaíba"
     },
     "parnaiba": {
-      "mwmed": 133,
+      "mwmed": 122,
       "date": "2026-05-13",
       "sub": "NE",
       "name": "Parnaíba"
     },
     "sao_francisco": {
-      "mwmed": 3224,
+      "mwmed": 3555,
       "date": "2026-05-13",
       "sub": "NE",
       "name": "São Francisco"
     },
     "tocantins": {
-      "mwmed": 8838,
+      "mwmed": 9019,
       "date": "2026-05-13",
       "sub": "N",
       "name": "Tocantins"
     },
     "uruguai": {
-      "mwmed": 1706,
+      "mwmed": 1709,
       "date": "2026-05-13",
       "sub": "SUL",
       "name": "Uruguai"
@@ -140,8 +140,8 @@
         4639,
         8848,
         6764,
-        4422,
-        2589,
+        4424,
+        2563,
         null,
         null,
         null,
@@ -184,8 +184,8 @@
         2147,
         1865,
         1423,
-        1489,
-        6126,
+        1490,
+        6172,
         null,
         null,
         null,
@@ -228,8 +228,8 @@
         12462,
         20894,
         19433,
-        14175,
-        11082,
+        14180,
+        10926,
         null,
         null,
         null,
@@ -272,8 +272,8 @@
         5550,
         8732,
         8420,
-        5187,
-        3211,
+        5195,
+        3202,
         null,
         null,
         null,
@@ -361,7 +361,7 @@
         13651,
         14347,
         10048,
-        4304,
+        4342,
         null,
         null,
         null,
@@ -405,7 +405,7 @@
         9727,
         18604,
         15174,
-        10310,
+        10358,
         null,
         null,
         null,
@@ -449,7 +449,7 @@
         1619,
         1193,
         1194,
-        2474,
+        2473,
         null,
         null,
         null,
