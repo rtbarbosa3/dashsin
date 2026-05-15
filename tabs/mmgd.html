@@ -88,6 +88,28 @@ html, body { background: var(--bg); color: var(--text); font-family: var(--font-
 .fl-pct { font-family: var(--font-mono); font-size: 14px; color: var(--text); font-weight: 600; }
 
 /* Monthly growth chart */
+/* Modalidade toggle */
+.mod-toggle { display: flex; flex-wrap: wrap; gap: 1px; background: var(--border); }
+.mod-btn { background: var(--bg-elev); border: 1px solid var(--border); padding: 6px 12px; font-family: var(--font-mono); font-size: 11px; color: var(--text-muted); cursor: pointer; letter-spacing: 0.04em; text-transform: uppercase; }
+.mod-btn:hover { color: var(--text); }
+.mod-btn.active { background: var(--bg-elev-2); color: var(--solar); border-color: var(--solar); }
+
+/* Year chart */
+.year-chart-wrap { position: relative; }
+.year-chart-wrap svg { display: block; width: 100%; height: 320px; }
+.yc-bar { fill: var(--solar); opacity: 0.85; }
+.yc-bar:hover { opacity: 1; }
+.yc-line { fill: none; stroke: var(--seco); stroke-width: 2; }
+.yc-dot { fill: var(--seco); stroke: var(--bg-elev); stroke-width: 2; }
+.yc-grid-line { stroke: var(--border-soft); stroke-width: 0.5; }
+.yc-axis-label { fill: var(--text-dim); font-family: var(--font-mono); font-size: 10px; }
+.yc-axis-label-right { fill: var(--seco); font-family: var(--font-mono); font-size: 10px; }
+.yc-legend { display: flex; gap: 16px; font-family: var(--font-mono); font-size: 10px; color: var(--text-muted); margin-top: 10px; }
+.yc-leg-item { display: flex; align-items: center; gap: 5px; }
+.yc-leg-sw { width: 10px; height: 10px; border-radius: 2px; }
+.yc-leg-sw.added { background: var(--solar); }
+.yc-leg-sw.cumulative { background: var(--seco); }
+
 .month-chart-wrap { position: relative; }
 .month-chart-wrap svg { display: block; width: 100%; height: 280px; }
 .mc-bar { fill: var(--solar); opacity: 0.85; }
@@ -156,6 +178,20 @@ html, body { background: var(--bg); color: var(--text); font-family: var(--font-
 
   <div class="section">
     <div class="section-head">
+      <h2 data-i18n="filterTitle">Filtro · modalidade de geração</h2>
+      <div class="hint" data-i18n="filterHint">Selecione modalidade · todos os gráficos atualizam</div>
+    </div>
+    <div class="mod-toggle" id="mod-toggle">
+      <button class="mod-btn active" data-mod="all" data-i18n="modAll">Todas</button>
+      <button class="mod-btn" data-mod="propria_uc" data-i18n="modPropria">Geração na própria UC</button>
+      <button class="mod-btn" data-mod="autoconsumo_remoto" data-i18n="modRemoto">Autoconsumo remoto</button>
+      <button class="mod-btn" data-mod="compartilhada" data-i18n="modCompart">Compartilhada</button>
+      <button class="mod-btn" data-mod="condominio" data-i18n="modCondo">Condomínio</button>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-head">
       <h2 data-i18n="ufTitle">By state · capacity ranking</h2>
       <div class="hint" data-i18n="ufHint">MW installed and connection count · all 27 states</div>
     </div>
@@ -170,6 +206,17 @@ html, body { background: var(--bg); color: var(--text); font-family: var(--font-
     <div class="fonte-wrap">
       <div class="fonte-donut"><svg id="fonte-donut" viewBox="0 0 200 200"></svg></div>
       <div class="fonte-legend" id="fonte-legend"></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-head">
+      <h2 data-i18n="yearTitle">Annual growth since 2015</h2>
+      <div class="hint" data-i18n="yearHint">Capacity added per year · stacked line shows cumulative installed GW</div>
+    </div>
+    <div class="year-chart-wrap">
+      <svg id="year-chart" viewBox="0 0 1100 320" preserveAspectRatio="none"></svg>
+      <div class="mc-tooltip" id="year-tooltip"></div>
     </div>
   </div>
 
@@ -201,6 +248,44 @@ const MONTH_ABBR_PT = ['jan','fev','mar','abr','mai','jun','jul','ago','set','ou
 let MMGD = null;
 let MMGD_GENERATED_AT = null;
 let currentLang = 'EN';
+let currentMod = 'all'; // 'all' | 'propria_uc' | 'autoconsumo_remoto' | 'compartilhada' | 'condominio'
+
+// Returns the value (kw/count) for a UF given the current modality filter.
+// Uses cross-tabs when filtered, falls back to by_uf when 'all'.
+function valueForUf(uf, ufData) {
+  if (currentMod === 'all') return { kw: ufData.kw, count: ufData.count };
+  const xtab = MMGD.cross_tabs && MMGD.cross_tabs.uf_by_modalidade && MMGD.cross_tabs.uf_by_modalidade[uf];
+  if (!xtab) return { kw: 0, count: 0 };
+  const slot = xtab[currentMod];
+  return slot ? { kw: slot.kw, count: slot.count } : { kw: 0, count: 0 };
+}
+function valueForFonte(fonte, fonteData) {
+  if (currentMod === 'all') return { kw: fonteData.kw, count: fonteData.count };
+  const xtab = MMGD.cross_tabs && MMGD.cross_tabs.fonte_by_modalidade && MMGD.cross_tabs.fonte_by_modalidade[fonte];
+  if (!xtab) return { kw: 0, count: 0 };
+  const slot = xtab[currentMod];
+  return slot ? { kw: slot.kw, count: slot.count } : { kw: 0, count: 0 };
+}
+function valueForYear(year, yearData) {
+  if (currentMod === 'all') return { kw: yearData.added_kw, count: yearData.added_count };
+  const xtab = MMGD.cross_tabs && MMGD.cross_tabs.year_by_modalidade && MMGD.cross_tabs.year_by_modalidade[String(year)];
+  if (!xtab) return { kw: 0, count: 0 };
+  const slot = xtab[currentMod];
+  return slot ? { kw: slot.kw, count: slot.count } : { kw: 0, count: 0 };
+}
+
+// Compute total kw and count summed across all UFs (or filtered)
+function totalFiltered() {
+  if (currentMod === 'all') return { kw: MMGD.totals.kw, count: MMGD.totals.count };
+  let kw = 0, count = 0;
+  if (MMGD.cross_tabs && MMGD.cross_tabs.uf_by_modalidade) {
+    for (const uf in MMGD.cross_tabs.uf_by_modalidade) {
+      const slot = MMGD.cross_tabs.uf_by_modalidade[uf][currentMod];
+      if (slot) { kw += slot.kw || 0; count += slot.count || 0; }
+    }
+  }
+  return { kw, count };
+}
 
 const I18N = {
   EN: {
@@ -209,10 +294,17 @@ const I18N = {
     pageTitle:'MMGD — Distributed micro & mini generation',
     pageSub:'Installed capacity, source mix, monthly growth · ANEEL data',
     kpiTotalGW:'Total installed', kpiTopSource:'Dominant source', kpiTopUF:'Top state', kpiLast12:'Added · last 12m',
+    filterTitle:'Filter · generation modality',
+    filterHint:'Select a modality · all charts update',
+    modAll:'All', modPropria:'Self-generation on UC', modRemoto:'Remote self-consumption',
+    modCompart:'Shared generation', modCondo:'Condominium',
     ufTitle:'By state · capacity ranking',
     ufHint:'MW installed and connection count · all 27 states',
     fonteTitle:'By source · capacity mix',
     fonteHint:'Share of total installed MW · solar dominates MMGD post-2015',
+    yearTitle:'Annual growth since 2015',
+    yearHint:'Capacity added per year · line shows cumulative installed GW',
+    yearLegAdded:'Added that year (MW)', yearLegCumul:'Cumulative (GW)',
     monthTitle:'Monthly growth · last 24 months',
     monthHint:'New capacity connected each month · MW',
     source:'Source', updated:'Updated',
@@ -223,10 +315,17 @@ const I18N = {
     pageTitle:'MMGD — Micro e minigeração distribuída',
     pageSub:'Capacidade instalada, mix de fontes, crescimento mensal · dados ANEEL',
     kpiTotalGW:'Total instalado', kpiTopSource:'Fonte dominante', kpiTopUF:'Estado líder', kpiLast12:'Adicionado · últ. 12m',
+    filterTitle:'Filtro · modalidade de geração',
+    filterHint:'Selecione modalidade · todos os gráficos atualizam',
+    modAll:'Todas', modPropria:'Geração na própria UC', modRemoto:'Autoconsumo remoto',
+    modCompart:'Geração compartilhada', modCondo:'Condomínio',
     ufTitle:'Por estado · ranking de capacidade',
     ufHint:'MW instalados e nº de conexões · 27 estados',
     fonteTitle:'Por fonte · mix de capacidade',
     fonteHint:'Participação no total MW instalado · solar domina MMGD pós-2015',
+    yearTitle:'Crescimento anual desde 2015',
+    yearHint:'Capacidade adicionada por ano · linha mostra acumulado em GW',
+    yearLegAdded:'Adicionado no ano (MW)', yearLegCumul:'Acumulado (GW)',
     monthTitle:'Crescimento mensal · últimos 24 meses',
     monthHint:'Nova capacidade conectada por mês · MW',
     source:'Fonte', updated:'Atualizado',
@@ -257,26 +356,40 @@ function fmtNum(n, decimals=1) {
 function renderKPIs() {
   if (!MMGD) return;
   const t = I18N[currentLang];
-  const totals = MMGD.totals || {};
-  document.getElementById('kpi-total-gw').innerHTML = `${fmtNum(totals.gw, 2)}<span class="unit">GW</span>`;
-  document.getElementById('kpi-total-count').textContent = `${fmtInt(totals.count)} ` + (currentLang === 'PT' ? 'empreendimentos' : 'installations');
+  const tot = totalFiltered();
+  const totGW = tot.kw / 1_000_000;
+  document.getElementById('kpi-total-gw').innerHTML = `${fmtNum(totGW, 2)}<span class="unit">GW</span>`;
+  document.getElementById('kpi-total-count').textContent = `${fmtInt(tot.count)} ` + (currentLang === 'PT' ? 'empreendimentos' : 'installations');
 
-  // Top source
-  const topFonte = (MMGD.by_fonte || [])[0];
-  if (topFonte) {
+  // Top source — filtered fonte ranking
+  const fonteList = (MMGD.by_fonte || []).map(f => {
+    const v = valueForFonte(f.fonte, f);
+    return { ...f, _kw: v.kw, _count: v.count };
+  }).sort((a,b) => b._kw - a._kw);
+  const topFonte = fonteList[0];
+  if (topFonte && tot.kw > 0) {
     const lbl = (currentLang === 'PT' ? FONTE_LABELS_PT : FONTE_LABELS_EN)[topFonte.fonte] || topFonte.fonte;
     document.getElementById('kpi-top-source').textContent = lbl;
-    document.getElementById('kpi-top-source-pct').textContent = `${fmtNum(topFonte.pct_kw, 1)}% ` + (currentLang === 'PT' ? 'do total' : 'of total');
+    const pct = topFonte._kw / tot.kw * 100;
+    document.getElementById('kpi-top-source-pct').textContent = `${fmtNum(pct, 1)}% ` + (currentLang === 'PT' ? 'do total' : 'of total');
+  } else {
+    document.getElementById('kpi-top-source').textContent = '—';
+    document.getElementById('kpi-top-source-pct').textContent = '—';
   }
 
-  // Top UF
-  const topUF = (MMGD.by_uf || [])[0];
+  // Top UF — filtered
+  const ufList = (MMGD.by_uf || []).map(u => {
+    const v = valueForUf(u.uf, u);
+    return { ...u, _kw: v.kw, _count: v.count };
+  }).sort((a,b) => b._kw - a._kw);
+  const topUF = ufList[0];
   if (topUF) {
     document.getElementById('kpi-top-uf').textContent = topUF.uf;
-    document.getElementById('kpi-top-uf-mw').textContent = `${fmtNum(topUF.mw, 1)} MW`;
+    document.getElementById('kpi-top-uf-mw').textContent = `${fmtNum(topUF._kw / 1000, 1)} MW`;
   }
 
-  // Last 12 months sum
+  // Last 12 months sum (monthly_last_24m doesn't have modalidade cross-tab,
+  // so falls back to all). Acceptable simplification.
   const monthly = MMGD.monthly_last_24m || [];
   const last12 = monthly.slice(-12);
   const last12Mw = last12.reduce((s, m) => s + (m.mw || 0), 0);
@@ -288,15 +401,17 @@ function renderKPIs() {
 function renderUFRanking() {
   if (!MMGD || !MMGD.by_uf) return;
   const container = document.getElementById('uf-grid');
-  const list = MMGD.by_uf;
+  const list = MMGD.by_uf.map(u => {
+    const v = valueForUf(u.uf, u);
+    return { uf: u.uf, kw: v.kw, mw: v.kw / 1000, count: v.count };
+  }).sort((a,b) => b.kw - a.kw);
   const maxMw = list[0] ? list[0].mw : 1;
-  // Split in two columns: top 14 left, rest right
   const mid = Math.ceil(list.length / 2);
   const colA = list.slice(0, mid);
   const colB = list.slice(mid);
 
   const renderCol = (rows) => rows.map((r, i) => {
-    const w = Math.max(0.5, (r.mw / maxMw) * 100);
+    const w = Math.max(0.5, (r.mw / Math.max(maxMw, 1)) * 100);
     return `
       <div class="uf-bar">
         <span class="uf-code">${r.uf}</span>
@@ -315,15 +430,22 @@ function renderFonteDonut() {
   const svg = document.getElementById('fonte-donut');
   const cx = 100, cy = 100, R = 80, R_in = 50;
 
+  // Get filtered fonte list
+  let list = MMGD.by_fonte.map(f => {
+    const v = valueForFonte(f.fonte, f);
+    return { fonte: f.fonte, kw: v.kw, mw: v.kw / 1000, count: v.count };
+  });
+  const totalKw = list.reduce((s, f) => s + f.kw, 0);
+  list = list.map(f => ({ ...f, pct_kw: totalKw > 0 ? f.kw / totalKw * 100 : 0 }))
+             .sort((a,b) => b.kw - a.kw);
+
   let cumPct = 0;
   let paths = '';
-  const order = MMGD.by_fonte.slice().sort((a,b) => b.kw - a.kw);
-  for (const f of order) {
+  for (const f of list) {
     if (!f.pct_kw || f.pct_kw < 0.01) continue;
     const startAngle = cumPct / 100 * 2 * Math.PI - Math.PI / 2;
     cumPct += f.pct_kw;
     const endAngle = cumPct / 100 * 2 * Math.PI - Math.PI / 2;
-    // Donut arc path
     const x1 = cx + R * Math.cos(startAngle);
     const y1 = cy + R * Math.sin(startAngle);
     const x2 = cx + R * Math.cos(endAngle);
@@ -336,15 +458,14 @@ function renderFonteDonut() {
     const color = `var(--${f.fonte})`;
     paths += `<path d="M ${x1} ${y1} A ${R} ${R} 0 ${largeArc} 1 ${x2} ${y2} L ${x3} ${y3} A ${R_in} ${R_in} 0 ${largeArc} 0 ${x4} ${y4} Z" fill="${color}" stroke="var(--bg-elev)" stroke-width="1"/>`;
   }
-  // Inner total label
-  paths += `<text x="${cx}" y="${cy-5}" text-anchor="middle" fill="var(--text)" font-family="var(--font-mono)" font-size="18" font-weight="600">${fmtNum(MMGD.totals.gw, 1)}</text>`;
+  const gwTotal = totalKw / 1_000_000;
+  paths += `<text x="${cx}" y="${cy-5}" text-anchor="middle" fill="var(--text)" font-family="var(--font-mono)" font-size="18" font-weight="600">${fmtNum(gwTotal, 2)}</text>`;
   paths += `<text x="${cx}" y="${cy+12}" text-anchor="middle" fill="var(--text-dim)" font-family="var(--font-mono)" font-size="10" letter-spacing="0.08em">GW</text>`;
   svg.innerHTML = paths;
 
-  // Legend
   const legendEl = document.getElementById('fonte-legend');
   const labels = currentLang === 'PT' ? FONTE_LABELS_PT : FONTE_LABELS_EN;
-  legendEl.innerHTML = order.map(f => {
+  legendEl.innerHTML = list.map(f => {
     const lbl = labels[f.fonte] || f.fonte;
     return `
       <div class="fl-item">
@@ -358,6 +479,121 @@ function renderFonteDonut() {
     `;
   }).join('');
 }
+
+function renderYearly() {
+  if (!MMGD || !MMGD.by_year) return;
+  const svg = document.getElementById('year-chart');
+  const tooltip = document.getElementById('year-tooltip');
+  const W = 1100, H = 320, padL = 56, padR = 56, padT = 24, padB = 40;
+  const innerW = W - padL - padR, innerH = H - padT - padB;
+
+  // Apply modalidade filter; recompute cumulative based on filtered added
+  const data = [];
+  let cum_kw = 0, cum_count = 0;
+  for (const y of MMGD.by_year) {
+    const v = valueForYear(y.year, y);
+    cum_kw += v.kw;
+    cum_count += v.count;
+    data.push({
+      year: y.year,
+      added_kw: v.kw,
+      added_mw: v.kw / 1000,
+      added_count: v.count,
+      cum_gw: cum_kw / 1_000_000,
+      cum_count: cum_count,
+    });
+  }
+  if (!data.length) { svg.innerHTML = ''; return; }
+
+  const maxMw = Math.max(...data.map(d => d.added_mw)) * 1.15;
+  const maxGw = Math.max(...data.map(d => d.cum_gw)) * 1.1;
+  const xScale = i => padL + (i + 0.5) * (innerW / data.length);
+  const yLeft = v => padT + innerH - (v / Math.max(maxMw, 1)) * innerH;
+  const yRight = v => padT + innerH - (v / Math.max(maxGw, 0.001)) * innerH;
+  const barW = innerW / data.length * 0.65;
+
+  let html = '';
+  // Grid + Y left axis
+  const ticks = 4;
+  for (let i = 0; i <= ticks; i++) {
+    const v = (maxMw / ticks) * i;
+    const y = yLeft(v);
+    html += `<line class="yc-grid-line" x1="${padL}" x2="${W-padR}" y1="${y}" y2="${y}"/>`;
+    html += `<text class="yc-axis-label" x="${padL-8}" y="${y+3}" text-anchor="end">${fmtNum(v, 0)}</text>`;
+  }
+  // Y right axis (GW cumulative)
+  for (let i = 0; i <= ticks; i++) {
+    const v = (maxGw / ticks) * i;
+    const y = yRight(v);
+    html += `<text class="yc-axis-label-right" x="${W-padR+8}" y="${y+3}" text-anchor="start">${fmtNum(v, 1)}</text>`;
+  }
+
+  // Bars (added MW per year)
+  data.forEach((d, i) => {
+    const x = xScale(i) - barW / 2;
+    const y = yLeft(d.added_mw);
+    const h = innerH - (y - padT);
+    html += `<rect class="yc-bar" x="${x}" y="${y}" width="${barW}" height="${h}" data-i="${i}"/>`;
+    // X label
+    html += `<text class="yc-axis-label" x="${xScale(i)}" y="${H-padB+14}" text-anchor="middle">${d.year}</text>`;
+  });
+  // Line for cumulative GW
+  const pts = data.map((d,i) => `${xScale(i)},${yRight(d.cum_gw)}`).join(' ');
+  html += `<polyline class="yc-line" points="${pts}"/>`;
+  data.forEach((d,i) => {
+    html += `<circle class="yc-dot" cx="${xScale(i)}" cy="${yRight(d.cum_gw)}" r="3.5"/>`;
+  });
+  // Axis side labels
+  const t = I18N[currentLang];
+  html += `<text class="yc-axis-label" x="${padL-32}" y="${padT-8}" font-size="9" text-anchor="start">MW</text>`;
+  html += `<text class="yc-axis-label-right" x="${W-padR+8}" y="${padT-8}" font-size="9" text-anchor="start">GW</text>`;
+
+  svg.innerHTML = html;
+
+  // Render legend below chart
+  let parent = svg.parentElement;
+  let legend = parent.querySelector('.yc-legend');
+  if (!legend) {
+    legend = document.createElement('div');
+    legend.className = 'yc-legend';
+    parent.appendChild(legend);
+  }
+  legend.innerHTML = `
+    <div class="yc-leg-item"><span class="yc-leg-sw added"></span> ${t.yearLegAdded}</div>
+    <div class="yc-leg-item"><span class="yc-leg-sw cumulative"></span> ${t.yearLegCumul}</div>
+  `;
+
+  // Bar hover tooltips
+  svg.querySelectorAll('.yc-bar').forEach(rect => {
+    rect.addEventListener('mouseenter', (e) => {
+      const i = parseInt(e.target.dataset.i);
+      const d = data[i];
+      tooltip.innerHTML = `
+        <div style="color:var(--text-dim);font-size:9px;letter-spacing:0.06em;text-transform:uppercase;margin-bottom:4px">${d.year}</div>
+        <div style="color:var(--solar);font-weight:600">+${fmtNum(d.added_mw, 0)} MW</div>
+        <div style="color:var(--text-muted);font-size:10px">${fmtInt(d.added_count)} ` + (currentLang === 'PT' ? 'novos' : 'new') + `</div>
+        <div style="color:var(--seco);font-size:10px;margin-top:4px">${currentLang === 'PT' ? 'Acumulado' : 'Cumulative'}: ${fmtNum(d.cum_gw, 2)} GW</div>
+      `;
+      tooltip.style.opacity = 1;
+    });
+    rect.addEventListener('mousemove', (e) => {
+      const rect2 = svg.parentElement.getBoundingClientRect();
+      tooltip.style.left = (e.clientX - rect2.left + 12) + 'px';
+      tooltip.style.top = (e.clientY - rect2.top - 60) + 'px';
+    });
+    rect.addEventListener('mouseleave', () => { tooltip.style.opacity = 0; });
+  });
+}
+
+// Modalidade toggle handler
+document.addEventListener('click', (e) => {
+  if (e.target.matches('.mod-btn')) {
+    document.querySelectorAll('.mod-btn').forEach(b => b.classList.remove('active'));
+    e.target.classList.add('active');
+    currentMod = e.target.dataset.mod;
+    renderAll();
+  }
+});
 
 function renderMonthly() {
   if (!MMGD || !MMGD.monthly_last_24m) return;
@@ -447,6 +683,7 @@ function renderAll() {
   renderKPIs();
   renderUFRanking();
   renderFonteDonut();
+  renderYearly();
   renderMonthly();
 }
 
