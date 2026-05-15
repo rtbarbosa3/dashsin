@@ -27,8 +27,7 @@ html, body { background: var(--bg); color: var(--text); font-family: var(--font-
 .brand .logo { font-family: var(--font-mono); font-weight: 600; font-size: 13px; letter-spacing: 0.15em; text-transform: uppercase; }
 .brand .divider { width: 1px; height: 14px; background: var(--border); }
 .brand .tabs { display: flex; gap: 1px; background: var(--border); margin-left: 16px; }
-.brand .tab { background: var(--bg-elev); padding: 4px 10px; font-family: var(--font-mono); font-size: 10px; color: var(--text-muted); letter-spacing: 0.06em; text-transform: uppercase; cursor: pointer; text-decoration: none; transition: background 0.15s, color 0.15s; }
-.brand .tab:hover { background: var(--bg-elev-2); color: var(--text); }
+.brand .tab { background: var(--bg-elev); padding: 4px 10px; font-family: var(--font-mono); font-size: 10px; color: var(--text-muted); letter-spacing: 0.06em; text-transform: uppercase; cursor: pointer; }
 .brand .tab.active { background: var(--text); color: var(--bg); }
 .topbar-right { display: flex; align-items: center; gap: 18px; }
 .meta { font-family: var(--font-mono); font-size: 11px; color: var(--text-dim); letter-spacing: 0.04em; }
@@ -196,6 +195,59 @@ html, body { background: var(--bg); color: var(--text); font-family: var(--font-
   .subheader h1 { font-size: 18px; }
   .kpi .value { font-size: 20px; }
 }
+/* ── Bandeira Tarifária ── */
+.band-wrap { display: grid; grid-template-columns: 280px 1fr; gap: 24px; }
+@media (max-width: 760px) { .band-wrap { grid-template-columns: 1fr; } }
+.band-card { background: var(--bg-elev-2); border: 1px solid var(--border); border-radius: 6px; padding: 18px; display: flex; align-items: center; gap: 18px; }
+.band-flag { width: 56px; height: 56px; border-radius: 4px; flex-shrink: 0; position: relative; }
+.band-flag.verde { background: linear-gradient(135deg, #10b981, #059669); box-shadow: 0 0 24px rgba(16,185,129,0.35); }
+.band-flag.amarela { background: linear-gradient(135deg, #f59e0b, #d97706); box-shadow: 0 0 24px rgba(245,158,11,0.35); }
+.band-flag.vermelha1 { background: linear-gradient(135deg, #ef4444, #dc2626); box-shadow: 0 0 24px rgba(239,68,68,0.4); }
+.band-flag.vermelha2 { background: linear-gradient(135deg, #b91c1c, #7f1d1d); box-shadow: 0 0 28px rgba(185,28,28,0.5); }
+.band-flag.escassez { background: linear-gradient(135deg, #6b7280, #374151); }
+.band-info-lbl { font-family: var(--font-mono); font-size: 9px; color: var(--text-dim); letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 4px; }
+.band-info-val { font-family: var(--font-mono); font-size: 18px; color: var(--text); font-weight: 600; letter-spacing: 0.02em; margin-bottom: 4px; }
+.band-info-meta { font-family: var(--font-mono); font-size: 11px; color: var(--text-muted); }
+.band-history-wrap { padding-top: 4px; }
+.band-history-lbl { font-family: var(--font-mono); font-size: 10px; color: var(--text-dim); letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 10px; }
+.band-history { display: grid; grid-template-columns: repeat(24, 1fr); gap: 2px; height: 36px; margin-bottom: 8px; }
+.bh-cell { border-radius: 2px; position: relative; cursor: pointer; transition: transform 0.1s; }
+.bh-cell:hover { transform: scaleY(1.2); }
+.bh-cell.verde { background: #10b981; }
+.bh-cell.amarela { background: #f59e0b; }
+.bh-cell.vermelha1 { background: #ef4444; }
+.bh-cell.vermelha2 { background: #b91c1c; }
+.bh-cell.escassez { background: #6b7280; }
+.bh-cell.desconhecida { background: #2a2d33; }
+.bh-cell[data-tip]:hover::after { content: attr(data-tip); position: absolute; bottom: 100%; left: 50%; transform: translateX(-50%); background: var(--bg-elev-2); border: 1px solid var(--border); padding: 4px 8px; font-family: var(--font-mono); font-size: 10px; color: var(--text); white-space: nowrap; border-radius: 3px; margin-bottom: 6px; z-index: 10; }
+.band-legend { display: flex; gap: 14px; font-family: var(--font-mono); font-size: 10px; color: var(--text-muted); flex-wrap: wrap; }
+.bl-item { display: flex; align-items: center; gap: 5px; }
+.bl-sw { width: 12px; height: 8px; border-radius: 2px; display: inline-block; }
+.bl-sw.verde { background: #10b981; }
+.bl-sw.amarela { background: #f59e0b; }
+.bl-sw.vermelha1 { background: #ef4444; }
+.bl-sw.vermelha2 { background: #b91c1c; }
+
+/* ── Reajuste tarifário ── */
+.rej-toggle { display: flex; gap: 1px; margin-bottom: 14px; }
+.rej-btn { background: var(--bg-elev); border: 1px solid var(--border); padding: 6px 14px; font-family: var(--font-mono); font-size: 11px; color: var(--text-muted); cursor: pointer; letter-spacing: 0.04em; text-transform: uppercase; }
+.rej-btn:hover { color: var(--text); }
+.rej-btn.active { background: var(--bg-elev-2); color: var(--text); border-color: var(--accent); }
+.rej-table-wrap { overflow-x: auto; }
+.rej-table { width: 100%; border-collapse: collapse; font-family: var(--font-mono); font-size: 12px; }
+.rej-table th { text-align: left; padding: 10px 12px; color: var(--text-dim); font-weight: 500; font-size: 10px; letter-spacing: 0.06em; text-transform: uppercase; border-bottom: 1px solid var(--border); }
+.rej-table th:nth-child(3), .rej-table th:nth-child(4), .rej-table th:nth-child(5) { text-align: right; }
+.rej-table td { padding: 11px 12px; border-bottom: 1px solid var(--border-soft); color: var(--text); }
+.rej-table td:nth-child(3), .rej-table td:nth-child(4), .rej-table td:nth-child(5) { text-align: right; }
+.rej-table tr:hover { background: var(--bg-elev); }
+.rej-pct-up { color: var(--danger); font-weight: 500; }
+.rej-pct-down { color: var(--ok); font-weight: 500; }
+.rej-pct-low { color: var(--warn); font-weight: 500; }
+.rej-bar-wrap { width: 100px; height: 5px; background: var(--bg-elev-2); border-radius: 3px; overflow: hidden; position: relative; }
+.rej-bar { height: 100%; background: var(--danger); }
+.rej-bar.low { background: var(--warn); }
+.rej-bar.ok { background: var(--ok); }
+
 </style>
 </head>
 <body>
@@ -210,10 +262,11 @@ html, body { background: var(--bg); color: var(--text); font-family: var(--font-
       <a class="tab" href="operation.html">Operation</a>
       <a class="tab" href="climate.html">Climate</a>
       <a class="tab active" href="acl.html">ACL</a>
+      <a class="tab" href="mmgd.html">MMGD</a>
     </div>
   </div>
   <div class="topbar-right">
-    <span class="meta"><span class="live"></span><span data-i18n="dataLag">CCEE · ANEEL · BBCE forward</span></span>
+    <span class="meta"><span class="live"></span><span id="data-status">Loading...</span></span>
     <div class="lang-toggle">
       <button data-lang="EN" class="active">EN</button>
       <button data-lang="PT">PT</button>
@@ -260,6 +313,61 @@ html, body { background: var(--bg); color: var(--text); font-family: var(--font-
 <section class="kpi-strip"></section>
 
 <main class="main">
+
+  <!-- ── BANDEIRA TARIFÁRIA (real, ANEEL) ── -->
+  <div class="section">
+    <div class="section-head">
+      <h2 data-i18n="bandTitle">Bandeira tarifária · sinal do custo da geração</h2>
+      <div class="hint" data-i18n="bandHint">ANEEL · acionamento mensal · barra colorida = últimos 24 meses</div>
+    </div>
+    <div class="band-wrap">
+      <div class="band-card" id="band-card">
+        <div class="band-flag" id="band-flag"></div>
+        <div class="band-info">
+          <div class="band-info-lbl" data-i18n="bandCurrent">Bandeira em vigor</div>
+          <div class="band-info-val" id="band-current">—</div>
+          <div class="band-info-meta" id="band-meta">—</div>
+        </div>
+      </div>
+      <div class="band-history-wrap">
+        <div class="band-history-lbl" data-i18n="bandHistLbl">Histórico · últimos 24 meses</div>
+        <div class="band-history" id="band-history"></div>
+        <div class="band-legend">
+          <span class="bl-item"><span class="bl-sw verde"></span> <span data-i18n="bandVerde">Verde</span></span>
+          <span class="bl-item"><span class="bl-sw amarela"></span> <span data-i18n="bandAmarela">Amarela</span></span>
+          <span class="bl-item"><span class="bl-sw vermelha1"></span> <span data-i18n="bandV1">Vermelha P1</span></span>
+          <span class="bl-item"><span class="bl-sw vermelha2"></span> <span data-i18n="bandV2">Vermelha P2</span></span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── REAJUSTES TARIFÁRIOS B1 / A4 (real, ANEEL) ── -->
+  <div class="section">
+    <div class="section-head">
+      <h2 data-i18n="rejTitle">Últimos reajustes tarifários · top distribuidoras</h2>
+      <div class="hint" data-i18n="rejHint">ANEEL · TE + TUSD em R$/kWh · convencional · variação % entre os 2 últimos ciclos</div>
+    </div>
+    <div class="rej-toggle">
+      <button class="rej-btn active" data-class="B1" data-i18n="rejB1">B1 · Residencial</button>
+      <button class="rej-btn" data-class="A4" data-i18n="rejA4">A4 · Industrial 2,3-25 kV</button>
+    </div>
+    <div class="rej-table-wrap">
+      <table class="rej-table" id="rej-table">
+        <thead>
+          <tr>
+            <th data-i18n="thDist">Distribuidora</th>
+            <th data-i18n="thLastDate">Última homologação</th>
+            <th data-i18n="thPrev">Tarifa anterior R$/kWh</th>
+            <th data-i18n="thCur">Tarifa atual R$/kWh</th>
+            <th data-i18n="thRej">Reajuste %</th>
+            <th data-i18n="thBar"></th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </div>
 
   <div class="section">
     <div class="section-head">
@@ -460,6 +568,15 @@ const I18N = {
     insightFwd:'<strong>Forward curve SE/CO contango through 2027:</strong> jun/26 <span class="v">R$ 295</span> · cal/27 <span class="v">R$ 318</span> · cal/28 <span class="v">R$ 305</span>. Market is pricing in continued hydrological stress and the expiration of legacy renewable contracts in 2027. ACL consumers locking in cal/27 at R$ 318 are still <span class="v up">5% below</span> the current SE/CO PLD average (R$ 313 YTD).',
     insightMig:'<strong>2,847 consumers migrated to ACL in Q1 2026</strong> — a 22% increase YoY, driven by Grupo A4 (138-2,500 kW) opening fully in Jan 2024. <span class="v up">+18%</span> in agro/agribusiness segment specifically. Average migration produces 12-18% savings vs ACR for a typical industrial consumer.',
     insightBio:'<strong>Biomass generation entering peak: 4,128 MWmed SE/CO in April</strong> — and accelerating into May-October cana season. With PLD SE/CO at R$ 313 YTD and bilateral biomass contracts averaging R$ 245-275/MWh (signed in 2024-2025), spot dispatch is advantageous: spread <span class="v up">+R$ 50/MWh</span> for plants with available uncommitted MWh.',
+    bandTitle:'Bandeira tarifária · generation cost signal',
+    bandHint:'ANEEL · monthly flag · color bar = last 24 months',
+    bandCurrent:'Active flag', bandHistLbl:'History · last 24 months',
+    bandVerde:'Green', bandAmarela:'Yellow', bandV1:'Red P1', bandV2:'Red P2',
+    rejTitle:'Latest tariff readjustments · top distributors',
+    rejHint:'ANEEL · TE + TUSD in R$/kWh · conventional · % change between last 2 cycles',
+    rejB1:'B1 · Residential', rejA4:'A4 · Industrial 2.3-25 kV',
+    thDist:'Distributor', thLastDate:'Last homologation', thPrev:'Previous tariff R$/kWh',
+    thCur:'Current tariff R$/kWh', thRej:'Adjustment %',
     fwdTitle:'Forward curve · SE/CO by delivery month',
     fwdHint:'BBCE/Markets mid · dashed = PLD spot reference',
     calTitle:'CCEE calendar · upcoming deadlines',
@@ -501,6 +618,15 @@ const I18N = {
     insightFwd:'<strong>Curva forward SE/CO em contango até 2027:</strong> jun/26 <span class="v">R$ 295</span> · cal/27 <span class="v">R$ 318</span> · cal/28 <span class="v">R$ 305</span>. Mercado precifica estresse hidrológico continuado e expiração de contratos legados de fontes renováveis em 2027. Consumidores ACL travando cal/27 em R$ 318 ainda estão <span class="v up">5% abaixo</span> da média PLD SE/CO atual (R$ 313 YTD).',
     insightMig:'<strong>2.847 consumidores migraram para o ACL no 1T 2026</strong> — alta de 22% YoY, impulsionada pela abertura plena do Grupo A4 (138-2.500 kW) em jan/2024. <span class="v up">+18%</span> especificamente no segmento agro/agronegócio. Migração média produz economia de 12-18% vs ACR para consumidor industrial típico.',
     insightBio:'<strong>Biomassa entrando no pico: 4.128 MWmed SE/CO em abril</strong> — e acelerando para a safra de cana mai-out. Com PLD SE/CO em R$ 313 YTD e contratos bilaterais de biomassa em média R$ 245-275/MWh (firmados em 2024-2025), o despacho spot é vantajoso: spread <span class="v up">+R$ 50/MWh</span> para usinas com MWh disponível não-contratado.',
+    bandTitle:'Bandeira tarifária · sinal do custo da geração',
+    bandHint:'ANEEL · acionamento mensal · barra colorida = últimos 24 meses',
+    bandCurrent:'Bandeira em vigor', bandHistLbl:'Histórico · últimos 24 meses',
+    bandVerde:'Verde', bandAmarela:'Amarela', bandV1:'Vermelha P1', bandV2:'Vermelha P2',
+    rejTitle:'Últimos reajustes tarifários · top distribuidoras',
+    rejHint:'ANEEL · TE + TUSD em R$/kWh · convencional · variação % entre os 2 últimos ciclos',
+    rejB1:'B1 · Residencial', rejA4:'A4 · Industrial 2,3-25 kV',
+    thDist:'Distribuidora', thLastDate:'Última homologação', thPrev:'Tarifa anterior R$/kWh',
+    thCur:'Tarifa atual R$/kWh', thRej:'Reajuste %',
     fwdTitle:'Curva forward · SE/CO por mês de entrega',
     fwdHint:'Médio BBCE/Mercados · tracejado = referência PLD spot',
     calTitle:'Calendário CCEE · prazos próximos',
@@ -893,6 +1019,115 @@ function renderSpread() {
   svg.innerHTML = html;
 }
 
+// ── ANEEL data loaders ──
+let BANDEIRA = null;
+let TARIFAS = null;
+let BANDEIRA_GENERATED_AT = null;
+let TARIFAS_GENERATED_AT = null;
+let currentRejClass = 'B1';
+
+async function loadBandeira() {
+  try {
+    const r = await fetch('../data/bandeira.json', { cache: 'no-cache' });
+    if (!r.ok) throw new Error(`HTTP ${r.status}`);
+    const j = await r.json();
+    BANDEIRA = j;
+    BANDEIRA_GENERATED_AT = j.generated_at_utc;
+    console.log('Bandeira loaded:', BANDEIRA_GENERATED_AT);
+  } catch(e) { console.error('bandeira load failed:', e); }
+}
+async function loadTarifas() {
+  try {
+    const r = await fetch('../data/tarifas.json', { cache: 'no-cache' });
+    if (!r.ok) throw new Error(`HTTP ${r.status}`);
+    const j = await r.json();
+    TARIFAS = j;
+    TARIFAS_GENERATED_AT = j.generated_at_utc;
+    console.log('Tarifas loaded:', TARIFAS_GENERATED_AT);
+  } catch(e) { console.error('tarifas load failed:', e); }
+}
+
+function renderBandeira() {
+  if (!BANDEIRA || !BANDEIRA.current) return;
+  const c = BANDEIRA.current;
+  const months = currentLang === 'PT'
+    ? ['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez']
+    : ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+
+  // Big flag card
+  const flagEl = document.getElementById('band-flag');
+  if (flagEl) flagEl.className = 'band-flag ' + c.bandeira;
+  const curEl = document.getElementById('band-current');
+  if (curEl) curEl.textContent = c.label;
+  const metaEl = document.getElementById('band-meta');
+  if (metaEl) {
+    const mLbl = months[c.month - 1];
+    const streakLbl = currentLang === 'PT' ? 'na fase há' : 'in phase for';
+    const mUnit = currentLang === 'PT'
+      ? (c.streak_months === 1 ? 'mês' : 'meses')
+      : (c.streak_months === 1 ? 'month' : 'months');
+    metaEl.textContent = `${mLbl}/${c.year} · ${streakLbl} ${c.streak_months} ${mUnit}`;
+  }
+
+  // 24-month history bar
+  const histEl = document.getElementById('band-history');
+  if (histEl && BANDEIRA.recent_24m) {
+    histEl.innerHTML = BANDEIRA.recent_24m.map(r => {
+      const tip = `${months[r.month-1]}/${r.year}: ${r.label}`;
+      return `<div class="bh-cell ${r.bandeira}" data-tip="${tip}"></div>`;
+    }).join('');
+  }
+}
+
+function renderTarifas() {
+  if (!TARIFAS || !TARIFAS.classes) return;
+  const cls = TARIFAS.classes[currentRejClass];
+  if (!cls) return;
+  const tbody = document.querySelector('#rej-table tbody');
+  if (!tbody) return;
+
+  const lang = currentLang === 'PT' ? 'pt-BR' : 'en-US';
+  const months = currentLang === 'PT'
+    ? ['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez']
+    : ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+
+  const fmtDate = (iso) => {
+    if (!iso) return '—';
+    const d = new Date(iso + 'T00:00:00');
+    return `${String(d.getDate()).padStart(2,'0')} ${months[d.getMonth()]} ${d.getFullYear()}`;
+  };
+  const fmtCur = (v) => v == null ? '—' : v.toLocaleString(lang, {minimumFractionDigits: 4, maximumFractionDigits: 5});
+  const fmtPct = (v) => v == null ? '—' : (v >= 0 ? '+' : '') + v.toFixed(2) + '%';
+
+  // Render rows sorted by latest homologação date (most recent first)
+  tbody.innerHTML = cls.distribuidoras.map(d => {
+    const pct = d.reajuste_pct;
+    const pctCls = pct == null ? '' : (pct >= 8 ? 'rej-pct-up' : pct >= 4 ? 'rej-pct-low' : 'rej-pct-down');
+    const barCls = pct == null ? '' : (pct >= 8 ? '' : pct >= 4 ? 'low' : 'ok');
+    const barW = pct == null ? 0 : Math.min(Math.max(pct, 0), 20) / 20 * 100;
+    return `
+      <tr>
+        <td><strong>${d.distribuidora}</strong></td>
+        <td>${fmtDate(d.ultima_homologacao)}</td>
+        <td>${fmtCur(d.total_anterior_rs_kwh)}</td>
+        <td>${fmtCur(d.total_atual_rs_kwh)}</td>
+        <td class="${pctCls}">${fmtPct(pct)}</td>
+        <td><div class="rej-bar-wrap"><div class="rej-bar ${barCls}" style="width:${barW}%"></div></div></td>
+      </tr>
+    `;
+  }).join('');
+}
+
+// Class toggle
+document.addEventListener('click', (e) => {
+  if (e.target.matches('.rej-btn')) {
+    document.querySelectorAll('.rej-btn').forEach(b => b.classList.remove('active'));
+    e.target.classList.add('active');
+    currentRejClass = e.target.dataset.class;
+    renderTarifas();
+  }
+});
+
 function renderAll() {
   renderKPIs();
   renderForward();
@@ -902,12 +1137,29 @@ function renderAll() {
   renderBioSeasonal();
   renderSafra();
   renderSpread();
+  renderBandeira();
+  renderTarifas();
 }
 
-function init() {
+async function init() {
+  await Promise.all([loadBandeira(), loadTarifas()]);
   let saved = 'EN';
   try { saved = localStorage.getItem('lang') || 'EN'; } catch(e){}
   setLang(saved);
+  updateDataStatus();
+}
+
+function updateDataStatus() {
+  const el = document.getElementById('data-status');
+  if (!el) return;
+  const stamps = [BANDEIRA_GENERATED_AT, TARIFAS_GENERATED_AT].filter(Boolean);
+  if (!stamps.length) { el.textContent = 'Data unavailable'; el.style.color = 'var(--danger)'; return; }
+  const latest = stamps.sort().reverse()[0];
+  const d = new Date(latest);
+  const opts = { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit', timeZone: 'America/Sao_Paulo' };
+  const label = d.toLocaleString(currentLang === 'PT' ? 'pt-BR' : 'en-US', opts);
+  el.textContent = `ANEEL · ${label} BRT`;
+  el.style.color = '';
 }
 init();
 </script>
