@@ -1,0 +1,41 @@
+{
+  "generated_at_utc": "2026-05-12T13:00:00Z",
+  "source": {
+    "name": "INITIAL SEED — will be replaced by ANEEL data on first Action run",
+    "url": "https://dadosabertos.aneel.gov.br/dataset/bandeiras-tarifarias",
+    "records_total": 24
+  },
+  "current": {
+    "year": 2026,
+    "month": 5,
+    "bandeira": "amarela",
+    "label": "Amarela",
+    "streak_months": 2
+  },
+  "recent_24m": [
+    {"year": 2024, "month": 6, "bandeira": "verde", "label": "Verde"},
+    {"year": 2024, "month": 7, "bandeira": "verde", "label": "Verde"},
+    {"year": 2024, "month": 8, "bandeira": "amarela", "label": "Amarela"},
+    {"year": 2024, "month": 9, "bandeira": "vermelha1", "label": "Vermelha P1"},
+    {"year": 2024, "month": 10, "bandeira": "vermelha2", "label": "Vermelha P2"},
+    {"year": 2024, "month": 11, "bandeira": "vermelha1", "label": "Vermelha P1"},
+    {"year": 2024, "month": 12, "bandeira": "amarela", "label": "Amarela"},
+    {"year": 2025, "month": 1, "bandeira": "verde", "label": "Verde"},
+    {"year": 2025, "month": 2, "bandeira": "verde", "label": "Verde"},
+    {"year": 2025, "month": 3, "bandeira": "verde", "label": "Verde"},
+    {"year": 2025, "month": 4, "bandeira": "verde", "label": "Verde"},
+    {"year": 2025, "month": 5, "bandeira": "verde", "label": "Verde"},
+    {"year": 2025, "month": 6, "bandeira": "amarela", "label": "Amarela"},
+    {"year": 2025, "month": 7, "bandeira": "vermelha1", "label": "Vermelha P1"},
+    {"year": 2025, "month": 8, "bandeira": "vermelha1", "label": "Vermelha P1"},
+    {"year": 2025, "month": 9, "bandeira": "vermelha2", "label": "Vermelha P2"},
+    {"year": 2025, "month": 10, "bandeira": "vermelha1", "label": "Vermelha P1"},
+    {"year": 2025, "month": 11, "bandeira": "amarela", "label": "Amarela"},
+    {"year": 2025, "month": 12, "bandeira": "verde", "label": "Verde"},
+    {"year": 2026, "month": 1, "bandeira": "verde", "label": "Verde"},
+    {"year": 2026, "month": 2, "bandeira": "verde", "label": "Verde"},
+    {"year": 2026, "month": 3, "bandeira": "verde", "label": "Verde"},
+    {"year": 2026, "month": 4, "bandeira": "amarela", "label": "Amarela"},
+    {"year": 2026, "month": 5, "bandeira": "amarela", "label": "Amarela"}
+  ]
+}
