@@ -53,8 +53,9 @@ BASIN_ORDER = ['paranaiba', 'grande', 'parana', 'iguacu', 'uruguai', 'sao_franci
 
 
 def years_to_fetch() -> list[int]:
+    """Returns all years from 2010 to current (inclusive)."""
     now_year = datetime.now(timezone.utc).year
-    return [now_year - 2, now_year - 1, now_year]
+    return list(range(2010, now_year + 1))
 
 
 def normalize_basin(name: str) -> tuple[str, str, str] | None:

@@ -38,8 +38,14 @@ CANONICAL_SUBS = ("SECO", "SUL", "NE", "N")
 
 
 def years_to_fetch() -> list[int]:
+    """Returns all years from 2010 to current (inclusive).
+
+    EAR/ENA seasonality requires multi-year history. ONS makes CSVs available
+    from 2000+ but 2010 is enough to span pre/post extreme drought periods
+    (2014-2015, 2021 scarcity flag). 17 years × ~365 days × 4 subs ≈ 25k records.
+    """
     now_year = datetime.now(timezone.utc).year
-    return [now_year - 2, now_year - 1, now_year]
+    return list(range(2010, now_year + 1))
 
 
 def fetch_ear_year(year: int) -> list[dict]:
