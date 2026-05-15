@@ -398,8 +398,16 @@ let AVAILABLE_YEARS = [];        // all years present in any dataset, sorted asc
 let selectedYears = new Set();   // which years to plot
 const DROUGHT_YEARS = [2014, 2015, 2017, 2021];  // historical reference years
 
-// Display mode: 'daily' when 1 year selected, 'weekly' when 2+ (auto)
+// Display mode: 'daily' when 1 year selected, 'weekly' when 2+ (auto).
+// Falls back to 'monthly' when daily data is not available in JSON
+// (old version of pipeline, or fresh deploy before Action runs).
+function hasDailyData() {
+  return Object.keys(EAR_DAILY).length > 0
+      || Object.keys(ENA_DAILY).length > 0
+      || Object.keys(BASIN_DAILY).length > 0;
+}
 function currentDisplayMode() {
+  if (!hasDailyData()) return 'monthly';
   return selectedYears.size === 1 ? 'daily' : 'weekly';
 }
 
@@ -425,12 +433,23 @@ function aggregateWeekly(dailyArr) {
 }
 
 // Get the series for a sub/year in the current display mode.
+// Accepts both daily and monthly data sources; falls back to monthly if daily missing.
 // Returns array of {idx, value} for valid points.
-function seriesForView(byYearData, year) {
+function seriesForView(dailyByYear, monthlyByYear, year) {
   const yearStr = String(year);
-  const daily = byYearData[yearStr];
+  const mode = currentDisplayMode();
+
+  if (mode === 'monthly') {
+    // Use monthly data (12 points)
+    const monthly = monthlyByYear ? monthlyByYear[yearStr] : null;
+    if (!monthly) return [];
+    return monthly.map((v, i) => v !== null && v !== undefined ? {idx: i, value: v} : null).filter(Boolean);
+  }
+
+  const daily = dailyByYear ? dailyByYear[yearStr] : null;
   if (!daily) return [];
-  if (currentDisplayMode() === 'daily') {
+
+  if (mode === 'daily') {
     // 366 daily points
     return daily.map((v, i) => v !== null && v !== undefined ? {idx: i, value: v} : null).filter(Boolean);
   }
@@ -440,26 +459,44 @@ function seriesForView(byYearData, year) {
 }
 
 // Number of X-axis units in current mode
-function xUnits() { return currentDisplayMode() === 'daily' ? 366 : 52; }
+function xUnits() {
+  const mode = currentDisplayMode();
+  if (mode === 'daily') return 366;
+  if (mode === 'weekly') return 52;
+  return 12; // monthly
+}
 
 // Convert idx in current mode → label string for tooltip
 function labelForIdx(idx, year, lang) {
-  if (currentDisplayMode() === 'daily') {
+  const mode = currentDisplayMode();
+  const monthsAbbr = lang === 'PT'
+    ? ['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez']
+    : ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+
+  if (mode === 'monthly') {
+    // idx is month-0 (0..11)
+    return `${monthsAbbr[idx]} ${year}`;
+  }
+  if (mode === 'daily') {
     // idx is day-of-year (0-365). Convert to Date.
     const d = new Date(Date.UTC(year, 0, idx + 1));
-    const months = lang === 'PT'
-      ? ['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez']
-      : ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-    return `${String(d.getUTCDate()).padStart(2,'0')} ${months[d.getUTCMonth()]} ${year}`;
+    return `${String(d.getUTCDate()).padStart(2,'0')} ${monthsAbbr[d.getUTCMonth()]} ${year}`;
   }
   // Weekly: idx is week 0-51. Show "Week N (~Mon dd)"
   const startDoy = idx * 7;
   const d = new Date(Date.UTC(year, 0, startDoy + 1));
-  const months = lang === 'PT'
-    ? ['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez']
-    : ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-  return `${lang === 'PT' ? 'Sem' : 'Wk'} ${idx + 1} · ${String(d.getUTCDate()).padStart(2,'0')} ${months[d.getUTCMonth()]} ${year}`;
+  return `${lang === 'PT' ? 'Sem' : 'Wk'} ${idx + 1} · ${String(d.getUTCDate()).padStart(2,'0')} ${monthsAbbr[d.getUTCMonth()]} ${year}`;
 }
+
+// Helper functions that wrap seriesForView with the correct daily/monthly source pair
+function earSeries(sub, year)   { return seriesForView(EAR_DAILY[sub],    EAR_MONTHLY[sub],   year); }
+function enaSeries(sub, year)   { return seriesForView(ENA_DAILY[sub],    ENA_MWMED[sub],     year); }
+function basinSeries(bid, year) { return seriesForView(BASIN_DAILY[bid],  BASIN_DATA[bid],    year); }
+
+// Check if data exists for a sub or basin (in either daily or monthly form)
+function hasEARData(sub)   { return Boolean((EAR_DAILY[sub]    && Object.keys(EAR_DAILY[sub]).length)    || (EAR_MONTHLY[sub] && Object.keys(EAR_MONTHLY[sub]).length)); }
+function hasENAData(sub)   { return Boolean((ENA_DAILY[sub]    && Object.keys(ENA_DAILY[sub]).length)    || (ENA_MWMED[sub]   && Object.keys(ENA_MWMED[sub]).length)); }
+function hasBasinData(bid) { return Boolean((BASIN_DAILY[bid]  && Object.keys(BASIN_DAILY[bid]).length)  || (BASIN_DATA[bid]  && Object.keys(BASIN_DATA[bid]).length)); }
 
 function colorForYear(year) {
   /* Returns SVG stroke color and width for a given year.
@@ -815,10 +852,8 @@ function renderEARMultiples() {
 
   const yearsToPlot = Array.from(selectedYears).sort((a, b) => a - b);
   const currentYear = new Date().getUTCFullYear();
-  const dataSource = Object.keys(EAR_DAILY).length ? EAR_DAILY : null;
-
   container.innerHTML = SUBS.map(sub => {
-    if (!dataSource || !dataSource[sub]) return '';
+    if (!hasEARData(sub)) return '';
     const now = EAR_NOW[sub];
     const subColor = `var(--${sub.toLowerCase()})`;
 
@@ -828,7 +863,7 @@ function renderEARMultiples() {
     // Store yearly series for hover lookup
     const seriesMap = {};
     for (const yr of yearsToPlot) {
-      const pts = seriesForView(dataSource[sub], yr);
+      const pts = earSeries(sub, yr);
       if (!pts.length) continue;
       seriesMap[yr] = pts;  // array of {idx, value}
       // Build path coords
@@ -894,8 +929,7 @@ function attachEARHover(container, W, H, padL, padR, padT, padB, innerW, innerH,
     const crosshair = chartEl.querySelector('.mc-crosshair');
     const tooltip = chartEl.querySelector('.mc-tooltip');
     const subColor = `var(--${sub.toLowerCase()})`;
-    const dataSource = Object.keys(EAR_DAILY).length ? EAR_DAILY : null;
-    if (!dataSource || !dataSource[sub]) return;
+    if (!hasEARData(sub)) return;
 
     overlay.addEventListener('mousemove', (e) => {
       const rect = svg.getBoundingClientRect();
@@ -911,7 +945,7 @@ function attachEARHover(container, W, H, padL, padR, padT, padB, innerW, innerH,
       const rows = [];
       let label = '';
       for (const yr of yearsToPlot) {
-        const pts = seriesForView(dataSource[sub], yr);
+        const pts = earSeries(sub, yr);
         if (!pts.length) continue;
         // Find nearest point with this idx (or close)
         let best = null, bestDist = Infinity;
@@ -961,19 +995,17 @@ function renderENAMultiples() {
 
   const yearsToPlot = Array.from(selectedYears).sort((a, b) => a - b);
   const currentYear = new Date().getUTCFullYear();
-  const dataSource = Object.keys(ENA_DAILY).length ? ENA_DAILY : null;
-
   container.innerHTML = SUBS.map(sub => {
     const yMax = ENA_YAXIS[sub].max;
     const yScale = v => padT + innerH - (v/yMax)*innerH;
     const subColor = `var(--${sub.toLowerCase()})`;
-    if (!dataSource || !dataSource[sub]) return '';
+    if (!hasENAData(sub)) return '';
 
     let paths = '';
     let recentDots = '';
     const yearLegendItems = [];
     for (const yr of yearsToPlot) {
-      const pts = seriesForView(dataSource[sub], yr);
+      const pts = enaSeries(sub, yr);
       if (!pts.length) continue;
       const coords = pts.map(p => ({x: xScale(p.idx), y: yScale(p.value)}));
       const d = coords.map((c, i) => `${i===0?'M':'L'} ${c.x.toFixed(1)} ${c.y.toFixed(1)}`).join(' ');
@@ -1025,16 +1057,16 @@ function renderENAMultiples() {
     `;
   }).join('');
 
-  attachENAHover(container, dataSource, W, H, padL, padR, padT, padB, innerW, innerH, xScale, yearsToPlot, 'mwmed');
+  attachENAHover(container, W, H, padL, padR, padT, padB, innerW, innerH, xScale, yearsToPlot);
 }
 
-function attachENAHover(container, dataSource, W, H, padL, padR, padT, padB, innerW, innerH, xScale, yearsToPlot, unit) {
-  if (!dataSource) return;
+function attachENAHover(container, W, H, padL, padR, padT, padB, innerW, innerH, xScale, yearsToPlot) {
+  // dataSource removed; rely on hasX helpers above
   const lang = currentLang;
   const nUnits = xUnits();
   SUBS.forEach(sub => {
     const chartEl = container.querySelector(`.mini-chart[data-sub="${sub}"]`);
-    if (!chartEl || !dataSource[sub]) return;
+    if (!chartEl || !hasENAData(sub)) return;
     const svg = chartEl.querySelector('svg');
     const overlay = chartEl.querySelector('.mc-hover-overlay');
     const crosshair = chartEl.querySelector('.mc-crosshair');
@@ -1055,7 +1087,7 @@ function attachENAHover(container, dataSource, W, H, padL, padR, padT, padB, inn
       const rows = [];
       let label = '';
       for (const yr of yearsToPlot) {
-        const pts = seriesForView(dataSource[sub], yr);
+        const pts = enaSeries(sub, yr);
         if (!pts.length) continue;
         let best = null, bestDist = Infinity;
         for (const p of pts) {
@@ -1106,11 +1138,9 @@ function renderBasinMultiples() {
 
   const yearsToPlot = Array.from(selectedYears).sort((a, b) => a - b);
   const currentYear = new Date().getUTCFullYear();
-  const dataSource = Object.keys(BASIN_DAILY).length ? BASIN_DAILY : null;
-
   container.innerHTML = BASIN_ORDER.map(basinId => {
     const meta = BASIN_META[basinId];
-    if (!meta || !dataSource || !dataSource[basinId]) return '';
+    if (!meta || !hasBasinData(basinId)) return '';
     const yMax = BASIN_YAXIS[basinId].max;
     const yScale = v => padT + innerH - (v/yMax)*innerH;
     const subColor = `var(--${meta.sub.toLowerCase()})`;
@@ -1119,7 +1149,7 @@ function renderBasinMultiples() {
     let recentDots = '';
     const yearLegendItems = [];
     for (const yr of yearsToPlot) {
-      const pts = seriesForView(dataSource[basinId], yr);
+      const pts = basinSeries(basinId, yr);
       if (!pts.length) continue;
       const coords = pts.map(p => ({x: xScale(p.idx), y: yScale(p.value)}));
       const d = coords.map((c, i) => `${i===0?'M':'L'} ${c.x.toFixed(1)} ${c.y.toFixed(1)}`).join(' ');
@@ -1170,13 +1200,13 @@ function renderBasinMultiples() {
   }).join('');
 
   // Hover for basins
-  if (!dataSource) return;
+  // dataSource removed; rely on hasX helpers above
   const lang = currentLang;
   BASIN_ORDER.forEach(basinId => {
     const chartEl = container.querySelector(`.mini-chart[data-basin="${basinId}"]`);
     if (!chartEl) return;
     const meta = BASIN_META[basinId];
-    if (!meta || !dataSource[basinId]) return;
+    if (!meta || !hasBasinData(basinId)) return;
     const svg = chartEl.querySelector('svg');
     const overlay = chartEl.querySelector('.mc-hover-overlay');
     const crosshair = chartEl.querySelector('.mc-crosshair');
@@ -1197,7 +1227,7 @@ function renderBasinMultiples() {
       const rows = [];
       let label = '';
       for (const yr of yearsToPlot) {
-        const pts = seriesForView(dataSource[basinId], yr);
+        const pts = basinSeries(basinId, yr);
         if (!pts.length) continue;
         let best = null, bestDist = Infinity;
         for (const p of pts) {
