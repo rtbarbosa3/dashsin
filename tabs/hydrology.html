@@ -150,6 +150,10 @@ html, body { background: var(--bg); color: var(--text); font-family: var(--font-
 .year-presets { margin-left: auto; display: flex; gap: 6px; }
 .year-preset-btn { padding: 4px 10px; font-family: var(--font-mono); font-size: 9px; color: var(--text-dim); border: 1px solid var(--border); background: transparent; cursor: pointer; letter-spacing: 0.05em; text-transform: uppercase; }
 .year-preset-btn:hover { color: var(--text); border-color: var(--text-dim); }
+
+.mc-mode-badge { font-family: var(--font-mono); font-size: 8px; color: var(--text-dim); letter-spacing: 0.08em; text-transform: uppercase; padding: 2px 5px; border: 1px solid var(--border); border-radius: 2px; background: var(--bg-elev); margin-left: 8px; }
+.mc-mode-badge.daily { color: var(--solar); border-color: rgba(251,191,36,0.4); }
+.mc-mode-badge.weekly { color: var(--text-muted); }
 .mc-mlt-label { font-family: var(--font-mono); font-size: 9px; fill: var(--warn); letter-spacing: 0.04em; opacity: 0.8; }
 .mc-crosshair { stroke: var(--text-dim); stroke-width: 1; stroke-dasharray: 2 3; opacity: 0; pointer-events: none; }
 .mc-hover-dot { stroke: var(--bg); stroke-width: 2; opacity: 0; pointer-events: none; }
@@ -305,7 +309,10 @@ html, body { background: var(--bg); color: var(--text); font-family: var(--font-
   <div class="section">
     <div class="section-head">
       <h2 data-i18n="seasonalityTitle">EAR seasonality · % stored per month</h2>
-      <div class="hint" data-i18n="seasonalityHint">Pick years to compare · current year highlighted in subsystem color</div>
+      <div class="hint">
+        <span data-i18n="seasonalityHint">Pick years to compare · current year highlighted in subsystem color</span>
+        <span class="mc-mode-badge" id="ear-mode-badge">weekly</span>
+      </div>
     </div>
     <div class="year-selector" id="year-selector">
       <span class="year-selector-label" data-i18n="yearSelectorLbl">Compare years</span>
@@ -379,8 +386,10 @@ const MONTH_FULL_PT = ['janeiro','fevereiro','março','abril','maio','junho','ju
 // ── Data containers (populated by loadData from data/ear_ena.json) ──
 let EAR_NOW = {};
 let EAR_MONTHLY = {};
+let EAR_DAILY = {};        // sub → year → [366 daily values]
 let ENA_NOW = {};
 let ENA_MWMED = {};        // monthly MWmed values per sub/year
+let ENA_DAILY = {};        // sub → year → [366 daily mwmed values]
 let ENA_PCT_MLT = {};      // monthly % MLT bruta per sub/year
 let DATA_GENERATED_AT = null;
 
@@ -388,6 +397,69 @@ let DATA_GENERATED_AT = null;
 let AVAILABLE_YEARS = [];        // all years present in any dataset, sorted ascending
 let selectedYears = new Set();   // which years to plot
 const DROUGHT_YEARS = [2014, 2015, 2017, 2021];  // historical reference years
+
+// Display mode: 'daily' when 1 year selected, 'weekly' when 2+ (auto)
+function currentDisplayMode() {
+  return selectedYears.size === 1 ? 'daily' : 'weekly';
+}
+
+// Day-of-year (1-366) for a given month (1-12). Used for X-axis month tick positions.
+const MONTH_START_DOY = [1, 32, 60, 91, 121, 152, 182, 213, 244, 274, 305, 335]; // non-leap; rendering is approx
+
+// Aggregate a 366-element daily array into a weekly array (52 weeks).
+// Each week is the mean of available daily values in that 7-day window.
+function aggregateWeekly(dailyArr) {
+  if (!dailyArr || !dailyArr.length) return new Array(52).fill(null);
+  const weeks = new Array(52).fill(null);
+  for (let w = 0; w < 52; w++) {
+    const start = w * 7;
+    const end = Math.min(start + 7, 365);  // skip day 366 leftover
+    let sum = 0, n = 0;
+    for (let d = start; d < end; d++) {
+      const v = dailyArr[d];
+      if (v !== null && v !== undefined) { sum += v; n += 1; }
+    }
+    weeks[w] = n > 0 ? sum / n : null;
+  }
+  return weeks;
+}
+
+// Get the series for a sub/year in the current display mode.
+// Returns array of {idx, value} for valid points.
+function seriesForView(byYearData, year) {
+  const yearStr = String(year);
+  const daily = byYearData[yearStr];
+  if (!daily) return [];
+  if (currentDisplayMode() === 'daily') {
+    // 366 daily points
+    return daily.map((v, i) => v !== null && v !== undefined ? {idx: i, value: v} : null).filter(Boolean);
+  }
+  // 52 weekly points
+  const weekly = aggregateWeekly(daily);
+  return weekly.map((v, i) => v !== null && v !== undefined ? {idx: i, value: v} : null).filter(Boolean);
+}
+
+// Number of X-axis units in current mode
+function xUnits() { return currentDisplayMode() === 'daily' ? 366 : 52; }
+
+// Convert idx in current mode → label string for tooltip
+function labelForIdx(idx, year, lang) {
+  if (currentDisplayMode() === 'daily') {
+    // idx is day-of-year (0-365). Convert to Date.
+    const d = new Date(Date.UTC(year, 0, idx + 1));
+    const months = lang === 'PT'
+      ? ['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez']
+      : ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    return `${String(d.getUTCDate()).padStart(2,'0')} ${months[d.getUTCMonth()]} ${year}`;
+  }
+  // Weekly: idx is week 0-51. Show "Week N (~Mon dd)"
+  const startDoy = idx * 7;
+  const d = new Date(Date.UTC(year, 0, startDoy + 1));
+  const months = lang === 'PT'
+    ? ['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez']
+    : ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  return `${lang === 'PT' ? 'Sem' : 'Wk'} ${idx + 1} · ${String(d.getUTCDate()).padStart(2,'0')} ${months[d.getUTCMonth()]} ${year}`;
+}
 
 function colorForYear(year) {
   /* Returns SVG stroke color and width for a given year.
@@ -409,6 +481,7 @@ function colorForYear(year) {
 
 // Basin data (populated from data/ena_bacia.json - ONS source)
 let BASIN_DATA = {};       // monthly_mwmed[basin][year] = [12 values]
+let BASIN_DAILY = {};      // daily_mwmed[basin][year] = [366 values]
 let BASIN_META = {};       // {basin_id: {name, sub}}
 let BASIN_NOW = {};        // latest snapshot per basin
 let BASIN_DATA_GENERATED_AT = null;
@@ -438,11 +511,13 @@ async function loadBasinData() {
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const j = await res.json();
     BASIN_DATA = j.monthly_mwmed || {};
+    BASIN_DAILY = j.daily_mwmed || {};
     BASIN_META = j.basin_meta || {};
     BASIN_NOW  = j.now || {};
     BASIN_DATA_GENERATED_AT = j.generated_at_utc || null;
-    // Add basin years to AVAILABLE_YEARS (some may not be in EAR/ENA)
-    Object.values(BASIN_DATA).forEach(byYear => Object.keys(byYear || {}).forEach(y => {
+    // Add basin years to AVAILABLE_YEARS (prefer daily; fallback to monthly)
+    const basinSource = Object.keys(BASIN_DAILY).length ? BASIN_DAILY : BASIN_DATA;
+    Object.values(basinSource).forEach(byYear => Object.keys(byYear || {}).forEach(y => {
       const yi = parseInt(y);
       if (!isNaN(yi) && !AVAILABLE_YEARS.includes(yi)) AVAILABLE_YEARS.push(yi);
     }));
@@ -479,19 +554,23 @@ async function loadData() {
     const j = await res.json();
     EAR_NOW       = j.ear_now || {};
     EAR_MONTHLY   = j.ear_monthly_pct || {};
+    EAR_DAILY     = j.ear_daily_pct || {};
     ENA_NOW       = j.ena_now || {};
     ENA_MWMED     = j.ena_monthly_mwmed || {};
+    ENA_DAILY     = j.ena_daily_mwmed || {};
     ENA_PCT_MLT   = j.ena_monthly_pct_mlt_bruta || {};
     DATA_GENERATED_AT = j.generated_at_utc || null;
-    // Collect ALL years available in any dataset
+    // Collect ALL years available in any dataset (prefer daily if present)
     const yearSet = new Set();
-    Object.values(EAR_MONTHLY).forEach(byYear => Object.keys(byYear || {}).forEach(y => yearSet.add(parseInt(y))));
-    Object.values(ENA_PCT_MLT).forEach(byYear => Object.keys(byYear || {}).forEach(y => yearSet.add(parseInt(y))));
+    const earSource = Object.keys(EAR_DAILY).length ? EAR_DAILY : EAR_MONTHLY;
+    const enaSource = Object.keys(ENA_DAILY).length ? ENA_DAILY : ENA_PCT_MLT;
+    Object.values(earSource).forEach(byYear => Object.keys(byYear || {}).forEach(y => yearSet.add(parseInt(y))));
+    Object.values(enaSource).forEach(byYear => Object.keys(byYear || {}).forEach(y => yearSet.add(parseInt(y))));
     AVAILABLE_YEARS = Array.from(yearSet).filter(y => !isNaN(y)).sort((a, b) => a - b);
     // Default: most recent 3 years selected
     const recent3 = AVAILABLE_YEARS.slice(-3);
     selectedYears = new Set(recent3);
-    console.log('Data loaded:', DATA_GENERATED_AT, '| years available:', AVAILABLE_YEARS, '| selected:', recent3);
+    console.log('Data loaded:', DATA_GENERATED_AT, '| years available:', AVAILABLE_YEARS, '| selected:', recent3, '| daily available:', Object.keys(EAR_DAILY).length > 0);
   } catch (e) {
     console.error('Failed to load ear_ena.json:', e);
     const statusEl = document.getElementById('data-status');
@@ -721,39 +800,47 @@ function renderEARMultiples() {
   const MONTH_LABELS = currentLang === 'PT' ? MONTH_ABBR_PT : MONTH_ABBR_EN;
   const yMax = 100;
 
-  const xScale = m => padL + ((m-1)/11)*innerW;
-  const yScale = v => padT + innerH - (v/yMax)*innerH;
+  const mode = currentDisplayMode();
+  const nUnits = xUnits();  // 366 daily or 52 weekly
+  const xScale = i => padL + (i / Math.max(nUnits - 1, 1)) * innerW;
+  const yScale = v => padT + innerH - (v / yMax) * innerH;
+
+  // Update mode badge
+  const badge = document.getElementById('ear-mode-badge');
+  if (badge) {
+    badge.textContent = mode;
+    badge.classList.toggle('daily', mode === 'daily');
+    badge.classList.toggle('weekly', mode === 'weekly');
+  }
 
   const yearsToPlot = Array.from(selectedYears).sort((a, b) => a - b);
   const currentYear = new Date().getUTCFullYear();
+  const dataSource = Object.keys(EAR_DAILY).length ? EAR_DAILY : null;
 
   container.innerHTML = SUBS.map(sub => {
-    const data = EAR_MONTHLY[sub];
-    if (!data) return '';
+    if (!dataSource || !dataSource[sub]) return '';
     const now = EAR_NOW[sub];
     const subColor = `var(--${sub.toLowerCase()})`;
 
-    // Build paths for each selected year
     let paths = '';
     let recentDots = '';
     const yearLegendItems = [];
+    // Store yearly series for hover lookup
+    const seriesMap = {};
     for (const yr of yearsToPlot) {
-      const series = data[String(yr)];
-      if (!series) continue;
-      const pts = [];
-      for (let m = 1; m <= 12; m++) {
-        const v = series[m - 1];
-        if (v !== null && v !== undefined) pts.push({x: xScale(m), y: yScale(v)});
-      }
+      const pts = seriesForView(dataSource[sub], yr);
       if (!pts.length) continue;
-      const d = pts.map((p, i) => `${i===0?'M':'L'} ${p.x.toFixed(1)} ${p.y.toFixed(1)}`).join(' ');
+      seriesMap[yr] = pts;  // array of {idx, value}
+      // Build path coords
+      const coords = pts.map(p => ({x: xScale(p.idx), y: yScale(p.value)}));
+      const d = coords.map((c, i) => `${i===0?'M':'L'} ${c.x.toFixed(1)} ${c.y.toFixed(1)}`).join(' ');
       const cfg = colorForYear(yr);
       const stroke = cfg.color === 'CURRENT' ? subColor : cfg.color;
       const opacity = (currentYear - yr) > 6 ? 0.55 : (yr === currentYear ? 1.0 : 0.85);
       paths += `<path d="${d}" stroke="${stroke}" stroke-width="${cfg.width}" fill="none" opacity="${opacity}"/>`;
-      // For current year, draw dots
-      if (yr === currentYear) {
-        recentDots += pts.map(p => `<circle cx="${p.x}" cy="${p.y}" r="2.5" fill="${subColor}" stroke="var(--bg)" stroke-width="0.5"/>`).join('');
+      if (yr === currentYear && mode === 'weekly') {
+        // Only show dots in weekly mode (daily is too dense)
+        recentDots += coords.map(c => `<circle cx="${c.x}" cy="${c.y}" r="2" fill="${subColor}" stroke="var(--bg)" stroke-width="0.5"/>`).join('');
       }
       yearLegendItems.push(`<span class="ml-item"><span class="ml-swatch" style="background:${stroke};height:${cfg.width >= 2 ? 3 : 2}px;width:14px"></span> ${yr}${yr === currentYear ? ' YTD' : ''}</span>`);
     }
@@ -763,15 +850,17 @@ function renderEARMultiples() {
       grid += `<line class="mc-grid" x1="${padL}" x2="${W-padR}" y1="${yScale(t)}" y2="${yScale(t)}" />`;
       grid += `<text class="mc-axis" x="${padL-6}" y="${yScale(t)+3}" text-anchor="end">${t}</text>`;
     }
+    // X labels: month abbreviations regardless of mode
     let xlab = '';
     for (let m = 1; m <= 12; m++) {
-      const x = xScale(m);
-      const label = MONTH_LABELS[m-1][0].toUpperCase();
-      xlab += `<text class="mc-axis" x="${x}" y="${H-padB+13}" text-anchor="middle">${label}</text>`;
+      // Position of 15th of each month
+      const doy = MONTH_START_DOY[m-1] + 14;
+      const xPos = mode === 'daily' ? xScale(doy - 1) : xScale(Math.round(doy / 7));
+      xlab += `<text class="mc-axis" x="${xPos}" y="${H-padB+13}" text-anchor="middle">${MONTH_LABELS[m-1][0].toUpperCase()}</text>`;
     }
 
     return `
-      <div class="mini-chart">
+      <div class="mini-chart" data-sub="${sub}" data-series='${JSON.stringify(seriesMap).replace(/'/g, "&apos;")}'>
         <div class="mini-chart-head">
           <span class="mc-name ${sub.toLowerCase()}">${SUB_LABELS[sub]} · ${SUB_FULL[sub]}</span>
           <span class="mc-avg">${currentLang === 'PT' ? 'hoje' : 'now'}: <strong>${now ? fmt(now.pct,1)+'%' : '—'}</strong></span>
@@ -781,48 +870,119 @@ function renderEARMultiples() {
           ${xlab}
           ${paths}
           ${recentDots}
+          <line class="mc-crosshair" x1="0" y1="${padT}" x2="0" y2="${padT+innerH}" />
+          <rect class="mc-hover-overlay" x="${padL}" y="${padT}" width="${innerW}" height="${innerH}" fill="transparent" />
         </svg>
+        <div class="mc-tooltip"></div>
         <div class="mc-legend">${yearLegendItems.join('')}</div>
       </div>
     `;
   }).join('');
+
+  // Hover interactivity
+  attachEARHover(container, W, H, padL, padR, padT, padB, innerW, innerH, yScale, xScale, yearsToPlot);
 }
 
-// ── ENA small multiples (MWmed) — interactive, multi-year ──
+function attachEARHover(container, W, H, padL, padR, padT, padB, innerW, innerH, yScale, xScale, yearsToPlot) {
+  const lang = currentLang;
+  const nUnits = xUnits();
+  SUBS.forEach(sub => {
+    const chartEl = container.querySelector(`.mini-chart[data-sub="${sub}"]`);
+    if (!chartEl) return;
+    const svg = chartEl.querySelector('svg');
+    const overlay = chartEl.querySelector('.mc-hover-overlay');
+    const crosshair = chartEl.querySelector('.mc-crosshair');
+    const tooltip = chartEl.querySelector('.mc-tooltip');
+    const subColor = `var(--${sub.toLowerCase()})`;
+    const dataSource = Object.keys(EAR_DAILY).length ? EAR_DAILY : null;
+    if (!dataSource || !dataSource[sub]) return;
+
+    overlay.addEventListener('mousemove', (e) => {
+      const rect = svg.getBoundingClientRect();
+      const mouseX = e.clientX - rect.left;
+      const viewBoxX = (mouseX / rect.width) * W;
+      const idx = Math.max(0, Math.min(nUnits - 1, Math.round((viewBoxX - padL) / innerW * (nUnits - 1))));
+      const xPos = xScale(idx);
+
+      crosshair.setAttribute('x1', xPos);
+      crosshair.setAttribute('x2', xPos);
+      crosshair.style.opacity = 0.7;
+
+      const rows = [];
+      let label = '';
+      for (const yr of yearsToPlot) {
+        const pts = seriesForView(dataSource[sub], yr);
+        if (!pts.length) continue;
+        // Find nearest point with this idx (or close)
+        let best = null, bestDist = Infinity;
+        for (const p of pts) {
+          const d = Math.abs(p.idx - idx);
+          if (d < bestDist) { bestDist = d; best = p; }
+        }
+        if (best && bestDist < (nUnits / 26)) {
+          const cfg = colorForYear(yr);
+          const stroke = cfg.color === 'CURRENT' ? subColor : cfg.color;
+          if (!label) label = labelForIdx(best.idx, yr, lang);
+          rows.push(`<div class="mctt-row"><span class="mctt-lbl"><span class="mctt-sw" style="background:${stroke}"></span>${yr}</span><span><span class="mctt-val">${best.value.toFixed(1)}%</span></span></div>`);
+        }
+      }
+      if (!label) label = currentDisplayMode() === 'daily' ? (lang === 'PT' ? 'dia' : 'day') : (lang === 'PT' ? 'semana' : 'week');
+      tooltip.innerHTML = `<div class="mctt-month">${label}</div>${rows.join('')}`;
+
+      const chartRect = chartEl.getBoundingClientRect();
+      const tooltipW = 200;
+      const cursorX = e.clientX - chartRect.left;
+      const cursorY = e.clientY - chartRect.top;
+      const left = cursorX + tooltipW + 12 > chartRect.width
+        ? Math.max(4, cursorX - tooltipW - 12)
+        : cursorX + 12;
+      tooltip.style.left = left + 'px';
+      tooltip.style.top = Math.max(4, cursorY - 60) + 'px';
+      tooltip.style.opacity = 1;
+    });
+
+    overlay.addEventListener('mouseleave', () => {
+      crosshair.style.opacity = 0;
+      tooltip.style.opacity = 0;
+    });
+  });
+}
+
+// ── ENA small multiples (MWmed) — interactive, multi-year, daily/weekly ──
 function renderENAMultiples() {
   const container = document.getElementById('ena-multiples');
   const W = 540, H = 160, padL = 44, padR = 12, padT = 12, padB = 22;
   const innerW = W - padL - padR, innerH = H - padT - padB;
   const MONTH_LABELS = currentLang === 'PT' ? MONTH_ABBR_PT : MONTH_ABBR_EN;
-  const xScale = m => padL + ((m-1)/11)*innerW;
+  const mode = currentDisplayMode();
+  const nUnits = xUnits();
+  const xScale = i => padL + (i / Math.max(nUnits - 1, 1)) * innerW;
   const fmtK = v => v >= 1000 ? (v/1000) + 'k' : String(v);
 
   const yearsToPlot = Array.from(selectedYears).sort((a, b) => a - b);
   const currentYear = new Date().getUTCFullYear();
+  const dataSource = Object.keys(ENA_DAILY).length ? ENA_DAILY : null;
 
   container.innerHTML = SUBS.map(sub => {
     const yMax = ENA_YAXIS[sub].max;
     const yScale = v => padT + innerH - (v/yMax)*innerH;
     const subColor = `var(--${sub.toLowerCase()})`;
+    if (!dataSource || !dataSource[sub]) return '';
 
-    // Build paths for each selected year
     let paths = '';
     let recentDots = '';
     const yearLegendItems = [];
     for (const yr of yearsToPlot) {
-      const pts = [];
-      for (let m = 1; m <= 12; m++) {
-        const p = enaPoint(sub, String(yr), m-1);
-        if (p) pts.push({m, x: xScale(m), y: yScale(p.mwmed), v: p});
-      }
+      const pts = seriesForView(dataSource[sub], yr);
       if (!pts.length) continue;
-      const d = pts.map((p, i) => `${i===0?'M':'L'} ${p.x.toFixed(1)} ${p.y.toFixed(1)}`).join(' ');
+      const coords = pts.map(p => ({x: xScale(p.idx), y: yScale(p.value)}));
+      const d = coords.map((c, i) => `${i===0?'M':'L'} ${c.x.toFixed(1)} ${c.y.toFixed(1)}`).join(' ');
       const cfg = colorForYear(yr);
       const stroke = cfg.color === 'CURRENT' ? subColor : cfg.color;
       const opacity = (currentYear - yr) > 6 ? 0.55 : (yr === currentYear ? 1.0 : 0.85);
       paths += `<path d="${d}" stroke="${stroke}" stroke-width="${cfg.width}" fill="none" opacity="${opacity}"/>`;
-      if (yr === currentYear) {
-        recentDots += pts.map(p => `<circle cx="${p.x}" cy="${p.y}" r="2.5" fill="${subColor}" stroke="var(--bg)" stroke-width="0.5"/>`).join('');
+      if (yr === currentYear && mode === 'weekly') {
+        recentDots += coords.map(c => `<circle cx="${c.x}" cy="${c.y}" r="2" fill="${subColor}" stroke="var(--bg)" stroke-width="0.5"/>`).join('');
       }
       yearLegendItems.push(`<span class="ml-item"><span class="ml-swatch" style="background:${stroke};height:${cfg.width >= 2 ? 3 : 2}px;width:14px"></span> ${yr}${yr === currentYear ? ' YTD' : ''}</span>`);
     }
@@ -832,10 +992,11 @@ function renderENAMultiples() {
       grid += `<line class="mc-grid" x1="${padL}" x2="${W-padR}" y1="${yScale(tv)}" y2="${yScale(tv)}" />`;
       grid += `<text class="mc-axis" x="${padL-6}" y="${yScale(tv)+3}" text-anchor="end">${fmtK(tv)}</text>`;
     }
-
     let xlab = '';
     for (let m = 1; m <= 12; m++) {
-      xlab += `<text class="mc-axis" x="${xScale(m)}" y="${H-padB+13}" text-anchor="middle">${MONTH_LABELS[m-1][0].toUpperCase()}</text>`;
+      const doy = MONTH_START_DOY[m-1] + 14;
+      const xPos = mode === 'daily' ? xScale(doy - 1) : xScale(Math.round(doy / 7));
+      xlab += `<text class="mc-axis" x="${xPos}" y="${H-padB+13}" text-anchor="middle">${MONTH_LABELS[m-1][0].toUpperCase()}</text>`;
     }
 
     const now = ENA_NOW[sub] || {};
@@ -864,46 +1025,55 @@ function renderENAMultiples() {
     `;
   }).join('');
 
-  // Hover interactivity per subsystem chart
+  attachENAHover(container, dataSource, W, H, padL, padR, padT, padB, innerW, innerH, xScale, yearsToPlot, 'mwmed');
+}
+
+function attachENAHover(container, dataSource, W, H, padL, padR, padT, padB, innerW, innerH, xScale, yearsToPlot, unit) {
+  if (!dataSource) return;
+  const lang = currentLang;
+  const nUnits = xUnits();
   SUBS.forEach(sub => {
     const chartEl = container.querySelector(`.mini-chart[data-sub="${sub}"]`);
-    if (!chartEl) return;
+    if (!chartEl || !dataSource[sub]) return;
     const svg = chartEl.querySelector('svg');
     const overlay = chartEl.querySelector('.mc-hover-overlay');
     const crosshair = chartEl.querySelector('.mc-crosshair');
     const tooltip = chartEl.querySelector('.mc-tooltip');
-    const yMax = ENA_YAXIS[sub].max;
-    const yScale = v => padT + innerH - (v/yMax)*innerH;
     const subColor = `var(--${sub.toLowerCase()})`;
-    const MONTH_TT = currentLang === 'PT'
-      ? ['janeiro','fevereiro','março','abril','maio','junho','julho','agosto','setembro','outubro','novembro','dezembro']
-      : ['January','February','March','April','May','June','July','August','September','October','November','December'];
 
     overlay.addEventListener('mousemove', (e) => {
       const rect = svg.getBoundingClientRect();
       const mouseX = e.clientX - rect.left;
       const viewBoxX = (mouseX / rect.width) * W;
-      const monthIdx = Math.max(0, Math.min(11, Math.round((viewBoxX - padL) / innerW * 11)));
-      const m = monthIdx + 1;
-      const xPos = xScale(m);
+      const idx = Math.max(0, Math.min(nUnits - 1, Math.round((viewBoxX - padL) / innerW * (nUnits - 1))));
+      const xPos = xScale(idx);
 
       crosshair.setAttribute('x1', xPos);
       crosshair.setAttribute('x2', xPos);
       crosshair.style.opacity = 0.7;
 
-      // Build tooltip rows for each selected year that has data
       const rows = [];
+      let label = '';
       for (const yr of yearsToPlot) {
-        const p = enaPoint(sub, String(yr), monthIdx);
-        if (!p) continue;
-        const cfg = colorForYear(yr);
-        const stroke = cfg.color === 'CURRENT' ? subColor : cfg.color;
-        rows.push(`<div class="mctt-row"><span class="mctt-lbl"><span class="mctt-sw" style="background:${stroke}"></span>${yr}</span><span><span class="mctt-val">${fmtInt(p.mwmed)}</span><span class="mctt-pct">${p.pct}%</span></span></div>`);
+        const pts = seriesForView(dataSource[sub], yr);
+        if (!pts.length) continue;
+        let best = null, bestDist = Infinity;
+        for (const p of pts) {
+          const d = Math.abs(p.idx - idx);
+          if (d < bestDist) { bestDist = d; best = p; }
+        }
+        if (best && bestDist < (nUnits / 26)) {
+          const cfg = colorForYear(yr);
+          const stroke = cfg.color === 'CURRENT' ? subColor : cfg.color;
+          if (!label) label = labelForIdx(best.idx, yr, lang);
+          rows.push(`<div class="mctt-row"><span class="mctt-lbl"><span class="mctt-sw" style="background:${stroke}"></span>${yr}</span><span><span class="mctt-val">${fmtInt(Math.round(best.value))}</span></span></div>`);
+        }
       }
-      tooltip.innerHTML = `<div class="mctt-month">${MONTH_TT[monthIdx]} · MWmed (% MLT)</div>${rows.join('')}`;
+      if (!label) label = currentDisplayMode() === 'daily' ? (lang === 'PT' ? 'dia' : 'day') : (lang === 'PT' ? 'semana' : 'week');
+      tooltip.innerHTML = `<div class="mctt-month">${label} · MWmed</div>${rows.join('')}`;
 
       const chartRect = chartEl.getBoundingClientRect();
-      const tooltipW = 180;
+      const tooltipW = 200;
       const cursorX = e.clientX - chartRect.left;
       const cursorY = e.clientY - chartRect.top;
       const left = cursorX + tooltipW + 12 > chartRect.width
@@ -921,23 +1091,26 @@ function renderENAMultiples() {
   });
 }
 
-// ── ENA Bruta by basin (8 main basins, ONS data) — multi-year ──
+// ── ENA Bruta by basin — daily/weekly multi-year ──
 function renderBasinMultiples() {
   const container = document.getElementById('ena-bacia-multiples');
   if (!container) return;
   const W = 540, H = 160, padL = 44, padR = 12, padT = 12, padB = 22;
   const innerW = W - padL - padR, innerH = H - padT - padB;
   const MONTH_LABELS = currentLang === 'PT' ? MONTH_ABBR_PT : MONTH_ABBR_EN;
-  const xScale = m => padL + ((m-1)/11)*innerW;
+  const mode = currentDisplayMode();
+  const nUnits = xUnits();
+  const xScale = i => padL + (i / Math.max(nUnits - 1, 1)) * innerW;
   const fmtK = v => v >= 1000 ? (v/1000) + 'k' : String(v);
   const fmtIntLocal = n => n.toLocaleString(currentLang === 'PT' ? 'pt-BR' : 'en-US');
 
   const yearsToPlot = Array.from(selectedYears).sort((a, b) => a - b);
   const currentYear = new Date().getUTCFullYear();
+  const dataSource = Object.keys(BASIN_DAILY).length ? BASIN_DAILY : null;
 
   container.innerHTML = BASIN_ORDER.map(basinId => {
     const meta = BASIN_META[basinId];
-    if (!meta) return '';
+    if (!meta || !dataSource || !dataSource[basinId]) return '';
     const yMax = BASIN_YAXIS[basinId].max;
     const yScale = v => padT + innerH - (v/yMax)*innerH;
     const subColor = `var(--${meta.sub.toLowerCase()})`;
@@ -946,19 +1119,16 @@ function renderBasinMultiples() {
     let recentDots = '';
     const yearLegendItems = [];
     for (const yr of yearsToPlot) {
-      const pts = [];
-      for (let m = 1; m <= 12; m++) {
-        const p = basinPoint(basinId, String(yr), m-1);
-        if (p) pts.push({m, x: xScale(m), y: yScale(p.mwmed)});
-      }
+      const pts = seriesForView(dataSource[basinId], yr);
       if (!pts.length) continue;
-      const d = pts.map((p, i) => `${i===0?'M':'L'} ${p.x.toFixed(1)} ${p.y.toFixed(1)}`).join(' ');
+      const coords = pts.map(p => ({x: xScale(p.idx), y: yScale(p.value)}));
+      const d = coords.map((c, i) => `${i===0?'M':'L'} ${c.x.toFixed(1)} ${c.y.toFixed(1)}`).join(' ');
       const cfg = colorForYear(yr);
       const stroke = cfg.color === 'CURRENT' ? subColor : cfg.color;
       const opacity = (currentYear - yr) > 6 ? 0.55 : (yr === currentYear ? 1.0 : 0.85);
       paths += `<path d="${d}" stroke="${stroke}" stroke-width="${cfg.width}" fill="none" opacity="${opacity}"/>`;
-      if (yr === currentYear) {
-        recentDots += pts.map(p => `<circle cx="${p.x}" cy="${p.y}" r="2.5" fill="${subColor}" stroke="var(--bg)" stroke-width="0.5"/>`).join('');
+      if (yr === currentYear && mode === 'weekly') {
+        recentDots += coords.map(c => `<circle cx="${c.x}" cy="${c.y}" r="2" fill="${subColor}" stroke="var(--bg)" stroke-width="0.5"/>`).join('');
       }
       yearLegendItems.push(`<span class="ml-item"><span class="ml-swatch" style="background:${stroke};height:${cfg.width >= 2 ? 3 : 2}px;width:14px"></span> ${yr}${yr === currentYear ? ' YTD' : ''}</span>`);
     }
@@ -970,7 +1140,9 @@ function renderBasinMultiples() {
     }
     let xlab = '';
     for (let m = 1; m <= 12; m++) {
-      xlab += `<text class="mc-axis" x="${xScale(m)}" y="${H-padB+13}" text-anchor="middle">${MONTH_LABELS[m-1][0].toUpperCase()}</text>`;
+      const doy = MONTH_START_DOY[m-1] + 14;
+      const xPos = mode === 'daily' ? xScale(doy - 1) : xScale(Math.round(doy / 7));
+      xlab += `<text class="mc-axis" x="${xPos}" y="${H-padB+13}" text-anchor="middle">${MONTH_LABELS[m-1][0].toUpperCase()}</text>`;
     }
 
     const now = BASIN_NOW[basinId] || {};
@@ -997,47 +1169,53 @@ function renderBasinMultiples() {
     `;
   }).join('');
 
-  // Hover interactivity for basins
+  // Hover for basins
+  if (!dataSource) return;
+  const lang = currentLang;
   BASIN_ORDER.forEach(basinId => {
     const chartEl = container.querySelector(`.mini-chart[data-basin="${basinId}"]`);
     if (!chartEl) return;
     const meta = BASIN_META[basinId];
-    if (!meta) return;
+    if (!meta || !dataSource[basinId]) return;
     const svg = chartEl.querySelector('svg');
     const overlay = chartEl.querySelector('.mc-hover-overlay');
     const crosshair = chartEl.querySelector('.mc-crosshair');
     const tooltip = chartEl.querySelector('.mc-tooltip');
-    const yMax = BASIN_YAXIS[basinId].max;
-    const yScale = v => padT + innerH - (v/yMax)*innerH;
     const subColor = `var(--${meta.sub.toLowerCase()})`;
-    const MONTH_TT = currentLang === 'PT'
-      ? ['janeiro','fevereiro','março','abril','maio','junho','julho','agosto','setembro','outubro','novembro','dezembro']
-      : ['January','February','March','April','May','June','July','August','September','October','November','December'];
 
     overlay.addEventListener('mousemove', (e) => {
       const rect = svg.getBoundingClientRect();
       const mouseX = e.clientX - rect.left;
       const viewBoxX = (mouseX / rect.width) * W;
-      const monthIdx = Math.max(0, Math.min(11, Math.round((viewBoxX - padL) / innerW * 11)));
-      const m = monthIdx + 1;
-      const xPos = xScale(m);
+      const idx = Math.max(0, Math.min(nUnits - 1, Math.round((viewBoxX - padL) / innerW * (nUnits - 1))));
+      const xPos = xScale(idx);
 
       crosshair.setAttribute('x1', xPos);
       crosshair.setAttribute('x2', xPos);
       crosshair.style.opacity = 0.7;
 
       const rows = [];
+      let label = '';
       for (const yr of yearsToPlot) {
-        const p = basinPoint(basinId, String(yr), monthIdx);
-        if (!p) continue;
-        const cfg = colorForYear(yr);
-        const stroke = cfg.color === 'CURRENT' ? subColor : cfg.color;
-        rows.push(`<div class="mctt-row"><span class="mctt-lbl"><span class="mctt-sw" style="background:${stroke}"></span>${yr}</span><span><span class="mctt-val">${fmtIntLocal(p.mwmed)}</span></span></div>`);
+        const pts = seriesForView(dataSource[basinId], yr);
+        if (!pts.length) continue;
+        let best = null, bestDist = Infinity;
+        for (const p of pts) {
+          const d = Math.abs(p.idx - idx);
+          if (d < bestDist) { bestDist = d; best = p; }
+        }
+        if (best && bestDist < (nUnits / 26)) {
+          const cfg = colorForYear(yr);
+          const stroke = cfg.color === 'CURRENT' ? subColor : cfg.color;
+          if (!label) label = labelForIdx(best.idx, yr, lang);
+          rows.push(`<div class="mctt-row"><span class="mctt-lbl"><span class="mctt-sw" style="background:${stroke}"></span>${yr}</span><span><span class="mctt-val">${fmtIntLocal(Math.round(best.value))}</span></span></div>`);
+        }
       }
-      tooltip.innerHTML = `<div class="mctt-month">${MONTH_TT[monthIdx]} · MWmed</div>${rows.join('')}`;
+      if (!label) label = currentDisplayMode() === 'daily' ? (lang === 'PT' ? 'dia' : 'day') : (lang === 'PT' ? 'semana' : 'week');
+      tooltip.innerHTML = `<div class="mctt-month">${label} · MWmed</div>${rows.join('')}`;
 
       const chartRect = chartEl.getBoundingClientRect();
-      const tooltipW = 180;
+      const tooltipW = 200;
       const cursorX = e.clientX - chartRect.left;
       const cursorY = e.clientY - chartRect.top;
       const left = cursorX + tooltipW + 12 > chartRect.width
