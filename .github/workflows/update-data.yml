@@ -13,7 +13,7 @@ permissions:
 jobs:
   fetch-and-commit:
     runs-on: ubuntu-latest
-    timeout-minutes: 25
+    timeout-minutes: 60
 
     steps:
       - name: Checkout repo
@@ -43,6 +43,20 @@ jobs:
       - name: Run NOAA CPC ONI pipeline
         run: python pipelines/noaa_oni.py
         continue-on-error: true
+
+      - name: Run ANEEL Bandeira Tarifaria pipeline
+        run: python pipelines/aneel_bandeira.py
+        continue-on-error: true
+
+      - name: Run ANEEL Tarifas Homologadas pipeline
+        run: python pipelines/aneel_tarifas.py
+        continue-on-error: true
+        timeout-minutes: 20
+
+      - name: Run ANEEL MMGD pipeline (large, may take a while)
+        run: python pipelines/aneel_mmgd.py
+        continue-on-error: true
+        timeout-minutes: 30
 
       - name: Commit and push data updates
         run: |
