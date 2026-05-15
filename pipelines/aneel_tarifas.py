@@ -1,22 +1,30 @@
 """
-ANEEL Tarifas Homologadas pipeline
+ANEEL Tarifas Homologadas pipeline v2
 
-Streams the large CSV of homologated tariffs for all distributors in Brazil
-and extracts the latest readjustment data for B1 (Residencial) and A4 (Industrial 2.3-25 kV).
+Streams the large CSV and captures ALL tariff components per distribuidora × subgrupo:
 
-For each distribuidora and tariff class:
-- The latest homologated TE + TUSD values (current effective tariff)
-- The previous cycle's TE + TUSD (one year earlier)
-- Computed % readjustment = (current - prev) / prev * 100
+For B1 (Residencial):
+- Convencional: TE consumo + TUSD consumo (R$/kWh)
 
-Source: ANEEL Dados Abertos — Tarifas de Aplicação das Distribuidoras
+For A4 (Industrial 2,3-25 kV):
+- Horosazonal Verde:
+    TE consumo Ponta, TE consumo Fora Ponta (R$/kWh)
+    TUSD consumo Ponta, TUSD consumo Fora Ponta (R$/kWh)
+    TUSD demanda Única (R$/kW)
+- Horosazonal Azul:
+    TE consumo Ponta, TE consumo Fora Ponta (R$/kWh)
+    TUSD consumo Ponta, TUSD consumo Fora Ponta (R$/kWh)
+    TUSD demanda Ponta, TUSD demanda Fora Ponta (R$/kW)
 
+Reajuste % computed on the total TE+TUSD reference value (FP for A4) between last 2 cycles.
+
+Source: ANEEL Dados Abertos — Tarifas Homologadas das Distribuidoras
 Outputs: data/tarifas.json
 """
 import json
 import sys
 from collections import defaultdict
-from datetime import datetime, timezone, date
+from datetime import datetime, timezone
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent))
@@ -28,199 +36,275 @@ TARIFAS_URL = (
     "tarifas-homologadas-distribuidoras-energia-eletrica.csv"
 )
 
-# Classes of interest
 CLASSES_OF_INTEREST = {
-    "B1": {"label": "B1 - Residencial", "subgrupo": "B1"},
-    "A4": {"label": "A4 - Industrial 2,3-25 kV", "subgrupo": "A4"},
+    "B1": "B1 - Residencial",
+    "A4": "A4 - Industrial 2,3-25 kV",
 }
 
-# Top 25 distribuidoras by consumer market (approximate, hand-picked)
-# These are the largest by MWh sold annually and most relevant for energy markets.
-TOP25_DISTRIBUIDORAS = {
-    # SECO subsystem
-    "CPFL PAULISTA", "ENEL SP", "ENEL RJ", "ENEL CE", "LIGHT",
-    "CEMIG D", "CEMIG", "ELEKTRO", "EDP SP", "EDP ES", "CPFL PIRATININGA",
-    "ENERGISA MT", "ENERGISA MS", "ENERGISA MG", "ENERGISA SE", "ENERGISA TO",
-    # SUL subsystem
-    "COPEL DIS", "COPEL", "CELESC DIS", "CELESC", "RGE", "RGE SUL", "CEEE D", "CEEE EQUATORIAL",
-    # NE subsystem
-    "COELBA", "CELPE", "COSERN", "ENEL PE",
-    # N subsystem
-    "EQUATORIAL PA", "EQUATORIAL MA", "AMAZONAS ENERGIA",
-    # Generic patterns: also match "EQUATORIAL", "ENERGISA", "ENEL" variants
-}
+TOP25_KEYWORDS = [
+    "CPFL", "ENEL", "LIGHT", "CEMIG", "ELEKTRO", "EDP",
+    "ENERGISA", "COPEL", "CELESC", "RGE", "CEEE", "COELBA",
+    "CELPE", "COSERN", "EQUATORIAL", "AMAZONAS ENERGIA",
+    "ESS", "BANDEIRANTE", "ENF",
+]
 
 
 def is_top_distribuidora(name: str) -> bool:
-    """Match against top 25 list with fuzzy uppercase comparison."""
     if not name:
         return False
     n = name.strip().upper()
-    if n in TOP25_DISTRIBUIDORAS:
-        return True
-    # Pattern matches for company groups
-    keywords = ["CPFL", "ENEL", "LIGHT", "CEMIG", "ELEKTRO", "EDP",
-                "ENERGISA", "COPEL", "CELESC", "RGE", "CEEE", "COELBA",
-                "CELPE", "COSERN", "EQUATORIAL", "AMAZONAS ENERGIA"]
-    for kw in keywords:
+    for kw in TOP25_KEYWORDS:
         if kw in n:
             return True
     return False
 
 
+def classify_modalidade(s: str) -> str | None:
+    """Returns 'convencional', 'verde', or 'azul' from modalidade text."""
+    if not s:
+        return None
+    s = s.lower()
+    if "convencional" in s or "branca" in s:
+        return "convencional"
+    if "azul" in s:
+        return "azul"
+    if "verde" in s:
+        return "verde"
+    return None
+
+
+def classify_posto(s: str) -> str | None:
+    """Returns 'ponta', 'fora_ponta', or 'unico' from posto text."""
+    if not s:
+        return "unico"
+    s = s.lower().strip()
+    if "fora" in s:
+        return "fora_ponta"
+    if s == "p" or s.startswith("ponta"):
+        return "ponta"
+    if "ponta" in s and "fora" not in s:
+        return "ponta"
+    if "único" in s or "unico" in s or "não" in s or "nao" in s or s == "":
+        return "unico"
+    return "unico"
+
+
+def classify_detalhe(s: str) -> str | None:
+    """Returns 'consumo' or 'demanda' from detalhe text."""
+    if not s:
+        return None
+    s = s.lower()
+    if "demanda" in s:
+        return "demanda"
+    if "consumo" in s or "energ" in s:
+        return "consumo"
+    if "não" in s or "nao" in s or "único" in s or "unico" in s:
+        # B1 simple case
+        return "consumo"
+    return "consumo"
+
+
+def classify_base(s: str) -> str | None:
+    """Returns 'te' or 'tusd' from base tarifária text."""
+    if not s:
+        return None
+    s = s.upper()
+    if "TUSD" in s or "USO" in s:
+        return "tusd"
+    if "TE" in s or "ENERGIA" in s:
+        return "te"
+    return None
+
+
 def main():
     print("=" * 60)
-    print("ANEEL Tarifas Homologadas pipeline")
+    print("ANEEL Tarifas Homologadas pipeline v2")
     print(f"Started: {datetime.now(timezone.utc).isoformat()}")
     print("=" * 60)
     print(f"URL: {TARIFAS_URL}")
-    print("Streaming line-by-line (file is large — may take a few minutes)\n")
+    print("Streaming line-by-line — capturing ALL components\n")
 
-    # Bucket: (distribuidora, subgrupo, date) -> { te: float, tusd: float, modalidade, posto }
-    # We'll keep the simplest: convencional, posto "Não Aplicável" / "Único", modalidade B1/A4 base
-    # The CSV has multiple rows per (dist, subgrupo, cycle) for different details (TUSD, TE, posto P/FP, etc.)
-    # We aggregate by summing TE + TUSD where applicable, preferring single-value rows.
-
-    # Strategy: capture all (dist, subgrupo, year-month) values for "tarifa total"
-    # by looking at the column DscDetalhe ("Não Aplicável" for B1 simple, "Único" for A4 simple)
-    # and BaseTarifaria ("Tarifa de Energia - TE" or "Tarifa de Uso do Sistema - TUSD").
-
-    # Bucket: (distribuidora, subgrupo, year_month) -> {'TE': v, 'TUSD': v}
-    buckets: dict[tuple[str, str, str], dict[str, float]] = defaultdict(dict)
-    dist_dates: dict[tuple[str, str], set[str]] = defaultdict(set)
+    # Bucket structure:
+    #   buckets[dist][subgrupo][date_iso][modalidade][component] = value
+    # component is like 'te_consumo_ponta', 'tusd_demanda_unica', etc.
+    buckets: dict = defaultdict(lambda: defaultdict(lambda: defaultdict(lambda: defaultdict(dict))))
+    # dist_dates[dist][subgrupo] = set of date iso strings
+    dist_dates = defaultdict(lambda: defaultdict(set))
 
     rows_read = 0
     rows_kept = 0
+    cols: dict[str, str | None] = {}
     sample_keys: list[str] | None = None
-    sample_row: dict | None = None
-    diagnose_cols = {}
+    seen_modalidades: set[str] = set()
+    seen_postos: set[str] = set()
+    seen_detalhes: set[str] = set()
 
     for row in stream_csv_rows(TARIFAS_URL):
         rows_read += 1
         if sample_keys is None:
             sample_keys = list(row.keys())
-            sample_row = row
             print(f"Columns detected ({len(sample_keys)}):")
             for k in sample_keys:
                 print(f"  - {k!r}")
-            # Resolve columns once
-            diagnose_cols["dist"] = (find_col(sample_keys, "sigagente")
-                                     or find_col(sample_keys, "nomagente")
-                                     or find_col(sample_keys, "agente", "concession")
-                                     or find_col(sample_keys, "distribuid"))
-            diagnose_cols["subgrupo"] = (find_col(sample_keys, "dscsubgrupo")
-                                         or find_col(sample_keys, "subgrupo"))
-            diagnose_cols["base"] = (find_col(sample_keys, "dscbase", "tarifaria")
-                                     or find_col(sample_keys, "base", "tarifaria"))
-            diagnose_cols["modalidade"] = (find_col(sample_keys, "modalidade")
-                                           or find_col(sample_keys, "dscmodalidade"))
-            diagnose_cols["detalhe"] = (find_col(sample_keys, "detalhe")
-                                        or find_col(sample_keys, "dscdetalhe"))
-            diagnose_cols["unidade"] = (find_col(sample_keys, "unidade", "terciaria")
-                                        or find_col(sample_keys, "dscunidade"))
-            diagnose_cols["valor"] = (find_col(sample_keys, "vlrtarifa")
-                                      or find_col(sample_keys, "valor", "tarifa")
-                                      or find_col(sample_keys, "vltarifa"))
-            diagnose_cols["data_ini"] = (find_col(sample_keys, "datinicio", "vigencia")
-                                         or find_col(sample_keys, "data", "inicio"))
-            diagnose_cols["posto"] = (find_col(sample_keys, "dscposto")
-                                      or find_col(sample_keys, "posto", "tarif"))
-            print(f"\nResolved columns: {diagnose_cols}")
-            print(f"Sample row: {sample_row}\n")
 
-        # Read columns
-        subgrupo = (row.get(diagnose_cols["subgrupo"], "") or "").strip().upper() if diagnose_cols.get("subgrupo") else ""
+            cols["dist"] = (find_col(sample_keys, "sigagente")
+                            or find_col(sample_keys, "nomagente")
+                            or find_col(sample_keys, "agente", "concession")
+                            or find_col(sample_keys, "distribuid"))
+            cols["subgrupo"] = (find_col(sample_keys, "dscsubgrupo")
+                                or find_col(sample_keys, "subgrupo"))
+            cols["base"] = (find_col(sample_keys, "dscbase", "tarifaria")
+                            or find_col(sample_keys, "base", "tarifaria"))
+            cols["modalidade"] = (find_col(sample_keys, "dscmodalidade")
+                                  or find_col(sample_keys, "modalidade"))
+            cols["detalhe"] = (find_col(sample_keys, "dscdetalhe")
+                               or find_col(sample_keys, "detalhe"))
+            cols["unidade"] = (find_col(sample_keys, "dscunidade", "terciaria")
+                               or find_col(sample_keys, "dscunidade")
+                               or find_col(sample_keys, "unidade", "terciaria"))
+            cols["valor"] = (find_col(sample_keys, "vlrtarifa")
+                             or find_col(sample_keys, "valor", "tarifa")
+                             or find_col(sample_keys, "vltarifa"))
+            cols["data_ini"] = (find_col(sample_keys, "datinicio", "vigencia")
+                                or find_col(sample_keys, "data", "inicio"))
+            cols["posto"] = (find_col(sample_keys, "dscposto")
+                             or find_col(sample_keys, "posto", "tarif"))
+            print(f"\nResolved columns: {cols}\n")
+
+        if rows_read % 200000 == 0:
+            print(f"  ...processed {rows_read:,} rows, kept {rows_kept:,}, seen modalidades={seen_modalidades}")
+
+        subgrupo = (row.get(cols["subgrupo"], "") or "").strip().upper() if cols.get("subgrupo") else ""
         if subgrupo not in CLASSES_OF_INTEREST:
             continue
-        dist_name = (row.get(diagnose_cols["dist"], "") or "").strip() if diagnose_cols.get("dist") else ""
+        dist_name = (row.get(cols["dist"], "") or "").strip() if cols.get("dist") else ""
         if not is_top_distribuidora(dist_name):
             continue
 
-        # For B1 simple residential: modalidade "Convencional", detalhe "Não Aplicável"
-        # For A4 simple: modalidade "Convencional", posto "Não se aplica" or "Único"
-        modalidade = (row.get(diagnose_cols["modalidade"], "") or "").strip().lower() if diagnose_cols.get("modalidade") else ""
-        if "convencional" not in modalidade and subgrupo == "B1":
-            continue  # only B1 conventional for simplicity
-
-        # Skip posto Ponta/Fora Ponta (Horosazonal Verde/Azul) to keep convencional
-        posto = (row.get(diagnose_cols["posto"], "") or "").strip().lower() if diagnose_cols.get("posto") else ""
-        if posto in ("ponta", "fora ponta", "p", "fp"):
+        modalidade_raw = (row.get(cols["modalidade"], "") or "").strip() if cols.get("modalidade") else ""
+        modalidade = classify_modalidade(modalidade_raw)
+        if rows_kept < 10:
+            seen_modalidades.add(modalidade_raw[:30])
+        if modalidade is None:
+            continue
+        # B1 só captura convencional; A4 só captura verde/azul (não convencional)
+        if subgrupo == "B1" and modalidade != "convencional":
+            continue
+        if subgrupo == "A4" and modalidade not in ("verde", "azul"):
             continue
 
-        base = (row.get(diagnose_cols["base"], "") or "").strip().upper() if diagnose_cols.get("base") else ""
-        if "TE" not in base and "TUSD" not in base:
-            continue
-        base_id = "TE" if "TE" in base else "TUSD"
-
-        valor = to_float(row.get(diagnose_cols["valor"], "")) if diagnose_cols.get("valor") else None
-        if valor is None:
+        base_raw = (row.get(cols["base"], "") or "").strip() if cols.get("base") else ""
+        base = classify_base(base_raw)
+        if base is None:
             continue
 
-        d = parse_date_flex(row.get(diagnose_cols["data_ini"], "") if diagnose_cols.get("data_ini") else "")
+        detalhe_raw = (row.get(cols["detalhe"], "") or "").strip() if cols.get("detalhe") else ""
+        if rows_kept < 10:
+            seen_detalhes.add(detalhe_raw[:30])
+        detalhe = classify_detalhe(detalhe_raw)
+        if detalhe is None:
+            continue
+
+        posto_raw = (row.get(cols["posto"], "") or "").strip() if cols.get("posto") else ""
+        if rows_kept < 10:
+            seen_postos.add(posto_raw[:30])
+        posto = classify_posto(posto_raw)
+
+        valor = to_float(row.get(cols["valor"], "")) if cols.get("valor") else None
+        if valor is None or valor <= 0:
+            continue
+
+        d = parse_date_flex(row.get(cols["data_ini"], "") if cols.get("data_ini") else "")
         if d is None:
             continue
 
-        # Detect unit. Often R$/MWh or R$/kWh — we want kWh consistent.
-        # If we see "MWh" in unidade, divide by 1000 to get R$/kWh.
-        unidade = (row.get(diagnose_cols["unidade"], "") or "").lower() if diagnose_cols.get("unidade") else ""
-        if "mwh" in unidade:
+        unidade = (row.get(cols["unidade"], "") or "").lower() if cols.get("unidade") else ""
+        is_demanda = (detalhe == "demanda") or ("kw" in unidade and "kwh" not in unidade)
+        # For consumo: convert MWh to kWh if needed (divide by 1000)
+        if detalhe == "consumo" and "mwh" in unidade:
             valor = valor / 1000.0
+        # For demanda: keep R$/kW as-is
 
-        # Bucket key: (distribuidora, subgrupo, YYYY-MM-DD start date)
-        key = (dist_name, subgrupo, d.isoformat())
-        # Keep the maximum value for each base (sometimes multiple rows for same TE/TUSD detail)
-        prev = buckets[key].get(base_id)
+        # Compose component key: e.g. 'te_consumo_ponta', 'tusd_demanda_unica'
+        if is_demanda:
+            comp = f"{base}_demanda_{posto}"
+        else:
+            comp = f"{base}_consumo_{posto}"
+
+        date_iso = d.isoformat()
+        # Within same (dist, subgrupo, date, modalidade, component), keep max value (in case of duplicate rows)
+        prev = buckets[dist_name][subgrupo][date_iso][modalidade].get(comp)
         if prev is None or valor > prev:
-            buckets[key][base_id] = valor
-        dist_dates[(dist_name, subgrupo)].add(d.isoformat())
+            buckets[dist_name][subgrupo][date_iso][modalidade][comp] = valor
+
+        dist_dates[dist_name][subgrupo].add(date_iso)
         rows_kept += 1
 
     print(f"\nRows read: {rows_read:,}")
     print(f"Rows kept: {rows_kept:,}")
-    print(f"Distribuidora × subgrupo unique: {len(dist_dates)}")
+    print(f"Distribuidoras matched: {len(dist_dates)}")
+    print(f"Seen modalidades: {seen_modalidades}")
+    print(f"Seen postos: {seen_postos}")
+    print(f"Seen detalhes: {seen_detalhes}\n")
 
-    if not buckets:
-        print("ERROR: No matching rows. Schema may differ from expectations.")
+    if rows_kept == 0:
+        print("ERROR: No matching rows captured. CSV schema may have changed.")
         sys.exit(1)
 
-    # For each (dist, subgrupo), find the LATEST cycle and the PREVIOUS cycle (most recent before it)
-    # Compute % readjustment in TE+TUSD total tariff
+    # Build output per class
     results: dict[str, list[dict]] = {sg: [] for sg in CLASSES_OF_INTEREST}
-    for (dist, subgrupo), dates in dist_dates.items():
-        sorted_dates = sorted(dates)
-        if len(sorted_dates) < 1:
-            continue
-        latest = sorted_dates[-1]
-        previous = sorted_dates[-2] if len(sorted_dates) >= 2 else None
-        cur = buckets.get((dist, subgrupo, latest), {})
-        prev = buckets.get((dist, subgrupo, previous), {}) if previous else {}
 
-        cur_te = cur.get("TE")
-        cur_tusd = cur.get("TUSD")
-        prev_te = prev.get("TE")
-        prev_tusd = prev.get("TUSD")
-        cur_total = (cur_te or 0) + (cur_tusd or 0)
-        prev_total = (prev_te or 0) + (prev_tusd or 0)
+    for dist, subgrupo_dict in dist_dates.items():
+        for subgrupo, dates in subgrupo_dict.items():
+            if subgrupo not in CLASSES_OF_INTEREST:
+                continue
+            sorted_dates = sorted(dates)
+            if len(sorted_dates) < 1:
+                continue
+            latest = sorted_dates[-1]
+            previous = sorted_dates[-2] if len(sorted_dates) >= 2 else None
 
-        # Compute % only if both totals are populated
-        readjust_pct = None
-        if cur_total and prev_total:
-            readjust_pct = round((cur_total - prev_total) / prev_total * 100, 2)
+            cur_mods = dict(buckets[dist][subgrupo][latest])
+            prev_mods = dict(buckets[dist][subgrupo][previous]) if previous else {}
 
-        results[subgrupo].append({
-            "distribuidora": dist,
-            "ultima_homologacao": latest,
-            "homologacao_anterior": previous,
-            "te_atual": round(cur_te, 5) if cur_te else None,
-            "tusd_atual": round(cur_tusd, 5) if cur_tusd else None,
-            "total_atual_rs_kwh": round(cur_total, 5) if cur_total else None,
-            "te_anterior": round(prev_te, 5) if prev_te else None,
-            "tusd_anterior": round(prev_tusd, 5) if prev_tusd else None,
-            "total_anterior_rs_kwh": round(prev_total, 5) if prev_total else None,
-            "reajuste_pct": readjust_pct,
-        })
+            # Convert defaultdicts to plain dicts for JSON, rounding values
+            def fmt_mod(m):
+                if not m:
+                    return None
+                return {k: round(v, 5) for k, v in m.items()}
 
-    # Sort each class by date descending (most recent first)
+            cur_clean = {mod: fmt_mod(comps) for mod, comps in cur_mods.items() if comps}
+            prev_clean = {mod: fmt_mod(comps) for mod, comps in prev_mods.items() if comps}
+
+            # Compute headline reajuste % on a reference component
+            # B1: convencional te_consumo_unico + tusd_consumo_unico
+            # A4: verde te_consumo_fora_ponta + tusd_consumo_fora_ponta (FP é o que mais consumidor industrial usa)
+            def headline_total(mods):
+                if subgrupo == "B1":
+                    c = mods.get("convencional", {}) or {}
+                    return (c.get("te_consumo_unico", 0) or 0) + (c.get("tusd_consumo_unico", 0) or 0)
+                if subgrupo == "A4":
+                    v = mods.get("verde", {}) or {}
+                    return (v.get("te_consumo_fora_ponta", 0) or 0) + (v.get("tusd_consumo_fora_ponta", 0) or 0)
+                return 0
+
+            cur_total = headline_total(cur_clean)
+            prev_total = headline_total(prev_clean)
+            reajuste = None
+            if cur_total and prev_total:
+                reajuste = round((cur_total - prev_total) / prev_total * 100, 2)
+
+            results[subgrupo].append({
+                "distribuidora": dist,
+                "ultima_homologacao": latest,
+                "homologacao_anterior": previous,
+                "total_atual_rs_kwh": round(cur_total, 5) if cur_total else None,
+                "total_anterior_rs_kwh": round(prev_total, 5) if prev_total else None,
+                "reajuste_pct": reajuste,
+                "componentes": cur_clean,
+                "componentes_anteriores": prev_clean,
+            })
+
     for sg in results:
         results[sg].sort(key=lambda x: (x["ultima_homologacao"] or ""), reverse=True)
 
@@ -232,14 +316,15 @@ def main():
             "rows_read": rows_read,
             "rows_kept": rows_kept,
             "note": (
-                "Tarifa total (TE + TUSD) em R$/kWh para classe convencional. "
-                "Reajuste % calculado entre as duas últimas datas de homologação por distribuidora. "
-                "Lista limitada às top ~25 distribuidoras por mercado."
+                "Tarifas por componente. B1 Convencional: te_consumo_unico + tusd_consumo_unico (R$/kWh). "
+                "A4 Verde: te_consumo_{ponta,fora_ponta} (R$/kWh) + tusd_consumo_{ponta,fora_ponta} (R$/kWh) + tusd_demanda_unica (R$/kW). "
+                "A4 Azul: similar mas com tusd_demanda_{ponta,fora_ponta} segregada. "
+                "Reajuste % calculado entre últimas 2 datas no total convencional (B1) ou TE+TUSD FP (A4)."
             ),
         },
         "classes": {
             sg: {
-                "label": meta["label"],
+                "label": meta,
                 "distribuidoras": results.get(sg, []),
             }
             for sg, meta in CLASSES_OF_INTEREST.items()
@@ -254,10 +339,11 @@ def main():
 
     print("\n--- Summary ---")
     for sg, meta in CLASSES_OF_INTEREST.items():
-        print(f"\n{meta['label']}:")
-        for r in results.get(sg, [])[:5]:
+        print(f"\n{meta}:  {len(results.get(sg, []))} distribuidoras")
+        for r in results.get(sg, [])[:3]:
             pct_str = f"{r['reajuste_pct']:+.2f}%" if r["reajuste_pct"] is not None else "—"
-            print(f"  {r['distribuidora'][:35]:35s}  homol: {r['ultima_homologacao']}  reajuste: {pct_str}")
+            mods = list((r.get("componentes") or {}).keys())
+            print(f"  {r['distribuidora'][:30]:30s}  homol: {r['ultima_homologacao']}  reaj: {pct_str}  mods: {mods}")
 
     print("Done.")
 
