@@ -203,6 +203,49 @@ def build_monthly(records: list[dict], value_key: str, agg: str = "last") -> dic
     return {sub: dict(years) for sub, years in monthly.items()}
 
 
+def build_daily(records: list[dict], value_key: str) -> dict:
+    """Daily series per subsystem per year.
+    Returns: {sub: {year_str: [366 values]}}.
+    Slot index = day_of_year - 1 (0..365). Slot 365 is null in non-leap years.
+    """
+    daily: dict = defaultdict(lambda: defaultdict(lambda: [None] * 366))
+    for r in records:
+        if r["sub"] not in CANONICAL_SUBS:
+            continue
+        v = r.get(value_key)
+        if v is None:
+            continue
+        doy = r["date"].timetuple().tm_yday - 1  # 0-indexed
+        if 0 <= doy < 366:
+            daily[r["sub"]][str(r["date"].year)][doy] = round(v, 2)
+    return {sub: dict(years) for sub, years in daily.items()}
+
+
+def build_ear_daily_sin(records: list[dict]) -> dict:
+    """SIN aggregate (sum mwmes / sum max) per day, per year.
+    Returns: {"SIN": {year_str: [366 values of pct]}}.
+    """
+    by_day: dict = defaultdict(lambda: {"mwmes": 0.0, "max": 0.0, "n_subs": 0})
+    for r in records:
+        if r["sub"] not in CANONICAL_SUBS:
+            continue
+        if r["mwmes"] is None or r["max"] is None:
+            continue
+        by_day[r["date"]]["mwmes"] += r["mwmes"]
+        by_day[r["date"]]["max"] += r["max"]
+        by_day[r["date"]]["n_subs"] += 1
+
+    daily: dict = defaultdict(lambda: [None] * 366)
+    for dt, v in by_day.items():
+        # Only include days where all 4 subs reported (otherwise SIN sum is incomplete)
+        if v["n_subs"] >= len(CANONICAL_SUBS) and v["max"] > 0:
+            pct = v["mwmes"] / v["max"] * 100
+            doy = dt.timetuple().tm_yday - 1
+            if 0 <= doy < 366:
+                daily[str(dt.year)][doy] = round(pct, 2)
+    return {"SIN": dict(daily)}
+
+
 def build_ear_monthly_sin(records: list[dict]) -> dict:
     """Compute SIN as aggregate of (sum mwmes / sum max) per month."""
     bucket = defaultdict(lambda: {"recs": []})
@@ -291,6 +334,12 @@ def main():
     ena_monthly_mwmed = build_monthly(ena_records, "bruta_mwmed", agg="mean") if ena_records else {}
     ena_monthly_pct = build_monthly(ena_records, "pct_mlt_bruta", agg="mean") if ena_records else {}
 
+    # Daily aggregates (multi-year, for interactive granular charts)
+    ear_daily = build_daily(ear_records, "pct") if ear_records else {}
+    if ear_records:
+        ear_daily.update(build_ear_daily_sin(ear_records))
+    ena_daily_mwmed = build_daily(ena_records, "bruta_mwmed") if ena_records else {}
+
     output = {
         "generated_at_utc": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
         "source": {
@@ -306,6 +355,8 @@ def main():
         "ear_monthly_pct": ear_monthly,
         "ena_monthly_mwmed": ena_monthly_mwmed,
         "ena_monthly_pct_mlt_bruta": ena_monthly_pct,
+        "ear_daily_pct": ear_daily,
+        "ena_daily_mwmed": ena_daily_mwmed,
     }
 
     out_path = Path(__file__).parent.parent / "data" / "ear_ena.json"

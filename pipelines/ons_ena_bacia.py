@@ -145,6 +145,20 @@ def build_basin_monthly_mwmed(records: list[dict]) -> dict:
     return {b: dict(ys) for b, ys in monthly.items()}
 
 
+def build_basin_daily_mwmed(records: list[dict]) -> dict:
+    """Daily MWmed per basin per year.
+    Returns: {basin: {year_str: [366 values]}}.
+    """
+    daily = defaultdict(lambda: defaultdict(lambda: [None] * 366))
+    for r in records:
+        if r.get("mwmed") is None:
+            continue
+        doy = r["date"].timetuple().tm_yday - 1
+        if 0 <= doy < 366:
+            daily[r["basin"]][str(r["date"].year)][doy] = round(r["mwmed"])
+    return {b: dict(ys) for b, ys in daily.items()}
+
+
 def main():
     print("=" * 60)
     print("ONS ENA bruta por bacia pipeline")
@@ -189,6 +203,7 @@ def main():
         },
         "now": build_basin_now(records),
         "monthly_mwmed": build_basin_monthly_mwmed(records),
+        "daily_mwmed": build_basin_daily_mwmed(records),
     }
 
     out_path = Path(__file__).parent.parent / "data" / "ena_bacia.json"
