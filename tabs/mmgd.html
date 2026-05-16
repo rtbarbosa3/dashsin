@@ -97,6 +97,23 @@ html, body { background: var(--bg); color: var(--text); font-family: var(--font-
 /* Year chart */
 .year-chart-wrap { position: relative; }
 .year-chart-wrap svg { display: block; width: 100%; height: 320px; }
+
+/* Expand chart icon (⛶) */
+.year-chart-wrap, .month-chart-wrap, .fonte-wrap, .uf-grid-wrap { position: relative; }
+.chart-expand-btn { position: absolute; top: 8px; right: 8px; width: 22px; height: 22px; display: flex; align-items: center; justify-content: center; background: var(--bg-elev-2); border: 1px solid var(--border); border-radius: 3px; color: var(--text-dim); cursor: pointer; font-size: 13px; line-height: 1; opacity: 0; transition: opacity 0.15s; z-index: 5; padding: 0; }
+.section:hover .chart-expand-btn { opacity: 1; }
+.chart-expand-btn:hover { color: var(--text); border-color: var(--text-muted); background: var(--bg-elev); }
+
+/* Modal */
+.chart-modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.88); z-index: 1000; display: none; align-items: center; justify-content: center; padding: 24px; }
+.chart-modal-overlay.active { display: flex; }
+.chart-modal { position: relative; background: var(--bg-elev); border: 1px solid var(--border); border-radius: 6px; width: 100%; max-width: 1400px; height: 100%; max-height: 88vh; display: flex; flex-direction: column; padding: 22px 26px; box-shadow: 0 20px 60px rgba(0,0,0,0.5); }
+.chart-modal-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 16px; padding-bottom: 12px; border-bottom: 1px solid var(--border-soft); }
+.chart-modal-title { font-family: var(--font-sans); font-size: 14px; font-weight: 600; letter-spacing: 0.03em; text-transform: uppercase; color: var(--text); }
+.chart-modal-close { position: absolute; top: 12px; right: 14px; background: transparent; border: none; color: var(--text-muted); cursor: pointer; font-size: 22px; line-height: 1; padding: 4px 10px; }
+.chart-modal-close:hover { color: var(--text); }
+.chart-modal-body { flex: 1; position: relative; min-height: 0; display: flex; flex-direction: column; }
+.chart-modal-body svg { flex: 1; height: auto !important; min-height: 0; width: 100%; }
 .yc-bar { fill: var(--solar); opacity: 0.85; }
 .yc-bar:hover { opacity: 1; }
 .yc-line { fill: none; stroke: var(--seco); stroke-width: 2; }
@@ -215,6 +232,7 @@ html, body { background: var(--bg); color: var(--text); font-family: var(--font-
       <div class="hint" data-i18n="yearHint">Capacity added per year · stacked line shows cumulative installed GW</div>
     </div>
     <div class="year-chart-wrap">
+      <button class="chart-expand-btn" data-chart="year" title="Expandir / Expand">⛶</button>
       <svg id="year-chart" viewBox="0 0 1100 320" preserveAspectRatio="none"></svg>
       <div class="mc-tooltip" id="year-tooltip"></div>
     </div>
@@ -226,6 +244,7 @@ html, body { background: var(--bg); color: var(--text); font-family: var(--font-
       <div class="hint" data-i18n="monthHint">New capacity connected each month · MW</div>
     </div>
     <div class="month-chart-wrap">
+      <button class="chart-expand-btn" data-chart="month" title="Expandir / Expand">⛶</button>
       <svg id="month-chart" viewBox="0 0 1100 280" preserveAspectRatio="none"></svg>
       <div class="mc-tooltip" id="mc-tooltip"></div>
     </div>
@@ -237,6 +256,17 @@ html, body { background: var(--bg); color: var(--text); font-family: var(--font-
   <span><span data-i18n="source">Source</span>: ANEEL Dados Abertos — Empreendimentos MMGD</span>
   <span><span data-i18n="updated">Updated</span>: daily 10h BRT</span>
 </footer>
+
+<!-- Chart fullscreen modal -->
+<div class="chart-modal-overlay" id="chart-modal-overlay" role="dialog" aria-modal="true">
+  <div class="chart-modal">
+    <button class="chart-modal-close" id="chart-modal-close" aria-label="Close">×</button>
+    <div class="chart-modal-head">
+      <div class="chart-modal-title" id="chart-modal-title">Chart</div>
+    </div>
+    <div class="chart-modal-body" id="chart-modal-body"></div>
+  </div>
+</div>
 
 <script>
 const FONTE_LABELS_EN = {solar:'Solar PV', eolica:'Wind', biomassa:'Biomass', hidrica:'Hydro', outras:'Other'};
@@ -686,6 +716,60 @@ function renderAll() {
   renderYearly();
   renderMonthly();
 }
+
+// ── Chart Modal (year/month chart expand) ──
+function openMMGDChartModal(chartType) {
+  const overlay = document.getElementById('chart-modal-overlay');
+  const body    = document.getElementById('chart-modal-body');
+  const titleEl = document.getElementById('chart-modal-title');
+  const t = I18N[currentLang];
+
+  if (chartType === 'year') {
+    titleEl.textContent = t.yearTitle || 'Annual growth';
+  } else if (chartType === 'month') {
+    titleEl.textContent = t.monthTitle || 'Monthly growth';
+  }
+
+  // Clone original SVG and re-render at large size
+  const srcSvg = document.getElementById(chartType === 'year' ? 'year-chart' : 'month-chart');
+  body.innerHTML = '';
+  const clone = srcSvg.cloneNode(true);
+  clone.id = `${chartType}-chart-modal`;
+  // Make it fill the body
+  clone.style.width = '100%';
+  clone.style.height = '100%';
+  clone.setAttribute('preserveAspectRatio', 'xMidYMid meet');
+  body.appendChild(clone);
+
+  overlay.classList.add('active');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeMMGDChartModal() {
+  const overlay = document.getElementById('chart-modal-overlay');
+  overlay.classList.remove('active');
+  document.body.style.overflow = '';
+}
+
+document.addEventListener('click', (e) => {
+  const expandBtn = e.target.closest('.chart-expand-btn');
+  if (expandBtn) {
+    const chartType = expandBtn.dataset.chart;
+    if (chartType) openMMGDChartModal(chartType);
+    return;
+  }
+  if (e.target.id === 'chart-modal-close' || e.target.id === 'chart-modal-overlay') {
+    closeMMGDChartModal();
+  }
+});
+
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') {
+    const overlay = document.getElementById('chart-modal-overlay');
+    if (overlay && overlay.classList.contains('active')) closeMMGDChartModal();
+  }
+});
+
 
 function updateDataStatus() {
   const el = document.getElementById('data-status');
