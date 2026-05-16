@@ -154,6 +154,52 @@ html, body { background: var(--bg); color: var(--text); font-family: var(--font-
 .mc-mode-badge { font-family: var(--font-mono); font-size: 8px; color: var(--text-dim); letter-spacing: 0.08em; text-transform: uppercase; padding: 2px 5px; border: 1px solid var(--border); border-radius: 2px; background: var(--bg-elev); margin-left: 8px; }
 .mc-mode-badge.daily { color: var(--solar); border-color: rgba(251,191,36,0.4); }
 .mc-mode-badge.weekly { color: var(--text-muted); }
+.mc-mode-badge.monthly { color: var(--text-dim); }
+
+/* Reload button next to badge */
+.mc-reload-btn { background: transparent; border: 1px solid var(--border); color: var(--text-dim); padding: 2px 6px; font-family: var(--font-mono); font-size: 9px; letter-spacing: 0.08em; text-transform: uppercase; cursor: pointer; margin-left: 6px; border-radius: 2px; }
+.mc-reload-btn:hover { color: var(--text); border-color: var(--text-muted); }
+.mc-reload-btn.spinning::before { content: '⟳'; display: inline-block; animation: rspin 1s linear infinite; margin-right: 4px; }
+@keyframes rspin { from { transform: rotate(0); } to { transform: rotate(360deg); } }
+
+/* Loading & error states inside a chart container */
+.chart-state { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 40px 20px; font-family: var(--font-mono); font-size: 11px; color: var(--text-dim); letter-spacing: 0.05em; min-height: 160px; gap: 10px; }
+.chart-state.error { color: var(--danger); }
+.chart-state .csbtn { background: transparent; border: 1px solid var(--border); color: var(--text-muted); padding: 4px 10px; font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; cursor: pointer; border-radius: 2px; }
+.chart-state .csbtn:hover { color: var(--text); border-color: var(--text-dim); }
+.chart-loading-dot { width: 8px; height: 8px; background: var(--text-muted); border-radius: 50%; animation: lpulse 1.2s ease-in-out infinite; }
+@keyframes lpulse { 0%, 100% { opacity: 0.3; transform: scale(0.8); } 50% { opacity: 1; transform: scale(1.1); } }
+
+/* Expand chart icon (⛶) — positioned absolute in each mini-chart */
+.mini-chart { position: relative; }
+.chart-expand-btn { position: absolute; top: 6px; right: 6px; width: 22px; height: 22px; display: flex; align-items: center; justify-content: center; background: var(--bg-elev-2); border: 1px solid var(--border); border-radius: 3px; color: var(--text-dim); cursor: pointer; font-size: 13px; line-height: 1; opacity: 0; transition: opacity 0.15s; z-index: 5; padding: 0; }
+.mini-chart:hover .chart-expand-btn { opacity: 1; }
+.chart-expand-btn:hover { color: var(--text); border-color: var(--text-muted); background: var(--bg-elev); }
+
+/* Drag-zoom brush — drawn during selection */
+.chart-brush { fill: var(--seco); opacity: 0.18; pointer-events: none; }
+.chart-brush-border { stroke: var(--seco); stroke-width: 1; opacity: 0.6; pointer-events: none; }
+
+/* Reset-zoom button */
+.chart-zoom-reset { position: absolute; top: 6px; right: 34px; padding: 3px 8px; font-family: var(--font-mono); font-size: 9px; color: var(--solar); border: 1px solid rgba(251,191,36,0.4); background: rgba(251,191,36,0.08); cursor: pointer; border-radius: 2px; letter-spacing: 0.06em; text-transform: uppercase; z-index: 5; display: none; }
+.chart-zoom-reset.active { display: block; }
+.chart-zoom-reset:hover { background: rgba(251,191,36,0.2); }
+
+/* Modal overlay */
+.chart-modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.88); z-index: 1000; display: none; align-items: center; justify-content: center; padding: 24px; }
+.chart-modal-overlay.active { display: flex; }
+.chart-modal { position: relative; background: var(--bg-elev); border: 1px solid var(--border); border-radius: 6px; width: 100%; max-width: 1400px; height: 100%; max-height: 88vh; display: flex; flex-direction: column; padding: 22px 26px; box-shadow: 0 20px 60px rgba(0,0,0,0.5); }
+.chart-modal-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 16px; padding-bottom: 12px; border-bottom: 1px solid var(--border-soft); flex-wrap: wrap; gap: 10px; }
+.chart-modal-title { font-family: var(--font-sans); font-size: 14px; font-weight: 600; letter-spacing: 0.03em; text-transform: uppercase; color: var(--text); }
+.chart-modal-hint { font-family: var(--font-mono); font-size: 10px; color: var(--text-dim); letter-spacing: 0.05em; }
+.chart-modal-close { position: absolute; top: 12px; right: 14px; background: transparent; border: none; color: var(--text-muted); cursor: pointer; font-size: 22px; line-height: 1; padding: 4px 10px; }
+.chart-modal-close:hover { color: var(--text); }
+.chart-modal-body { flex: 1; position: relative; min-height: 0; display: flex; flex-direction: column; }
+.chart-modal-body .mini-chart { flex: 1; display: flex; flex-direction: column; }
+.chart-modal-body .mini-chart svg { flex: 1; height: auto !important; min-height: 0; }
+.chart-modal-body .mini-chart .mini-chart-head { margin-bottom: 12px; }
+.chart-modal-body .mini-chart .mc-legend { margin-top: 12px; flex-wrap: wrap; gap: 10px 16px; }
+.chart-modal-body .mini-chart .chart-expand-btn { display: none; }  /* No expand inside modal */
 .mc-mlt-label { font-family: var(--font-mono); font-size: 9px; fill: var(--warn); letter-spacing: 0.04em; opacity: 0.8; }
 .mc-crosshair { stroke: var(--text-dim); stroke-width: 1; stroke-dasharray: 2 3; opacity: 0; pointer-events: none; }
 .mc-hover-dot { stroke: var(--bg); stroke-width: 2; opacity: 0; pointer-events: none; }
@@ -312,6 +358,7 @@ html, body { background: var(--bg); color: var(--text); font-family: var(--font-
       <div class="hint">
         <span data-i18n="seasonalityHint">Pick years to compare · current year highlighted in subsystem color</span>
         <span class="mc-mode-badge" id="ear-mode-badge">weekly</span>
+        <button class="mc-reload-btn" id="reload-btn" data-i18n-title="reloadTitle" title="Recarregar dados">↻ <span data-i18n="reloadLbl">Reload</span></button>
       </div>
     </div>
     <div class="year-selector" id="year-selector">
@@ -373,6 +420,20 @@ html, body { background: var(--bg); color: var(--text); font-family: var(--font-
   <span><span data-i18n="updated">Updated</span>: daily 12h / 19h BRT</span>
 </footer>
 
+<!-- Chart fullscreen modal -->
+<div class="chart-modal-overlay" id="chart-modal-overlay" role="dialog" aria-modal="true">
+  <div class="chart-modal">
+    <button class="chart-modal-close" id="chart-modal-close" aria-label="Close">×</button>
+    <div class="chart-modal-head">
+      <div>
+        <div class="chart-modal-title" id="chart-modal-title">Chart</div>
+      </div>
+      <div class="chart-modal-hint" id="chart-modal-hint" data-i18n="modalHint">Drag horizontally on chart to zoom · click Reset to clear</div>
+    </div>
+    <div class="chart-modal-body" id="chart-modal-body"></div>
+  </div>
+</div>
+
 <script>
 // ── Subsystem definitions ────────────────────────────────────────
 const SUBS = ['SECO','SUL','NE','N'];
@@ -384,6 +445,10 @@ const MONTH_FULL_EN = ['January','February','March','April','May','June','July',
 const MONTH_FULL_PT = ['janeiro','fevereiro','março','abril','maio','junho','julho','agosto','setembro','outubro','novembro','dezembro'];
 
 // ── Data containers (populated by loadData from data/ear_ena.json) ──
+// Loading / error state
+let LOADING_STATE = 'idle';  // 'idle' | 'loading' | 'error' | 'ready'
+let LOAD_ERROR_MSG = null;
+
 let EAR_NOW = {};
 let EAR_MONTHLY = {};
 let EAR_DAILY = {};        // sub → year → [366 daily values]
@@ -661,6 +726,11 @@ const I18N = {
     yearSelectorLbl: 'Compare years',
     presetRecent3: 'Last 3y', presetRecent5: 'Last 5y',
     presetDroughts: 'Drought yrs', presetAll: 'All', presetClear: 'Clear',
+    reloadLbl: 'Reload', reloadTitle: 'Reload data from server',
+    modalHint: 'Drag horizontally on chart to zoom · click Reset to clear',
+    zoomReset: 'Reset zoom', expandChart: 'Expand to fullscreen',
+    loadingData: 'Loading data...', loadFailed: 'Failed to load data',
+    retryBtn: 'Retry',
     enaTitle: 'ENA bruta · MWmed per month',
     enaHint: 'Lines: 2024 / 2025 / 2026 ytd · hover for detail',
     enaBaciaTitle: 'ENA bruta by basin · MWmed per month (8 main basins)',
@@ -687,6 +757,11 @@ const I18N = {
     yearSelectorLbl: 'Comparar anos',
     presetRecent3: 'Últ. 3 anos', presetRecent5: 'Últ. 5 anos',
     presetDroughts: 'Anos de seca', presetAll: 'Todos', presetClear: 'Limpar',
+    reloadLbl: 'Recarregar', reloadTitle: 'Recarregar dados do servidor',
+    modalHint: 'Arraste horizontalmente no gráfico para dar zoom · clique em Reset para limpar',
+    zoomReset: 'Resetar zoom', expandChart: 'Expandir tela cheia',
+    loadingData: 'Carregando dados...', loadFailed: 'Falha ao carregar dados',
+    retryBtn: 'Tentar novamente',
     enaTitle: 'ENA bruta · MWmed por mês',
     enaHint: 'Linhas: 2024 / 2025 / 2026 ytd · passe o mouse para detalhe',
     enaBaciaTitle: 'ENA bruta por bacia · MWmed por mês (8 bacias principais)',
@@ -712,6 +787,11 @@ function setLang(lang) {
   document.querySelectorAll('.lang-toggle button').forEach(b => {
     b.classList.toggle('active', b.dataset.lang === lang);
   });
+  renderAll();
+  try { localStorage.setItem('lang', lang); } catch(e){}
+}
+
+function renderAll() {
   renderKPIs();
   renderYearChips();
   renderEARMultiples();
@@ -719,7 +799,6 @@ function setLang(lang) {
   renderBasinMultiples();
   renderReservoirTable();
   if (typeof updateDataStatus === 'function') updateDataStatus();
-  try { localStorage.setItem('lang', lang); } catch(e){}
 }
 
 document.querySelectorAll('.lang-toggle button').forEach(b => {
@@ -829,6 +908,359 @@ document.addEventListener('click', (e) => {
   }
 });
 
+// ─────────────────────────────────────────────────────────────
+// CHART MODAL + DRAG-ZOOM SYSTEM
+// ─────────────────────────────────────────────────────────────
+// Each chart has a unique key (e.g. "ear-SECO", "ena-N", "basin-grande").
+// xZooms[key] = {start: idx, end: idx} when zoomed, null otherwise.
+const xZooms = {};  // chartKey → {start, end} or undefined
+
+// Active modal state: which chart is currently expanded
+let activeModal = null;  // { kind: 'ear'|'ena'|'basin', id: sub or basinId }
+
+// Get effective range for a chart key in current mode units
+function effectiveRange(chartKey) {
+  const zoom = xZooms[chartKey];
+  const total = xUnits();
+  if (zoom && zoom.end > zoom.start) {
+    return { start: Math.max(0, zoom.start), end: Math.min(total - 1, zoom.end) };
+  }
+  return { start: 0, end: total - 1 };
+}
+
+// Filter a series array by chart's xZoom range
+function applyZoom(pts, chartKey) {
+  const r = effectiveRange(chartKey);
+  if (r.start === 0 && r.end === xUnits() - 1) return pts;
+  return pts.filter(p => p.idx >= r.start && p.idx <= r.end);
+}
+
+// Modal open/close
+function openChartModal(kind, id) {
+  activeModal = { kind, id };
+  const overlay = document.getElementById('chart-modal-overlay');
+  const body    = document.getElementById('chart-modal-body');
+  const titleEl = document.getElementById('chart-modal-title');
+
+  let title = '';
+  if (kind === 'ear')   title = `EAR · ${SUB_LABELS[id]} (${SUB_FULL[id]})`;
+  if (kind === 'ena')   title = `ENA · ${SUB_LABELS[id]} (${SUB_FULL[id]})`;
+  if (kind === 'basin') {
+    const meta = BASIN_META[id] || {};
+    title = `ENA · ${meta.name || id} (${meta.sub || ''})`;
+  }
+  titleEl.textContent = title;
+
+  body.innerHTML = '';
+  // Render large-size version of the chart into the modal
+  renderSingleChartLarge(kind, id, body);
+  overlay.classList.add('active');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeChartModal() {
+  const overlay = document.getElementById('chart-modal-overlay');
+  overlay.classList.remove('active');
+  document.body.style.overflow = '';
+  activeModal = null;
+}
+
+// Render one chart at large size into a container.
+// Reuses the same data and rendering logic, just with bigger dimensions.
+function renderSingleChartLarge(kind, id, container) {
+  const W = 1300, H = 480, padL = 60, padR = 24, padT = 16, padB = 30;
+  const innerW = W - padL - padR, innerH = H - padT - padB;
+  const MONTH_LABELS = currentLang === 'PT' ? MONTH_ABBR_PT : MONTH_ABBR_EN;
+  const mode = currentDisplayMode();
+  const totalUnits = xUnits();
+  const chartKey = `${kind}-${id}`;
+  const range = effectiveRange(chartKey);
+  const rangeSize = Math.max(1, range.end - range.start);
+  const xScale = i => padL + ((i - range.start) / rangeSize) * innerW;
+  const fmtK = v => v >= 1000 ? (v/1000) + 'k' : String(v);
+  const yearsToPlot = Array.from(selectedYears).sort((a, b) => a - b);
+  const currentYear = new Date().getUTCFullYear();
+
+  // Decide y-axis based on chart type
+  let yMax = 100, yTicks = [25, 50, 75, 100], unitFmt = v => `${v.toFixed(1)}%`, yLabelFn = String;
+  const seriesFn = kind === 'ear' ? (yr => earSeries(id, yr))
+                 : kind === 'ena' ? (yr => enaSeries(id, yr))
+                 : (yr => basinSeries(id, yr));
+  let subColor;
+  if (kind === 'ear') {
+    subColor = `var(--${id.toLowerCase()})`;
+  } else if (kind === 'ena') {
+    subColor = `var(--${id.toLowerCase()})`;
+    yMax = ENA_YAXIS[id].max; yTicks = ENA_YAXIS[id].ticks;
+    unitFmt = v => `${fmtInt(Math.round(v))} MWmed`; yLabelFn = fmtK;
+  } else if (kind === 'basin') {
+    const meta = BASIN_META[id] || {};
+    subColor = `var(--${(meta.sub || 'seco').toLowerCase()})`;
+    yMax = BASIN_YAXIS[id].max; yTicks = BASIN_YAXIS[id].ticks;
+    unitFmt = v => `${fmtInt(Math.round(v))} MWmed`; yLabelFn = fmtK;
+  }
+  const yScale = v => padT + innerH - (v / yMax) * innerH;
+
+  let paths = '', recentDots = '';
+  const yearLegendItems = [];
+  for (const yr of yearsToPlot) {
+    let pts = seriesFn(yr);
+    pts = applyZoom(pts, chartKey);
+    if (!pts.length) continue;
+    const coords = pts.map(p => ({x: xScale(p.idx), y: yScale(p.value)}));
+    const d = coords.map((c, i) => `${i===0?'M':'L'} ${c.x.toFixed(1)} ${c.y.toFixed(1)}`).join(' ');
+    const cfg = colorForYear(yr);
+    const stroke = cfg.color === 'CURRENT' ? subColor : cfg.color;
+    const opacity = (currentYear - yr) > 6 ? 0.55 : (yr === currentYear ? 1.0 : 0.85);
+    paths += `<path d="${d}" stroke="${stroke}" stroke-width="${cfg.width + 0.6}" fill="none" opacity="${opacity}"/>`;
+    if (yr === currentYear && mode !== 'daily') {
+      recentDots += coords.map(c => `<circle cx="${c.x}" cy="${c.y}" r="2.5" fill="${subColor}" stroke="var(--bg)" stroke-width="0.5"/>`).join('');
+    }
+    yearLegendItems.push(`<span class="ml-item"><span class="ml-swatch" style="background:${stroke};height:${cfg.width >= 2 ? 3 : 2}px;width:18px"></span> ${yr}${yr === currentYear ? ' YTD' : ''}</span>`);
+  }
+
+  let grid = '';
+  for (const tv of yTicks) {
+    grid += `<line class="mc-grid" x1="${padL}" x2="${W-padR}" y1="${yScale(tv)}" y2="${yScale(tv)}" />`;
+    grid += `<text class="mc-axis" x="${padL-8}" y="${yScale(tv)+4}" text-anchor="end" font-size="11">${yLabelFn(tv)}</text>`;
+  }
+
+  // X labels: show month names in the visible range
+  let xlab = '';
+  for (let m = 1; m <= 12; m++) {
+    const doy = MONTH_START_DOY[m-1] + 14;
+    let labelIdx;
+    if (mode === 'daily')   labelIdx = doy - 1;
+    else if (mode === 'weekly') labelIdx = Math.round(doy / 7);
+    else labelIdx = m - 1;
+    if (labelIdx < range.start || labelIdx > range.end) continue;
+    const xPos = xScale(labelIdx);
+    xlab += `<text class="mc-axis" x="${xPos}" y="${H-padB+18}" text-anchor="middle" font-size="11">${MONTH_LABELS[m-1]}</text>`;
+  }
+
+  const hasZoom = xZooms[chartKey] && (xZooms[chartKey].end - xZooms[chartKey].start) < totalUnits - 1;
+
+  container.innerHTML = `
+    <div class="mini-chart" data-chart-key="${chartKey}">
+      ${hasZoom ? `<button class="chart-zoom-reset active" data-chart-key="${chartKey}">↺ ${I18N[currentLang].zoomReset}</button>` : ''}
+      <div class="mini-chart-head">
+        <span class="mc-name ${subColor.replace('var(--','').replace(')','')}">${activeModal && activeModal.kind ? activeModal.kind.toUpperCase() : ''}</span>
+      </div>
+      <svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMid meet">
+        ${grid}
+        ${xlab}
+        ${paths}
+        ${recentDots}
+        <line class="mc-crosshair" x1="0" y1="${padT}" x2="0" y2="${padT+innerH}" />
+        <rect class="chart-brush" x="0" y="${padT}" width="0" height="${innerH}" style="display:none" />
+        <rect class="mc-hover-overlay" x="${padL}" y="${padT}" width="${innerW}" height="${innerH}" fill="transparent" />
+      </svg>
+      <div class="mc-tooltip"></div>
+      <div class="mc-legend">${yearLegendItems.join('')}</div>
+    </div>
+  `;
+
+  // Attach hover + drag-zoom inside modal
+  const chartEl = container.querySelector('.mini-chart');
+  attachUniversalHover(chartEl, kind, id, W, H, padL, padR, padT, padB, innerW, innerH, xScale, yearsToPlot, range, yScale, unitFmt, subColor);
+  attachDragZoom(chartEl, chartKey, W, H, padL, padR, padT, padB, innerW, innerH, totalUnits, range);
+}
+
+// Universal hover handler (works for any chart kind)
+function attachUniversalHover(chartEl, kind, id, W, H, padL, padR, padT, padB, innerW, innerH, xScale, yearsToPlot, range, yScale, unitFmt, subColor) {
+  const svg = chartEl.querySelector('svg');
+  const overlay = chartEl.querySelector('.mc-hover-overlay');
+  const crosshair = chartEl.querySelector('.mc-crosshair');
+  const tooltip = chartEl.querySelector('.mc-tooltip');
+  const lang = currentLang;
+  const rangeSize = Math.max(1, range.end - range.start);
+
+  const seriesFn = kind === 'ear' ? (yr => earSeries(id, yr))
+                 : kind === 'ena' ? (yr => enaSeries(id, yr))
+                 : (yr => basinSeries(id, yr));
+  const chartKey = `${kind}-${id}`;
+
+  overlay.addEventListener('mousemove', (e) => {
+    // Skip if user is currently drag-selecting
+    if (chartEl.dataset.dragging === '1') return;
+    const rect = svg.getBoundingClientRect();
+    const mouseX = e.clientX - rect.left;
+    const viewBoxX = (mouseX / rect.width) * W;
+    const idxFloat = range.start + ((viewBoxX - padL) / innerW) * rangeSize;
+    const idx = Math.max(range.start, Math.min(range.end, Math.round(idxFloat)));
+    const xPos = xScale(idx);
+
+    crosshair.setAttribute('x1', xPos);
+    crosshair.setAttribute('x2', xPos);
+    crosshair.style.opacity = 0.7;
+
+    const rows = [];
+    let label = '';
+    for (const yr of yearsToPlot) {
+      let pts = seriesFn(yr);
+      pts = applyZoom(pts, chartKey);
+      if (!pts.length) continue;
+      let best = null, bestDist = Infinity;
+      for (const p of pts) {
+        const d = Math.abs(p.idx - idx);
+        if (d < bestDist) { bestDist = d; best = p; }
+      }
+      const tolerance = Math.max(1, Math.round(rangeSize / 26));
+      if (best && bestDist <= tolerance) {
+        const cfg = colorForYear(yr);
+        const stroke = cfg.color === 'CURRENT' ? subColor : cfg.color;
+        if (!label) label = labelForIdx(best.idx, yr, lang);
+        rows.push(`<div class="mctt-row"><span class="mctt-lbl"><span class="mctt-sw" style="background:${stroke}"></span>${yr}</span><span><span class="mctt-val">${unitFmt(best.value)}</span></span></div>`);
+      }
+    }
+    if (!label) label = currentDisplayMode();
+    tooltip.innerHTML = `<div class="mctt-month">${label}</div>${rows.join('')}`;
+
+    const chartRect = chartEl.getBoundingClientRect();
+    const tooltipW = 220;
+    const cursorX = e.clientX - chartRect.left;
+    const cursorY = e.clientY - chartRect.top;
+    const left = cursorX + tooltipW + 12 > chartRect.width
+      ? Math.max(4, cursorX - tooltipW - 12)
+      : cursorX + 12;
+    tooltip.style.left = left + 'px';
+    tooltip.style.top = Math.max(4, cursorY - 60) + 'px';
+    tooltip.style.opacity = 1;
+  });
+
+  overlay.addEventListener('mouseleave', () => {
+    crosshair.style.opacity = 0;
+    tooltip.style.opacity = 0;
+  });
+}
+
+// Drag-zoom on the X axis
+function attachDragZoom(chartEl, chartKey, W, H, padL, padR, padT, padB, innerW, innerH, totalUnits, range) {
+  const svg = chartEl.querySelector('svg');
+  const overlay = chartEl.querySelector('.mc-hover-overlay');
+  const brush = chartEl.querySelector('.chart-brush');
+  if (!overlay || !brush) return;
+  const rangeSize = Math.max(1, range.end - range.start);
+
+  let dragStartX = null;
+
+  const screenToIdx = (clientX) => {
+    const rect = svg.getBoundingClientRect();
+    const mouseX = clientX - rect.left;
+    const viewBoxX = (mouseX / rect.width) * W;
+    const idxFloat = range.start + ((viewBoxX - padL) / innerW) * rangeSize;
+    return Math.max(range.start, Math.min(range.end, Math.round(idxFloat)));
+  };
+  const idxToViewBoxX = (idx) => padL + ((idx - range.start) / rangeSize) * innerW;
+
+  overlay.addEventListener('mousedown', (e) => {
+    if (e.button !== 0) return;
+    dragStartX = e.clientX;
+    chartEl.dataset.dragging = '1';
+    brush.style.display = 'block';
+    e.preventDefault();
+  });
+
+  // Use document-level mousemove/up so drag continues if cursor leaves overlay
+  const onMove = (e) => {
+    if (dragStartX === null) return;
+    const startIdx = screenToIdx(dragStartX);
+    const curIdx = screenToIdx(e.clientX);
+    const lo = Math.min(startIdx, curIdx);
+    const hi = Math.max(startIdx, curIdx);
+    const x1 = idxToViewBoxX(lo);
+    const x2 = idxToViewBoxX(hi);
+    brush.setAttribute('x', x1);
+    brush.setAttribute('width', Math.max(0, x2 - x1));
+  };
+  const onUp = (e) => {
+    if (dragStartX === null) return;
+    const startIdx = screenToIdx(dragStartX);
+    const endIdx = screenToIdx(e.clientX);
+    const lo = Math.min(startIdx, endIdx);
+    const hi = Math.max(startIdx, endIdx);
+    dragStartX = null;
+    chartEl.dataset.dragging = '0';
+    brush.style.display = 'none';
+    if (hi - lo >= 1) {
+      xZooms[chartKey] = { start: lo, end: hi };
+      // Re-render whichever container holds this chart
+      reRenderAfterZoom(chartKey);
+    }
+  };
+  document.addEventListener('mousemove', onMove);
+  document.addEventListener('mouseup', onUp);
+  // Note: not removing global listeners — they're cheap and persist across charts
+}
+
+// Re-render after a zoom change for the affected chart
+function reRenderAfterZoom(chartKey) {
+  // If modal is open and this chart is inside it, re-render modal
+  if (activeModal && `${activeModal.kind}-${activeModal.id}` === chartKey) {
+    const body = document.getElementById('chart-modal-body');
+    body.innerHTML = '';
+    renderSingleChartLarge(activeModal.kind, activeModal.id, body);
+  }
+  // Always re-render the inline grids too (so user sees zoom there too)
+  renderEARMultiples();
+  renderENAMultiples();
+  renderBasinMultiples();
+}
+
+// Reset zoom for a chart
+function resetZoom(chartKey) {
+  delete xZooms[chartKey];
+  reRenderAfterZoom(chartKey);
+}
+
+// Document-level handlers for expand-icon clicks and modal/reset interactions
+document.addEventListener('click', (e) => {
+  // Expand button → open modal
+  const expandBtn = e.target.closest('.chart-expand-btn');
+  if (expandBtn) {
+    const kind = expandBtn.dataset.kind;
+    const id = expandBtn.dataset.id;
+    if (kind && id) openChartModal(kind, id);
+    return;
+  }
+  // Reset zoom button
+  const resetBtn = e.target.closest('.chart-zoom-reset');
+  if (resetBtn) {
+    const key = resetBtn.dataset.chartKey;
+    if (key) resetZoom(key);
+    return;
+  }
+  // Modal close
+  if (e.target.id === 'chart-modal-close' || e.target.id === 'chart-modal-overlay') {
+    closeChartModal();
+    return;
+  }
+  // Reload button
+  const reloadBtn = e.target.closest('#reload-btn');
+  if (reloadBtn) {
+    reloadAllData();
+    return;
+  }
+});
+
+// Esc closes modal
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape' && activeModal) closeChartModal();
+});
+
+// Reload data from server
+async function reloadAllData() {
+  const btn = document.getElementById('reload-btn');
+  if (btn) btn.classList.add('spinning');
+  LOADING_STATE = 'loading';
+  await loadData();
+  await loadBasinData();
+  LOADING_STATE = 'ready';
+  if (btn) btn.classList.remove('spinning');
+  renderAll();
+}
+
+
 function renderEARMultiples() {
   const container = document.getElementById('ear-multiples');
   const W = 540, H = 160, padL = 32, padR = 12, padT = 12, padB = 22;
@@ -895,7 +1327,9 @@ function renderEARMultiples() {
     }
 
     return `
-      <div class="mini-chart" data-sub="${sub}" data-series='${JSON.stringify(seriesMap).replace(/'/g, "&apos;")}'>
+      <div class="mini-chart" data-chart-key="ear-${sub}" data-sub="${sub}" data-series='${JSON.stringify(seriesMap).replace(/'/g, "&apos;")}'>
+        <button class="chart-expand-btn" data-kind="ear" data-id="${sub}" title="${I18N[currentLang].expandChart}">⛶</button>
+        ${xZooms[`ear-${sub}`] ? `<button class="chart-zoom-reset active" data-chart-key="ear-${sub}">↺ ${I18N[currentLang].zoomReset}</button>` : ''}
         <div class="mini-chart-head">
           <span class="mc-name ${sub.toLowerCase()}">${SUB_LABELS[sub]} · ${SUB_FULL[sub]}</span>
           <span class="mc-avg">${currentLang === 'PT' ? 'hoje' : 'now'}: <strong>${now ? fmt(now.pct,1)+'%' : '—'}</strong></span>
@@ -906,6 +1340,7 @@ function renderEARMultiples() {
           ${paths}
           ${recentDots}
           <line class="mc-crosshair" x1="0" y1="${padT}" x2="0" y2="${padT+innerH}" />
+          <rect class="chart-brush" x="0" y="${padT}" width="0" height="${innerH}" style="display:none" />
           <rect class="mc-hover-overlay" x="${padL}" y="${padT}" width="${innerW}" height="${innerH}" fill="transparent" />
         </svg>
         <div class="mc-tooltip"></div>
@@ -1038,7 +1473,9 @@ function renderENAMultiples() {
     const pctMltFmt = pctMlt !== null ? fmt(pctMlt, 0) + '% MLT' : '— MLT';
 
     return `
-      <div class="mini-chart" data-sub="${sub}">
+      <div class="mini-chart" data-chart-key="ena-${sub}" data-sub="${sub}">
+        <button class="chart-expand-btn" data-kind="ena" data-id="${sub}" title="${I18N[currentLang].expandChart}">⛶</button>
+        ${xZooms[`ena-${sub}`] ? `<button class="chart-zoom-reset active" data-chart-key="ena-${sub}">↺ ${I18N[currentLang].zoomReset}</button>` : ''}
         <div class="mini-chart-head">
           <span class="mc-name ${sub.toLowerCase()}">${SUB_LABELS[sub]} · ${SUB_FULL[sub]}</span>
           <span class="mc-avg">${currentLang === 'PT' ? 'hoje' : 'now'}: <strong style="color:${nowColor}">${mwmedFmt}</strong> MWmed · ${pctMltFmt}</span>
@@ -1049,6 +1486,7 @@ function renderENAMultiples() {
           ${paths}
           ${recentDots}
           <line class="mc-crosshair" x1="0" y1="${padT}" x2="0" y2="${padT+innerH}" />
+          <rect class="chart-brush" x="0" y="${padT}" width="0" height="${innerH}" style="display:none" />
           <rect class="mc-hover-overlay" x="${padL}" y="${padT}" width="${innerW}" height="${innerH}" fill="transparent" />
         </svg>
         <div class="mc-tooltip"></div>
@@ -1180,7 +1618,9 @@ function renderBasinMultiples() {
     const basinName = meta.name || basinId;
 
     return `
-      <div class="mini-chart" data-basin="${basinId}">
+      <div class="mini-chart" data-chart-key="basin-${basinId}" data-basin="${basinId}">
+        <button class="chart-expand-btn" data-kind="basin" data-id="${basinId}" title="${I18N[currentLang].expandChart}">⛶</button>
+        ${xZooms[`basin-${basinId}`] ? `<button class="chart-zoom-reset active" data-chart-key="basin-${basinId}">↺ ${I18N[currentLang].zoomReset}</button>` : ''}
         <div class="mini-chart-head">
           <span class="mc-name ${meta.sub.toLowerCase()}">${basinName} · ${meta.sub}</span>
           <span class="mc-avg">${currentLang === 'PT' ? 'hoje' : 'now'}: <strong>${mwmedFmt}</strong> MWmed</span>
@@ -1191,6 +1631,7 @@ function renderBasinMultiples() {
           ${paths}
           ${recentDots}
           <line class="mc-crosshair" x1="0" y1="${padT}" x2="0" y2="${padT+innerH}" />
+          <rect class="chart-brush" x="0" y="${padT}" width="0" height="${innerH}" style="display:none" />
           <rect class="mc-hover-overlay" x="${padL}" y="${padT}" width="${innerW}" height="${innerH}" fill="transparent" />
         </svg>
         <div class="mc-tooltip"></div>
