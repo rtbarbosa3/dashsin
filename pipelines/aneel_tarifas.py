@@ -60,15 +60,27 @@ def is_top_distribuidora(name: str) -> bool:
 
 
 def classify_modalidade(s: str) -> str | None:
-    """Returns 'convencional', 'verde', or 'azul' from modalidade text."""
+    """Returns 'convencional', 'verde', or 'azul' from modalidade text.
+
+    NOTE: Public StoneX agro is ACL (mercado livre). We filter out 'CATIVO'
+    variants introduced by ANEEL ABRACE classification (Cativo = regulated
+    market consumer, not relevant for ACL clients).
+    """
     if not s:
         return None
-    s = s.lower()
-    if "convencional" in s or "branca" in s:
+    s_low = s.lower()
+    # Skip ABRACE CATIVO and pure-distribution/generation entries (not retail tariffs)
+    if "cativo" in s_low:
+        return None
+    if "distribui" in s_low or "geraç" in s_low or "geracao" in s_low:
+        return None
+    if "suprimento" in s_low or "não se aplica" in s_low or "nao se aplica" in s_low:
+        return None
+    if "convencional" in s_low or "branca" in s_low:
         return "convencional"
-    if "azul" in s:
+    if "azul" in s_low:
         return "azul"
-    if "verde" in s:
+    if "verde" in s_low:
         return "verde"
     return None
 
@@ -138,6 +150,12 @@ def main():
     seen_modalidades: set[str] = set()
     seen_postos: set[str] = set()
     seen_detalhes: set[str] = set()
+    # Filter counters — helps diagnose where rows are being dropped
+    drop_counts = {
+        "subgrupo": 0, "dist": 0, "modalidade": 0,
+        "base": 0, "detalhe": 0, "valor": 0, "date": 0,
+    }
+    kept_components = 0  # 1 row can produce 2 components (TUSD + TE)
 
     for row in stream_csv_rows(TARIFAS_URL):
         rows_read += 1
@@ -162,93 +180,162 @@ def main():
             cols["unidade"] = (find_col(sample_keys, "dscunidade", "terciaria")
                                or find_col(sample_keys, "dscunidade")
                                or find_col(sample_keys, "unidade", "terciaria"))
-            cols["valor"] = (find_col(sample_keys, "vlrtarifa")
-                             or find_col(sample_keys, "valor", "tarifa")
-                             or find_col(sample_keys, "vltarifa"))
+            # NEW SCHEMA (since ~2026): VlrTUSD and VlrTE in separate columns.
+            # OLD SCHEMA: single VlrTarifa column. We keep both for compatibility.
+            cols["valor_tusd"] = (find_col(sample_keys, "vlrtusd")
+                                  or find_col(sample_keys, "valor", "tusd")
+                                  or find_col(sample_keys, "vlr", "tusd"))
+            cols["valor_te"]   = (find_col(sample_keys, "vlrte")
+                                  or find_col(sample_keys, "valor", "te")
+                                  or find_col(sample_keys, "vlr", "te"))
+            # Legacy fallback: single VlrTarifa column
+            cols["valor_legacy"] = (find_col(sample_keys, "vlrtarifa")
+                                    or find_col(sample_keys, "valor", "tarifa")
+                                    or find_col(sample_keys, "vltarifa"))
             cols["data_ini"] = (find_col(sample_keys, "datinicio", "vigencia")
                                 or find_col(sample_keys, "data", "inicio"))
             cols["posto"] = (find_col(sample_keys, "dscposto")
+                             or find_col(sample_keys, "nomposto")
                              or find_col(sample_keys, "posto", "tarif"))
-            print(f"\nResolved columns: {cols}\n")
+            print(f"\nResolved columns: {cols}")
+            has_new_schema = bool(cols.get("valor_tusd") or cols.get("valor_te"))
+            has_legacy = bool(cols.get("valor_legacy"))
+            print(f"Schema detected: {'NEW (VlrTUSD/VlrTE separate)' if has_new_schema else ('LEGACY (VlrTarifa single)' if has_legacy else 'UNKNOWN — no value column found!')}")
+            if not has_new_schema and not has_legacy:
+                print("\nFATAL: No value column found. CSV header was:")
+                for k in sample_keys: print(f"  - {k!r}")
+                print("\nExpected to find one of: VlrTUSD, VlrTE, VlrTarifa")
+                sys.exit(1)
+            # Print first 3 rows raw for debugging
+            print(f"\nFirst row raw values for value columns:")
+            for col_key in ("valor_tusd", "valor_te", "valor_legacy"):
+                if cols.get(col_key):
+                    print(f"  {col_key} ({cols[col_key]!r}) = {row.get(cols[col_key], '')!r}")
+            print()
 
         if rows_read % 200000 == 0:
-            print(f"  ...processed {rows_read:,} rows, kept {rows_kept:,}, seen modalidades={seen_modalidades}")
+            top_drop = max(drop_counts.items(), key=lambda x: x[1])
+            print(f"  ...processed {rows_read:,} rows · kept {rows_kept:,} ({kept_components:,} components) · top drop: {top_drop[0]}={top_drop[1]:,}")
 
         subgrupo = (row.get(cols["subgrupo"], "") or "").strip().upper() if cols.get("subgrupo") else ""
-        if subgrupo not in CLASSES_OF_INTEREST:
+        # Strip suffix like "B1 - Residencial" → "B1"
+        if " " in subgrupo or "-" in subgrupo:
+            subgrupo_short = subgrupo.split()[0].split("-")[0].strip()
+        else:
+            subgrupo_short = subgrupo
+        if subgrupo_short not in CLASSES_OF_INTEREST:
+            drop_counts["subgrupo"] += 1
             continue
+        subgrupo = subgrupo_short  # use normalized key for buckets
         dist_name = (row.get(cols["dist"], "") or "").strip() if cols.get("dist") else ""
         if not is_top_distribuidora(dist_name):
+            drop_counts["dist"] += 1
             continue
 
         modalidade_raw = (row.get(cols["modalidade"], "") or "").strip() if cols.get("modalidade") else ""
+        if len(seen_modalidades) < 30:
+            seen_modalidades.add(modalidade_raw[:40])
         modalidade = classify_modalidade(modalidade_raw)
-        if rows_kept < 10:
-            seen_modalidades.add(modalidade_raw[:30])
         if modalidade is None:
+            drop_counts["modalidade"] += 1
             continue
         # B1 só captura convencional; A4 só captura verde/azul (não convencional)
         if subgrupo == "B1" and modalidade != "convencional":
+            drop_counts["modalidade"] += 1
             continue
         if subgrupo == "A4" and modalidade not in ("verde", "azul"):
-            continue
-
-        base_raw = (row.get(cols["base"], "") or "").strip() if cols.get("base") else ""
-        base = classify_base(base_raw)
-        if base is None:
+            drop_counts["modalidade"] += 1
             continue
 
         detalhe_raw = (row.get(cols["detalhe"], "") or "").strip() if cols.get("detalhe") else ""
-        if rows_kept < 10:
-            seen_detalhes.add(detalhe_raw[:30])
+        if len(seen_detalhes) < 30:
+            seen_detalhes.add(detalhe_raw[:40])
         detalhe = classify_detalhe(detalhe_raw)
         if detalhe is None:
+            drop_counts["detalhe"] += 1
             continue
 
         posto_raw = (row.get(cols["posto"], "") or "").strip() if cols.get("posto") else ""
-        if rows_kept < 10:
-            seen_postos.add(posto_raw[:30])
+        if len(seen_postos) < 30:
+            seen_postos.add(posto_raw[:40])
         posto = classify_posto(posto_raw)
-
-        valor = to_float(row.get(cols["valor"], "")) if cols.get("valor") else None
-        if valor is None or valor <= 0:
-            continue
 
         d = parse_date_flex(row.get(cols["data_ini"], "") if cols.get("data_ini") else "")
         if d is None:
+            drop_counts["date"] += 1
             continue
 
         unidade = (row.get(cols["unidade"], "") or "").lower() if cols.get("unidade") else ""
         is_demanda = (detalhe == "demanda") or ("kw" in unidade and "kwh" not in unidade)
-        # For consumo: convert MWh to kWh if needed (divide by 1000)
-        if detalhe == "consumo" and "mwh" in unidade:
-            valor = valor / 1000.0
-        # For demanda: keep R$/kW as-is
+        # Pre-compute MWh→kWh conversion factor
+        mwh_factor = 1.0 / 1000.0 if (detalhe == "consumo" and "mwh" in unidade) else 1.0
 
-        # Compose component key: e.g. 'te_consumo_ponta', 'tusd_demanda_unica'
-        if is_demanda:
-            comp = f"{base}_demanda_{posto}"
-        else:
-            comp = f"{base}_consumo_{posto}"
+        # NEW: read VlrTUSD and VlrTE separately. Each row may produce up to 2 components.
+        valores_to_process: list[tuple[str, float]] = []  # (base, value)
+        if cols.get("valor_tusd"):
+            v = to_float(row.get(cols["valor_tusd"], ""))
+            if v is not None and v > 0:
+                valores_to_process.append(("tusd", v * mwh_factor if not is_demanda else v))
+        if cols.get("valor_te"):
+            v = to_float(row.get(cols["valor_te"], ""))
+            if v is not None and v > 0:
+                valores_to_process.append(("te", v * mwh_factor if not is_demanda else v))
+        # Legacy fallback: single VlrTarifa column (uses DscBaseTarifaria to know type)
+        if not valores_to_process and cols.get("valor_legacy"):
+            v = to_float(row.get(cols["valor_legacy"], ""))
+            if v is not None and v > 0:
+                base_raw = (row.get(cols["base"], "") or "").strip() if cols.get("base") else ""
+                base = classify_base(base_raw)
+                if base is not None:
+                    valores_to_process.append((base, v * mwh_factor if not is_demanda else v))
+
+        if not valores_to_process:
+            drop_counts["valor"] += 1
+            continue
 
         date_iso = d.isoformat()
-        # Within same (dist, subgrupo, date, modalidade, component), keep max value (in case of duplicate rows)
-        prev = buckets[dist_name][subgrupo][date_iso][modalidade].get(comp)
-        if prev is None or valor > prev:
-            buckets[dist_name][subgrupo][date_iso][modalidade][comp] = valor
+        for base, valor in valores_to_process:
+            # Compose component key: e.g. 'te_consumo_ponta', 'tusd_demanda_unica'
+            if is_demanda:
+                comp = f"{base}_demanda_{posto}"
+            else:
+                comp = f"{base}_consumo_{posto}"
+            # Within same (dist, subgrupo, date, modalidade, component), keep max value
+            prev = buckets[dist_name][subgrupo][date_iso][modalidade].get(comp)
+            if prev is None or valor > prev:
+                buckets[dist_name][subgrupo][date_iso][modalidade][comp] = valor
+            kept_components += 1
 
         dist_dates[dist_name][subgrupo].add(date_iso)
         rows_kept += 1
 
     print(f"\nRows read: {rows_read:,}")
-    print(f"Rows kept: {rows_kept:,}")
+    print(f"Rows kept: {rows_kept:,}  (produced {kept_components:,} value records)")
     print(f"Distribuidoras matched: {len(dist_dates)}")
-    print(f"Seen modalidades: {seen_modalidades}")
-    print(f"Seen postos: {seen_postos}")
-    print(f"Seen detalhes: {seen_detalhes}\n")
+    print(f"Seen modalidades ({len(seen_modalidades)}): {sorted(seen_modalidades)}")
+    print(f"Seen postos ({len(seen_postos)}): {sorted(seen_postos)}")
+    print(f"Seen detalhes ({len(seen_detalhes)}): {sorted(seen_detalhes)}")
+    print(f"\nRows dropped per filter stage:")
+    for stage, count in drop_counts.items():
+        print(f"  - {stage:12s}: {count:>10,}")
 
     if rows_kept == 0:
-        print("ERROR: No matching rows captured. CSV schema may have changed.")
+        print("\n" + "=" * 60)
+        print("ERROR: No matching rows captured.")
+        print("=" * 60)
+        # Try to give a useful hint based on counters
+        largest_drop = max(drop_counts.items(), key=lambda x: x[1])
+        hints = {
+            "subgrupo": "All rows filtered by subgrupo. Check CLASSES_OF_INTEREST keys vs 'Seen' values above.",
+            "dist": "No distribuidora matched. Check TOP25_KEYWORDS vs the SigAgente values in the CSV.",
+            "modalidade": "All rows filtered by modalidade. Modalidades seen vs classify_modalidade() rules may mismatch.",
+            "detalhe": "All rows filtered by detalhe. Check 'Seen detalhes' above against classify_detalhe() rules.",
+            "valor": "All rows had no usable value. Check if VlrTUSD/VlrTE columns are resolved (see 'Resolved columns' above).",
+            "date": "All rows had unparseable dates. Check DatInicioVigencia format.",
+        }
+        hint = hints.get(largest_drop[0], "See drop counts above for diagnosis.")
+        print(f"\nLikely cause: {hint}")
+        print(f"(Biggest drop was '{largest_drop[0]}' with {largest_drop[1]:,} rows)")
         sys.exit(1)
 
     # Build output per class
