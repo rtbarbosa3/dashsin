@@ -1,194 +1,146 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>BR Energy Terminal — PLD Monitor</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BR Energy Terminal — Market · PLD Monitor</title>
+<link rel="stylesheet" href="../shared/base.css">
 <style>
 :root {
-  --bg: #0a0b0d;
-  --bg-elev: #121418;
-  --bg-elev-2: #181b20;
-  --border: #23262c;
-  --border-soft: #1c1f24;
-  --text: #e6e8eb;
-  --text-muted: #8b8f96;
-  --text-dim: #5a5d62;
-  --accent: #d4d4d8;
   --seco: #5eb3f5;
   --sul:  #f0a830;
   --ne:   #4ade80;
   --n:    #c084fc;
-  --y24:  #4b5057;
-  --y25:  #8a8f96;
-  --y26:  #e6e8eb;
-  --danger: #ef4444;
-  --warn: #f59e0b;
-  --ok: #10b981;
-  --font-sans: 'DM Sans', system-ui, sans-serif;
-  --font-mono: 'JetBrains Mono', ui-monospace, monospace;
 }
-* { box-sizing: border-box; margin: 0; padding: 0; }
-html, body { background: var(--bg); color: var(--text); font-family: var(--font-sans); font-size: 14px; line-height: 1.5; -webkit-font-smoothing: antialiased; }
 
-/* topbar */
-.topbar {
-  border-bottom: 1px solid var(--border);
-  background: var(--bg);
-  padding: 14px 24px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 16px;
-}
-.brand { display: flex; align-items: baseline; gap: 12px; }
-.brand .logo { font-family: var(--font-mono); font-weight: 600; font-size: 13px; letter-spacing: 0.15em; color: var(--text); text-transform: uppercase; }
-.brand .divider { width: 1px; height: 14px; background: var(--border); display: inline-block; }
-.brand .module { font-size: 13px; color: var(--text-muted); letter-spacing: 0.05em; text-transform: uppercase; }
-.brand .tabs { display: flex; gap: 1px; background: var(--border); margin-left: 16px; }
-.brand .tab { background: var(--bg-elev); padding: 4px 10px; font-family: var(--font-mono); font-size: 10px; color: var(--text-muted); letter-spacing: 0.06em; text-transform: uppercase; cursor: pointer; text-decoration: none; }
-.brand .tab.active { color: var(--text); background: var(--bg-elev-2); }
-.brand .tab:hover { color: var(--text); }
-.topbar-right { display: flex; align-items: center; gap: 18px; }
-.meta { font-family: var(--font-mono); font-size: 11px; color: var(--text-dim); letter-spacing: 0.04em; }
-.meta .live { display: inline-block; width: 6px; height: 6px; background: var(--ok); border-radius: 50%; margin-right: 6px; vertical-align: middle; animation: pulse 2s infinite; }
-@keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.35; } }
-.lang-toggle { display: flex; border: 1px solid var(--border); border-radius: 4px; overflow: hidden; font-family: var(--font-mono); font-size: 11px; }
-.lang-toggle button { background: transparent; color: var(--text-muted); border: none; padding: 5px 10px; cursor: pointer; letter-spacing: 0.04em; }
-.lang-toggle button.active { background: var(--text); color: var(--bg); }
+.subheader { display: flex; justify-content: space-between; align-items: flex-end; padding: 24px 24px 8px; flex-wrap: wrap; gap: 12px; }
+.subheader h1 { font-family: var(--font-sans); font-size: 20px; font-weight: 600; color: var(--text); letter-spacing: -0.01em; margin: 0; }
+.subheader .subtitle { font-family: var(--font-mono); font-size: 11px; color: var(--text-dim); letter-spacing: 0.04em; margin-top: 4px; }
+.subheader .range { font-family: var(--font-mono); font-size: 11px; color: var(--text-muted); letter-spacing: 0.05em; }
+.subheader .range strong { color: var(--text); font-weight: 500; }
 
-/* subheader */
-.subheader { padding: 22px 24px 6px; display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; flex-wrap: wrap; }
-.subheader h1 { font-size: 22px; font-weight: 600; letter-spacing: -0.01em; margin-bottom: 4px; }
-.subheader .subtitle { font-size: 13px; color: var(--text-muted); }
-.subheader .range { font-family: var(--font-mono); font-size: 11px; color: var(--text-dim); letter-spacing: 0.05em; text-transform: uppercase; text-align: right; }
-.subheader .range strong { color: var(--text); }
-
-/* insights */
-.insights { margin: 16px 24px; border-left: 2px solid var(--warn); background: linear-gradient(90deg, rgba(245,158,11,0.06) 0%, transparent 60%); padding: 14px 18px; border-radius: 0 4px 4px 0; }
-.insights .label { font-family: var(--font-mono); font-size: 10px; color: var(--warn); letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 4px; }
-.insights p { font-size: 13px; color: var(--text); line-height: 1.6; }
-.insights p + p { margin-top: 6px; }
-.insights strong { color: var(--text); font-weight: 600; }
-.insights .v { font-family: var(--font-mono); color: var(--warn); font-weight: 600; }
+.insights { margin: 14px 24px; padding: 14px 16px; background: var(--bg-elev); border-left: 3px solid var(--solar); border-radius: 0 4px 4px 0; }
+.insights .label { font-family: var(--font-mono); font-size: 10px; color: var(--solar); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 6px; }
+.insights p { color: var(--text-muted); font-size: 13px; line-height: 1.55; margin: 6px 0 0; }
+.insights p strong { color: var(--text); font-weight: 500; }
+.insights .v { color: var(--text); font-family: var(--font-mono); font-weight: 500; }
 .insights .v.up { color: var(--danger); }
 .insights .v.down { color: var(--ok); }
 
-/* KPI strip */
-.kpi-strip { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: var(--border); margin: 0 24px; border: 1px solid var(--border); }
-.kpi { background: var(--bg-elev); padding: 18px 18px 16px; position: relative; overflow: hidden; }
-.kpi::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 2px; background: var(--accent); }
-.kpi.seco::before { background: var(--seco); }
-.kpi.sul::before { background: var(--sul); }
-.kpi.ne::before { background: var(--ne); }
-.kpi.n::before { background: var(--n); }
-.kpi .header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 10px; }
-.kpi .name { font-family: var(--font-mono); font-size: 11px; color: var(--text-muted); letter-spacing: 0.08em; text-transform: uppercase; }
-.kpi .unit { font-family: var(--font-mono); font-size: 10px; color: var(--text-dim); letter-spacing: 0.04em; }
-.kpi .value-row { display: flex; align-items: baseline; gap: 8px; margin-bottom: 12px; }
-.kpi .value { font-family: var(--font-mono); font-size: 26px; font-weight: 500; color: var(--text); letter-spacing: -0.01em; line-height: 1; }
-.kpi .value-label { font-family: var(--font-mono); font-size: 10px; color: var(--text-dim); letter-spacing: 0.04em; text-transform: uppercase; }
-.kpi .yoy-row { display: flex; gap: 14px; font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.03em; padding-top: 10px; border-top: 1px solid var(--border-soft); }
-.kpi .yoy-row .y { display: flex; flex-direction: column; gap: 2px; }
-.kpi .yoy-row .y .yr { color: var(--text-dim); }
-.kpi .yoy-row .y .val { color: var(--text-muted); font-weight: 500; font-size: 11px; }
-.kpi .yoy-row .y.current .val { color: var(--text); }
+.kpi-strip { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin: 0 24px; }
+.kpi { padding: 14px 16px; background: var(--bg-elev); border: 1px solid var(--border); border-radius: 4px; position: relative; }
+.kpi .label { font-family: var(--font-mono); font-size: 10px; color: var(--text-dim); letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 4px; }
+.kpi .label::before { content: ''; display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 6px; vertical-align: middle; }
+.kpi.seco .label::before { background: var(--seco); }
+.kpi.sul  .label::before { background: var(--sul); }
+.kpi.ne   .label::before { background: var(--ne); }
+.kpi.n    .label::before { background: var(--n); }
+.kpi .value { font-family: var(--font-mono); font-size: 24px; color: var(--text); font-weight: 500; letter-spacing: -0.01em; }
+.kpi .value-unit { font-size: 12px; color: var(--text-dim); margin-left: 4px; }
+.kpi .delta { font-family: var(--font-mono); font-size: 11px; margin-top: 4px; }
+.kpi .delta.up { color: var(--danger); }
+.kpi .delta.down { color: var(--ok); }
+.kpi .delta.flat { color: var(--text-muted); }
+.kpi .delta.up::before { content: '▲ '; }
+.kpi .delta.down::before { content: '▼ '; }
+.kpi .delta.flat::before { content: '— '; }
 
-/* main grid */
-.main { padding: 20px 24px 40px; display: grid; grid-template-columns: 1fr; gap: 20px; }
-.section { background: var(--bg-elev); border: 1px solid var(--border); border-radius: 4px; padding: 20px 22px; }
-.section-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 18px; padding-bottom: 12px; border-bottom: 1px solid var(--border-soft); flex-wrap: wrap; gap: 8px; }
-.section-head h2 { font-size: 14px; font-weight: 600; letter-spacing: 0.03em; text-transform: uppercase; color: var(--text); }
-.section-head .hint { font-family: var(--font-mono); font-size: 10px; color: var(--text-dim); letter-spacing: 0.05em; text-transform: uppercase; }
+.main { padding: 18px 24px; display: flex; flex-direction: column; gap: 18px; }
+.section { background: var(--bg-elev); border: 1px solid var(--border); border-radius: 4px; padding: 18px 22px; }
+.section-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 14px; flex-wrap: wrap; gap: 10px; }
+.section h2 { font-family: var(--font-sans); font-size: 12px; font-weight: 600; color: var(--text); letter-spacing: 0.05em; text-transform: uppercase; margin: 0; }
+.section .hint { font-family: var(--font-mono); font-size: 10px; color: var(--text-dim); letter-spacing: 0.05em; display: flex; align-items: center; gap: 6px; }
 
-/* multi-year small multiples */
-.small-mult-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 22px;
-}
-@media (max-width: 760px) {
-  .small-mult-grid { grid-template-columns: 1fr; }
-}
-.mini-chart { display: flex; flex-direction: column; }
-.mini-chart-head {
-  display: flex; justify-content: space-between; align-items: baseline;
-  margin-bottom: 10px;
-}
-.mini-chart-head .mc-name {
-  font-family: var(--font-mono); font-size: 11px; color: var(--text); letter-spacing: 0.06em; text-transform: uppercase; font-weight: 600;
-}
+.year-chips { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin: 6px 0 14px; padding: 10px 14px; background: var(--bg); border: 1px solid var(--border-soft); border-radius: 4px; }
+.year-chips-label { font-family: var(--font-mono); font-size: 10px; color: var(--text-dim); letter-spacing: 0.08em; text-transform: uppercase; margin-right: 4px; }
+.year-chip { font-family: var(--font-mono); font-size: 11px; color: var(--text-muted); padding: 4px 10px; border: 1px solid var(--border); background: transparent; cursor: pointer; letter-spacing: 0.04em; border-radius: 2px; transition: all 0.12s; }
+.year-chip:hover { color: var(--text); border-color: var(--text-dim); }
+.year-chip.selected { background: var(--seco); color: var(--bg); border-color: var(--seco); font-weight: 500; }
+.year-chip.drought.selected { background: var(--warn); border-color: var(--warn); }
+.year-presets { margin-left: auto; display: flex; gap: 6px; }
+.year-preset-btn { padding: 4px 10px; font-family: var(--font-mono); font-size: 9px; color: var(--text-dim); border: 1px solid var(--border); background: transparent; cursor: pointer; letter-spacing: 0.05em; text-transform: uppercase; }
+.year-preset-btn:hover { color: var(--text); border-color: var(--text-dim); }
+
+.mc-mode-badge { font-family: var(--font-mono); font-size: 8px; color: var(--text-dim); letter-spacing: 0.08em; text-transform: uppercase; padding: 2px 5px; border: 1px solid var(--border); border-radius: 2px; background: var(--bg-elev); margin-left: 8px; }
+.mc-mode-badge.daily { color: var(--solar); border-color: rgba(251,191,36,0.4); }
+.mc-mode-badge.weekly { color: var(--text-muted); }
+.mc-mode-badge.monthly { color: var(--text-dim); }
+
+.mc-reload-btn { background: transparent; border: 1px solid var(--border); color: var(--text-dim); padding: 2px 6px; font-family: var(--font-mono); font-size: 9px; letter-spacing: 0.08em; text-transform: uppercase; cursor: pointer; margin-left: 6px; border-radius: 2px; }
+.mc-reload-btn:hover { color: var(--text); border-color: var(--text-muted); }
+.mc-reload-btn.spinning::before { content: '⟳'; display: inline-block; animation: rspin 1s linear infinite; margin-right: 4px; }
+@keyframes rspin { from { transform: rotate(0); } to { transform: rotate(360deg); } }
+
+.small-mult-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+@media (max-width: 1100px) { .small-mult-grid { grid-template-columns: 1fr; } }
+
+.mini-chart { position: relative; padding: 12px 14px 6px; background: var(--bg); border: 1px solid var(--border-soft); border-radius: 4px; }
+.mini-chart-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 8px; }
+.mini-chart-head .mc-name { font-family: var(--font-mono); font-size: 11px; color: var(--text); letter-spacing: 0.06em; text-transform: uppercase; font-weight: 600; }
 .mini-chart-head .mc-name::before { content: ''; display: inline-block; width: 10px; height: 2px; margin-right: 8px; vertical-align: middle; }
 .mini-chart-head .mc-name.seco::before { background: var(--seco); }
-.mini-chart-head .mc-name.sul::before { background: var(--sul); }
-.mini-chart-head .mc-name.ne::before { background: var(--ne); }
-.mini-chart-head .mc-name.n::before { background: var(--n); }
+.mini-chart-head .mc-name.sul::before  { background: var(--sul); }
+.mini-chart-head .mc-name.ne::before   { background: var(--ne); }
+.mini-chart-head .mc-name.n::before    { background: var(--n); }
 .mini-chart-head .mc-avg { font-family: var(--font-mono); font-size: 11px; color: var(--text-muted); }
-.mini-chart svg { display: block; width: 100%; height: 160px; }
-.mini-chart .mc-legend { display: flex; gap: 14px; margin-top: 6px; font-family: var(--font-mono); font-size: 10px; color: var(--text-muted); letter-spacing: 0.04em; }
-.mini-chart .mc-legend .ml-item { display: flex; align-items: center; gap: 5px; }
-.mini-chart .mc-legend .ml-swatch { width: 10px; height: 2px; display: inline-block; }
-.mini-chart .mc-legend .ml-swatch.y24 { background: var(--y24); }
-.mini-chart .mc-legend .ml-swatch.y25 { background: var(--y25); }
-.mini-chart .mc-legend .ml-swatch.y26 { background: var(--y26); height: 3px; }
-.mc-y24 { stroke: var(--y24); stroke-width: 1.4; fill: none; }
-.mc-y25 { stroke: var(--y25); stroke-width: 1.4; fill: none; }
-.mc-y26 { stroke: var(--y26); stroke-width: 2; fill: none; }
-.mc-dot-y26 { fill: var(--y26); }
+.mini-chart-head .mc-avg strong { color: var(--text); font-weight: 500; }
+.mini-chart svg { display: block; width: 100%; height: 200px; }
 .mc-axis { font-family: var(--font-mono); font-size: 9px; fill: var(--text-dim); letter-spacing: 0.04em; }
 .mc-grid { stroke: var(--border-soft); stroke-width: 1; shape-rendering: crispEdges; }
-.mc-area-band { fill: rgba(120,130,140,0.05); }
+.mc-crosshair { stroke: var(--text-dim); stroke-width: 1; stroke-dasharray: 2,3; opacity: 0; pointer-events: none; }
+.mc-threshold { stroke-width: 1; stroke-dasharray: 4,4; fill: none; pointer-events: none; }
+.mc-threshold-label { font-family: var(--font-mono); font-size: 8px; letter-spacing: 0.04em; opacity: 0.7; }
 
-/* daily chart legend & inline svg */
-.chart-wrap { position: relative; }
-.legend { display: flex; gap: 18px; margin-bottom: 14px; flex-wrap: wrap; }
-.legend-item { display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--text-muted); cursor: pointer; user-select: none; transition: opacity 0.15s; }
-.legend-item.muted { opacity: 0.35; }
-.legend-item .swatch { width: 14px; height: 2px; }
-.legend-item .name { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.04em; }
-.legend-item .val { font-family: var(--font-mono); color: var(--text); font-weight: 500; margin-left: 4px; }
-#line-chart { display: block; width: 100%; height: 340px; }
-.grid-line { stroke: var(--border-soft); stroke-width: 1; shape-rendering: crispEdges; }
-.axis-label { font-family: var(--font-mono); font-size: 10px; fill: var(--text-dim); letter-spacing: 0.04em; }
-.axis-tick { stroke: var(--border); stroke-width: 1; shape-rendering: crispEdges; }
-.line-path { fill: none; stroke-width: 1.5; transition: opacity 0.2s; }
-.line-path.muted { opacity: 0.1; }
-.tooltip { position: absolute; pointer-events: none; background: var(--bg); border: 1px solid var(--border); padding: 10px 12px; font-family: var(--font-mono); font-size: 11px; border-radius: 4px; opacity: 0; transition: opacity 0.1s; white-space: nowrap; z-index: 10; box-shadow: 0 6px 24px rgba(0,0,0,0.5); }
-.tooltip .date { font-size: 10px; color: var(--text-dim); margin-bottom: 6px; letter-spacing: 0.04em; text-transform: uppercase; }
-.tooltip .row { display: flex; justify-content: space-between; gap: 18px; padding: 2px 0; }
-.tooltip .row .name { color: var(--text-muted); }
-.tooltip .row .name::before { content: ''; display: inline-block; width: 8px; height: 2px; margin-right: 6px; vertical-align: middle; }
-.tooltip .row.seco .name::before { background: var(--seco); }
-.tooltip .row.sul .name::before { background: var(--sul); }
-.tooltip .row.ne .name::before { background: var(--ne); }
-.tooltip .row.n .name::before { background: var(--n); }
-.tooltip .row .val { color: var(--text); font-weight: 500; }
-.tooltip-line { stroke: var(--text-dim); stroke-width: 1; stroke-dasharray: 2,3; opacity: 0; }
+.mc-legend { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 6px; font-family: var(--font-mono); font-size: 9px; color: var(--text-muted); letter-spacing: 0.04em; }
+.ml-item { display: flex; align-items: center; gap: 5px; }
+.ml-swatch { display: inline-block; }
 
-/* yoy table */
-.yoy-table { width: 100%; border-collapse: collapse; font-family: var(--font-mono); font-size: 12px; }
-.yoy-table th { text-align: right; padding: 8px 10px; font-weight: 500; font-size: 10px; color: var(--text-dim); letter-spacing: 0.06em; text-transform: uppercase; border-bottom: 1px solid var(--border-soft); }
-.yoy-table th:first-child { text-align: left; }
-.yoy-table td { padding: 11px 10px; border-bottom: 1px solid var(--border-soft); color: var(--text); text-align: right; }
-.yoy-table td:first-child { text-align: left; color: var(--text-muted); display: flex; align-items: center; gap: 8px; }
-.yoy-table td:first-child::before { content: ''; width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
-.yoy-table tr.seco td:first-child::before { background: var(--seco); }
-.yoy-table tr.sul td:first-child::before { background: var(--sul); }
-.yoy-table tr.ne td:first-child::before { background: var(--ne); }
-.yoy-table tr.n td:first-child::before { background: var(--n); }
-.yoy-table tr:last-child td { border-bottom: none; }
-.yoy-table .pct-up { color: var(--danger); }
-.yoy-table .pct-down { color: var(--ok); }
-.yoy-table .pct-flat { color: var(--text-muted); }
+.mc-tooltip { position: absolute; pointer-events: none; background: var(--bg); border: 1px solid var(--border); padding: 8px 10px; font-family: var(--font-mono); font-size: 10px; border-radius: 3px; opacity: 0; transition: opacity 0.1s; white-space: nowrap; z-index: 10; box-shadow: 0 6px 24px rgba(0,0,0,0.5); min-width: 160px; }
+.mc-tooltip .mctt-month { font-size: 9px; color: var(--text-dim); letter-spacing: 0.05em; text-transform: uppercase; margin-bottom: 5px; padding-bottom: 4px; border-bottom: 1px solid var(--border-soft); }
+.mc-tooltip .mctt-row { display: flex; justify-content: space-between; gap: 14px; padding: 2px 0; }
+.mc-tooltip .mctt-lbl { color: var(--text-muted); display: flex; align-items: center; gap: 6px; }
+.mc-tooltip .mctt-sw { display: inline-block; width: 8px; height: 2px; }
+.mc-tooltip .mctt-val { color: var(--text); font-weight: 500; }
 
-.footer { padding: 18px 24px; border-top: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; font-family: var(--font-mono); font-size: 10px; color: var(--text-dim); letter-spacing: 0.04em; }
+.stats-table { width: 100%; border-collapse: collapse; font-family: var(--font-mono); font-size: 11px; }
+.stats-table th { text-align: right; padding: 8px 10px; font-weight: 500; font-size: 10px; color: var(--text-dim); letter-spacing: 0.06em; text-transform: uppercase; border-bottom: 1px solid var(--border-soft); }
+.stats-table th:first-child { text-align: left; }
+.stats-table td { padding: 9px 10px; border-bottom: 1px solid var(--border-soft); color: var(--text); text-align: right; }
+.stats-table td:first-child { text-align: left; color: var(--text-muted); }
+.stats-table td:first-child::before { content: ''; display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 6px; vertical-align: middle; }
+.stats-table tr.seco td:first-child::before { background: var(--seco); }
+.stats-table tr.sul td:first-child::before  { background: var(--sul); }
+.stats-table tr.ne td:first-child::before   { background: var(--ne); }
+.stats-table tr.n td:first-child::before    { background: var(--n); }
+.stats-table tr:last-child td { border-bottom: none; }
+.stats-year-header { color: var(--text); font-weight: 500; }
+
+.chart-expand-btn { position: absolute; top: 6px; right: 6px; width: 22px; height: 22px; display: flex; align-items: center; justify-content: center; background: var(--bg-elev); border: 1px solid var(--border); border-radius: 3px; color: var(--text-dim); cursor: pointer; font-size: 13px; line-height: 1; opacity: 0; transition: opacity 0.15s; z-index: 5; padding: 0; }
+.mini-chart:hover .chart-expand-btn { opacity: 1; }
+.chart-expand-btn:hover { color: var(--text); border-color: var(--text-muted); background: var(--bg-elev); }
+
+.chart-brush { fill: var(--seco); opacity: 0.18; pointer-events: none; }
+.chart-zoom-reset { position: absolute; top: 6px; right: 34px; padding: 3px 8px; font-family: var(--font-mono); font-size: 9px; color: var(--solar); border: 1px solid rgba(251,191,36,0.4); background: rgba(251,191,36,0.08); cursor: pointer; border-radius: 2px; letter-spacing: 0.06em; text-transform: uppercase; z-index: 5; display: none; }
+.chart-zoom-reset.active { display: block; }
+.chart-zoom-reset:hover { background: rgba(251,191,36,0.2); }
+
+.chart-modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.88); z-index: 1000; display: none; align-items: center; justify-content: center; padding: 24px; }
+.chart-modal-overlay.active { display: flex; }
+.chart-modal { position: relative; background: var(--bg-elev); border: 1px solid var(--border); border-radius: 6px; width: 100%; max-width: 1400px; height: 100%; max-height: 88vh; display: flex; flex-direction: column; padding: 22px 26px; box-shadow: 0 20px 60px rgba(0,0,0,0.5); }
+.chart-modal-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 16px; padding-bottom: 12px; border-bottom: 1px solid var(--border-soft); flex-wrap: wrap; gap: 10px; }
+.chart-modal-title { font-family: var(--font-sans); font-size: 14px; font-weight: 600; letter-spacing: 0.03em; text-transform: uppercase; color: var(--text); }
+.chart-modal-hint { font-family: var(--font-mono); font-size: 10px; color: var(--text-dim); letter-spacing: 0.05em; }
+.chart-modal-close { position: absolute; top: 12px; right: 14px; background: transparent; border: none; color: var(--text-muted); cursor: pointer; font-size: 22px; line-height: 1; padding: 4px 10px; }
+.chart-modal-close:hover { color: var(--text); }
+.chart-modal-body { flex: 1; position: relative; min-height: 0; display: flex; flex-direction: column; }
+.chart-modal-body .mini-chart { flex: 1; display: flex; flex-direction: column; border: none; padding: 0; }
+.chart-modal-body .mini-chart svg { flex: 1; height: auto !important; min-height: 0; }
+.chart-modal-body .mini-chart .chart-expand-btn { display: none; }
+
+.footer { padding: 18px 24px; border-top: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; font-family: var(--font-mono); font-size: 10px; color: var(--text-dim); letter-spacing: 0.04em; flex-wrap: wrap; gap: 6px; }
 
 @media (max-width: 880px) {
   .kpi-strip { grid-template-columns: repeat(2, 1fr); }
-  .topbar { padding: 12px 16px; flex-wrap: wrap; }
   .subheader { padding: 18px 16px 6px; }
   .insights { margin: 14px 16px; }
   .kpi-strip { margin: 0 16px; }
@@ -214,7 +166,7 @@ html, body { background: var(--bg); color: var(--text); font-family: var(--font-
     </div>
   </div>
   <div class="topbar-right">
-    <span class="meta"><span class="live"></span><span data-i18n="dataLag">CCEE Dados Abertos · 3-year series</span></span>
+    <span class="meta"><span class="live"></span><span data-i18n="dataLag">CCEE Dados Abertos · live</span></span>
     <div class="lang-toggle">
       <button data-lang="EN" class="active">EN</button>
       <button data-lang="PT">PT</button>
@@ -225,210 +177,839 @@ html, body { background: var(--bg); color: var(--text); font-family: var(--font-
 <div class="subheader">
   <div>
     <h1 data-i18n="pageTitle">PLD by submarket · multi-year context</h1>
-    <div class="subtitle" data-i18n="pageSub">Spot price R$/MWh — daily granularity for 2026, monthly averages 2024-2026</div>
+    <div class="subtitle" data-i18n="pageSub">Spot price R$/MWh — daily/weekly/monthly granularity 2021-2026</div>
   </div>
   <div class="range">
-    <span data-i18n="period">Period</span>
-    <strong>Jan 2024 → Mar 2026</strong> · <span data-i18n="months">27 months</span>
+    <span data-i18n="period">Updated</span>
+    <strong id="data-status">—</strong>
   </div>
 </div>
 
 <section class="insights">
-  <div class="label" data-i18n="insightsLabel">Highlights · multi-year regime shift</div>
-  <p data-i18n="insightYoy">
-    <strong>SE/CO average PLD rose 69% from 2024 to 2025, then another 47% YTD into 2026.</strong>
-    Trajectory: <span class="v">R$ 125.70</span> →
-    <span class="v">R$ 212.63</span> →
-    <span class="v up">R$ 313.30</span>. Sul is the most exposed:
-    <span class="v">R$ 125.73</span> → <span class="v">R$ 216.27</span> → <span class="v up">R$ 368.87</span>
-    (+193% over 24 months).
-  </p>
-  <p data-i18n="insightSeasonality">
-    <strong>The piso-floor regime that defined 2024 has dissolved.</strong>
-    In 2024, all four submarkets averaged at the floor (R$ 61.07) for 5 of 12 months;
-    in 2026 YTD, the floor has not been touched in any submarket. ENA/EAR trajectory
-    has shifted the cost curve up structurally.
-  </p>
-  <p data-i18n="insightSpread">
-    <strong>NE/N remain the cheapest submarkets across all three years</strong>
-    — 2026 YTD averages of <span class="v">R$ 289.55</span> and <span class="v">R$ 290.46</span>
-    vs SE/CO at <span class="v">R$ 313.30</span> and Sul at <span class="v up">R$ 368.87</span>.
-    NE→SE/CO intercâmbio remains the binding constraint that prices this gap.
-  </p>
+  <div class="label" data-i18n="insightsLabel">Highlights · regime context</div>
+  <p id="insight-yoy">Loading insights...</p>
+  <p id="insight-bandeira"></p>
 </section>
 
-<section class="kpi-strip" aria-label="PLD by submarket — 3-year"></section>
+<section class="kpi-strip" id="kpi-strip" aria-label="PLD by submarket — current"></section>
 
 <main class="main">
 
   <div class="section">
     <div class="section-head">
-      <h2 data-i18n="seasonalityTitle">Seasonality · monthly average per year</h2>
-      <div class="hint" data-i18n="seasonalityHint">Lines: 2024 / 2025 / 2026 ytd · y-axis 0-500 R$/MWh</div>
+      <h2 data-i18n="seasonalityTitle">Daily PLD · multi-year by submarket</h2>
+      <div class="hint">
+        <span data-i18n="seasonalityHint">Pick years to compare · current year highlighted</span>
+        <span class="mc-mode-badge" id="mode-badge">weekly</span>
+        <button class="mc-reload-btn" id="reload-btn" title="Reload data">↻ <span data-i18n="reloadLbl">Reload</span></button>
+      </div>
     </div>
-    <div class="small-mult-grid" id="small-multiples"></div>
+    <div class="year-chips" id="year-chips"></div>
+    <div class="small-mult-grid" id="pld-multiples"></div>
   </div>
 
   <div class="section">
     <div class="section-head">
-      <h2 data-i18n="yoyTitle">Year-over-year · same months Jan-Mar</h2>
-      <div class="hint" data-i18n="yoyHint">Δ vs prior year</div>
+      <h2 data-i18n="statsTitle">Year statistics · avg / min / max / std</h2>
+      <div class="hint" data-i18n="statsHint">All values in R$/MWh</div>
     </div>
-    <table class="yoy-table" id="yoy-table">
-      <thead>
-        <tr>
-          <th data-i18n="thSub">Sub</th>
-          <th data-i18n="thJan">Jan 24</th>
-          <th data-i18n="thJan25">Jan 25</th>
-          <th data-i18n="thJan26">Jan 26</th>
-          <th data-i18n="thFeb">Feb 24</th>
-          <th data-i18n="thFeb25">Feb 25</th>
-          <th data-i18n="thFeb26">Feb 26</th>
-          <th data-i18n="thMar">Mar 24</th>
-          <th data-i18n="thMar25">Mar 25</th>
-          <th data-i18n="thMar26">Mar 26</th>
-        </tr>
-      </thead>
+    <table class="stats-table" id="stats-table">
+      <thead></thead>
       <tbody></tbody>
     </table>
-  </div>
-
-  <div class="section">
-    <div class="section-head">
-      <h2 data-i18n="lineTitle">Daily PLD · 2026 detail (Jan 1 - Mar 10)</h2>
-      <div class="hint" data-i18n="lineHint">Hover for detail · click legend to isolate</div>
-    </div>
-    <div class="chart-wrap">
-      <div class="legend" id="legend"></div>
-      <svg id="line-chart" viewBox="0 0 1200 340" preserveAspectRatio="none"></svg>
-      <div class="tooltip" id="tooltip"></div>
-    </div>
   </div>
 
 </main>
 
 <footer class="footer">
-  <span><span data-i18n="source">Source</span>: CCEE Dados Abertos · PLD_MEDIA_DIARIA 2024, 2025, 2026</span>
-  <span><span data-i18n="limitsLabel">Piso/teto 2026</span>: R$ 57.31 / R$ 785.27 / R$ 1,611.04</span>
+  <span><span data-i18n="source">Source</span>: CCEE Dados Abertos · PLD_MEDIA_DIARIA</span>
+  <span data-i18n="bandeiraLegend">PLD ≈ Bandeira: &lt;100 Green · 100-200 Yellow · 200-400 Red1 · &gt;400 Red2</span>
 </footer>
 
+<div class="chart-modal-overlay" id="chart-modal-overlay" role="dialog" aria-modal="true">
+  <div class="chart-modal">
+    <button class="chart-modal-close" id="chart-modal-close" aria-label="Close">×</button>
+    <div class="chart-modal-head">
+      <div class="chart-modal-title" id="chart-modal-title">Chart</div>
+      <div class="chart-modal-hint" data-i18n="modalHint">Drag horizontally to zoom · click Reset to clear</div>
+    </div>
+    <div class="chart-modal-body" id="chart-modal-body"></div>
+  </div>
+</div>
+
 <script>
-// ── multi-year monthly data (computed from CCEE PLD_MEDIA_DIARIA) ─────────────
-const MONTHLY = {
-  '2024-01':{SECO:61.07,SUL:61.07,NE:61.07,N:61.07},
-  '2024-02':{SECO:61.20,SUL:61.20,NE:61.20,N:61.20},
-  '2024-03':{SECO:61.07,SUL:61.07,NE:61.07,N:61.07},
-  '2024-04':{SECO:61.07,SUL:61.07,NE:61.07,N:61.07},
-  '2024-05':{SECO:61.07,SUL:61.07,NE:61.07,N:61.07},
-  '2024-06':{SECO:64.92,SUL:64.91,NE:64.92,N:64.93},
-  '2024-07':{SECO:87.85,SUL:87.79,NE:84.96,N:87.83},
-  '2024-08':{SECO:119.05,SUL:119.06,NE:105.71,N:122.12},
-  '2024-09':{SECO:290.45,SUL:290.86,NE:244.85,N:304.05},
-  '2024-10':{SECO:478.16,SUL:478.10,NE:442.96,N:493.79},
-  '2024-11':{SECO:98.45,SUL:98.45,NE:98.27,N:99.18},
-  '2024-12':{SECO:64.07,SUL:64.07,NE:64.07,N:64.07},
-  '2025-01':{SECO:58.85,SUL:58.93,NE:58.86,N:58.85},
-  '2025-02':{SECO:82.45,SUL:82.46,NE:58.60,N:58.60},
-  '2025-03':{SECO:321.40,SUL:327.91,NE:58.91,N:58.91},
-  '2025-04':{SECO:187.55,SUL:189.69,NE:116.06,N:116.06},
-  '2025-05':{SECO:196.10,SUL:219.74,NE:112.05,N:112.30},
-  '2025-06':{SECO:224.31,SUL:230.66,NE:222.30,N:224.13},
-  '2025-07':{SECO:173.18,SUL:178.21,NE:165.62,N:168.51},
-  '2025-08':{SECO:263.91,SUL:263.92,NE:240.21,N:252.62},
-  '2025-09':{SECO:264.55,SUL:264.55,NE:246.84,N:256.94},
-  '2025-10':{SECO:257.21,SUL:257.21,NE:230.04,N:252.16},
-  '2025-11':{SECO:270.27,SUL:270.16,NE:263.14,N:267.79},
-  '2025-12':{SECO:251.80,SUL:251.80,NE:251.78,N:251.81},
-  '2026-01':{SECO:250.10,SUL:252.73,NE:241.36,N:244.10},
-  '2026-02':{SECO:380.89,SUL:391.36,NE:366.69,N:366.69},
-  '2026-03':{SECO:308.92,SUL:462.51,NE:260.61,N:260.60},
-};
-
-const YEAR_STATS = {
-  '2024': {
-    SECO: {avg:125.70, min:61.07, max:478.16},
-    SUL:  {avg:125.73, min:61.07, max:478.10},
-    NE:   {avg:117.60, min:61.07, max:442.96},
-    N:    {avg:128.45, min:61.07, max:493.79}
-  },
-  '2025': {
-    SECO: {avg:212.63, min:58.85, max:321.40},
-    SUL:  {avg:216.27, min:58.93, max:327.91},
-    NE:   {avg:168.70, min:58.60, max:263.14},
-    N:    {avg:173.22, min:58.60, max:267.79}
-  },
-  '2026': {
-    SECO: {avg:313.30, min:250.10, max:380.89},
-    SUL:  {avg:368.87, min:252.73, max:462.51},
-    NE:   {avg:289.55, min:241.36, max:366.69},
-    N:    {avg:290.46, min:244.10, max:366.69}
-  }
-};
-
-// ── daily 2026 data (Jan 1 - Mar 10) ─────────────────────────────
-const DATA = [
-{date:"2026-01-01",SECO:150.38,SUL:150.38,NE:150.39,N:150.39},{date:"2026-01-02",SECO:192.36,SUL:192.36,NE:192.36,N:192.36},{date:"2026-01-03",SECO:139.90,SUL:139.89,NE:139.90,N:139.90},{date:"2026-01-04",SECO:127.99,SUL:127.98,NE:127.99,N:127.99},{date:"2026-01-05",SECO:160.91,SUL:160.91,NE:160.91,N:160.91},{date:"2026-01-06",SECO:161.24,SUL:161.24,NE:161.23,N:161.24},{date:"2026-01-07",SECO:157.02,SUL:157.02,NE:156.87,N:156.87},{date:"2026-01-08",SECO:158.75,SUL:158.76,NE:157.81,N:157.82},{date:"2026-01-09",SECO:159.32,SUL:159.32,NE:157.49,N:157.50},{date:"2026-01-10",SECO:215.75,SUL:215.75,NE:210.47,N:210.69},{date:"2026-01-11",SECO:205.14,SUL:205.13,NE:203.75,N:203.76},{date:"2026-01-12",SECO:286.22,SUL:286.22,NE:280.23,N:280.24},{date:"2026-01-13",SECO:284.96,SUL:285.01,NE:262.33,N:278.46},{date:"2026-01-14",SECO:303.75,SUL:305.02,NE:264.43,N:284.03},{date:"2026-01-15",SECO:299.12,SUL:301.06,NE:282.48,N:288.11},{date:"2026-01-16",SECO:302.70,SUL:304.57,NE:289.28,N:292.43},{date:"2026-01-17",SECO:291.43,SUL:291.43,NE:288.04,N:288.04},{date:"2026-01-18",SECO:260.46,SUL:260.46,NE:260.46,N:260.46},{date:"2026-01-19",SECO:329.07,SUL:329.07,NE:329.07,N:329.07},{date:"2026-01-20",SECO:324.31,SUL:324.30,NE:324.30,N:324.30},{date:"2026-01-21",SECO:324.31,SUL:324.30,NE:324.30,N:324.30},{date:"2026-01-22",SECO:295.08,SUL:295.08,NE:290.90,N:290.90},{date:"2026-01-23",SECO:294.31,SUL:294.32,NE:289.08,N:289.37},{date:"2026-01-24",SECO:216.22,SUL:223.08,NE:171.17,N:171.79},{date:"2026-01-25",SECO:198.00,SUL:199.07,NE:191.60,N:191.60},{date:"2026-01-26",SECO:290.66,SUL:292.59,NE:276.47,N:276.70},{date:"2026-01-27",SECO:282.82,SUL:287.26,NE:267.70,N:268.52},{date:"2026-01-28",SECO:335.02,SUL:337.01,NE:297.19,N:297.18},{date:"2026-01-29",SECO:316.18,SUL:319.48,NE:294.55,N:294.55},{date:"2026-01-30",SECO:302.85,SUL:303.00,NE:300.42,N:300.42},{date:"2026-01-31",SECO:301.90,SUL:357.29,NE:301.89,N:301.89},
-{date:"2026-02-01",SECO:268.08,SUL:268.08,NE:268.08,N:268.07},{date:"2026-02-02",SECO:393.74,SUL:394.49,NE:393.74,N:393.74},{date:"2026-02-03",SECO:457.24,SUL:459.22,NE:457.24,N:457.23},{date:"2026-02-04",SECO:540.31,SUL:542.38,NE:540.31,N:540.30},{date:"2026-02-05",SECO:452.64,SUL:455.62,NE:452.64,N:452.63},{date:"2026-02-06",SECO:374.12,SUL:375.87,NE:374.12,N:374.11},{date:"2026-02-07",SECO:407.65,SUL:434.16,NE:407.65,N:407.65},{date:"2026-02-08",SECO:356.58,SUL:356.57,NE:356.58,N:356.58},{date:"2026-02-09",SECO:452.81,SUL:453.08,NE:452.81,N:452.81},{date:"2026-02-10",SECO:443.28,SUL:448.48,NE:443.27,N:443.27},{date:"2026-02-11",SECO:436.97,SUL:446.54,NE:436.85,N:436.85},{date:"2026-02-12",SECO:413.55,SUL:466.99,NE:401.26,N:401.26},{date:"2026-02-13",SECO:407.34,SUL:444.41,NE:402.38,N:402.39},{date:"2026-02-14",SECO:280.54,SUL:375.57,NE:279.13,N:279.13},{date:"2026-02-15",SECO:255.08,SUL:255.09,NE:252.37,N:252.37},{date:"2026-02-16",SECO:273.99,SUL:390.89,NE:253.51,N:253.52},{date:"2026-02-17",SECO:277.72,SUL:397.32,NE:256.82,N:256.82},{date:"2026-02-18",SECO:401.42,SUL:423.44,NE:401.42,N:401.41},{date:"2026-02-19",SECO:453.83,SUL:458.88,NE:453.83,N:453.83},{date:"2026-02-20",SECO:422.30,SUL:425.57,NE:422.30,N:422.30},{date:"2026-02-21",SECO:336.00,SUL:375.01,NE:336.00,N:336.00},{date:"2026-02-22",SECO:286.58,SUL:286.58,NE:286.58,N:286.58},{date:"2026-02-23",SECO:411.80,SUL:411.80,NE:411.80,N:411.79},{date:"2026-02-24",SECO:394.51,SUL:395.10,NE:394.51,N:394.50},{date:"2026-02-25",SECO:417.09,SUL:417.47,NE:417.09,N:417.09},{date:"2026-02-26",SECO:387.82,SUL:391.94,NE:387.82,N:387.82},{date:"2026-02-27",SECO:376.23,SUL:383.67,NE:375.78,N:375.77},{date:"2026-02-28",SECO:328.13,SUL:341.15,NE:328.13,N:328.13},
-{date:"2026-03-01",SECO:261.66,SUL:262.51,NE:261.66,N:261.65},{date:"2026-03-02",SECO:355.56,SUL:440.89,NE:355.56,N:355.55},{date:"2026-03-03",SECO:371.16,SUL:478.57,NE:371.16,N:371.15},{date:"2026-03-04",SECO:336.15,SUL:487.43,NE:321.58,N:321.58},{date:"2026-03-05",SECO:347.12,SUL:498.70,NE:243.03,N:243.02},{date:"2026-03-06",SECO:379.11,SUL:520.36,NE:179.37,N:179.37},{date:"2026-03-07",SECO:287.10,SUL:594.82,NE:109.42,N:109.41},{date:"2026-03-08",SECO:235.58,SUL:332.47,NE:146.00,N:145.99},{date:"2026-03-09",SECO:354.07,SUL:509.70,NE:283.95,N:283.94},{date:"2026-03-10",SECO:342.15,SUL:511.32,NE:224.12,N:224.12}
-];
-
-const SUBS = ['SECO','SUL','NE','N'];
-const SUB_LABELS = {SECO:'SE/CO', SUL:'S', NE:'NE', N:'N'};
-const SUB_FULL = {SECO:'Sudeste / Centro-Oeste', SUL:'Sul', NE:'Nordeste', N:'Norte'};
-const SUB_COLORS = {SECO:'#5eb3f5', SUL:'#f0a830', NE:'#4ade80', N:'#c084fc'};
+const SUBS = ['SECO', 'SUL', 'NE', 'N'];
+const SUB_LABELS = { SECO: 'SE/CO', SUL: 'S', NE: 'NE', N: 'N' };
+const SUB_FULL   = { SECO: 'Sudeste / Centro-Oeste', SUL: 'Sul', NE: 'Nordeste', N: 'Norte' };
 const MONTH_ABBR_EN = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 const MONTH_ABBR_PT = ['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
+const MONTH_START_DOY = [1, 32, 60, 91, 121, 152, 182, 213, 244, 274, 305, 335];
+
+const PLD_THRESHOLDS = [
+  { value: 100, color: 'rgba(74,222,128,0.5)',  label: 'Verde' },
+  { value: 200, color: 'rgba(251,191,36,0.5)',  label: 'Amarela' },
+  { value: 400, color: 'rgba(251,113,113,0.5)', label: 'Vermelha 1' },
+  { value: 700, color: 'rgba(239,68,68,0.6)',   label: 'Vermelha 2' },
+];
+
+let PLD_NOW = {};
+let PLD_DAILY = {};
+let PLD_MONTHLY = {};
+let YEAR_STATS = {};
+let DATA_GENERATED_AT = null;
+let AVAILABLE_YEARS = [];
+let selectedYears = new Set();
+const DROUGHT_YEARS = [2021];
+let LOADING_STATE = 'idle';
+let currentLang = 'EN';
+const xZooms = {};
+let activeModal = null;
+
+function hasDailyData() {
+  for (const s of SUBS) if (PLD_DAILY[s] && Object.keys(PLD_DAILY[s]).length) return true;
+  return false;
+}
+function currentDisplayMode() {
+  if (!hasDailyData()) return 'monthly';
+  return selectedYears.size === 1 ? 'daily' : 'weekly';
+}
+function xUnits() {
+  const m = currentDisplayMode();
+  if (m === 'daily') return 366;
+  if (m === 'weekly') return 52;
+  return 12;
+}
+
+function aggregateWeekly(dailyArr) {
+  if (!dailyArr || !dailyArr.length) return new Array(52).fill(null);
+  const weeks = new Array(52).fill(null);
+  for (let w = 0; w < 52; w++) {
+    const start = w * 7;
+    const end = Math.min(start + 7, 365);
+    let sum = 0, n = 0;
+    for (let d = start; d < end; d++) {
+      const v = dailyArr[d];
+      if (v !== null && v !== undefined) { sum += v; n += 1; }
+    }
+    weeks[w] = n > 0 ? sum / n : null;
+  }
+  return weeks;
+}
+
+function pldSeries(sub, year) {
+  const yearStr = String(year);
+  const mode = currentDisplayMode();
+  if (mode === 'monthly') {
+    const m = PLD_MONTHLY[sub] && PLD_MONTHLY[sub][yearStr];
+    if (!m) return [];
+    return m.map((v, i) => v !== null && v !== undefined ? { idx: i, value: v } : null).filter(Boolean);
+  }
+  const d = PLD_DAILY[sub] && PLD_DAILY[sub][yearStr];
+  if (!d) return [];
+  if (mode === 'daily') {
+    return d.map((v, i) => v !== null && v !== undefined ? { idx: i, value: v } : null).filter(Boolean);
+  }
+  const w = aggregateWeekly(d);
+  return w.map((v, i) => v !== null && v !== undefined ? { idx: i, value: v } : null).filter(Boolean);
+}
+
+function hasSubData(sub) {
+  return Boolean(
+    (PLD_DAILY[sub] && Object.keys(PLD_DAILY[sub]).length) ||
+    (PLD_MONTHLY[sub] && Object.keys(PLD_MONTHLY[sub]).length)
+  );
+}
+
+function labelForIdx(idx, year, lang) {
+  const mode = currentDisplayMode();
+  const m = lang === 'PT' ? MONTH_ABBR_PT : MONTH_ABBR_EN;
+  if (mode === 'monthly') return `${m[idx]} ${year}`;
+  if (mode === 'daily') {
+    const d = new Date(Date.UTC(year, 0, idx + 1));
+    return `${String(d.getUTCDate()).padStart(2, '0')} ${m[d.getUTCMonth()]} ${year}`;
+  }
+  const startDoy = idx * 7;
+  const d = new Date(Date.UTC(year, 0, startDoy + 1));
+  return `${lang === 'PT' ? 'Sem' : 'Wk'} ${idx + 1} · ${String(d.getUTCDate()).padStart(2, '0')} ${m[d.getUTCMonth()]} ${year}`;
+}
+
+function colorForYear(year) {
+  const now = new Date().getUTCFullYear();
+  if (year === now) return { color: 'CURRENT', width: 2 };
+  if (year === now - 1) return { color: '#9aa0a8', width: 1.6 };
+  if (year === now - 2) return { color: '#6b7280', width: 1.4 };
+  if (year === now - 3) return { color: '#525964', width: 1.2 };
+  const age = now - year;
+  const lightness = Math.max(20, 36 - (age - 4) * 1.2);
+  return { color: `hsl(220, 6%, ${lightness}%)`, width: 1.1 };
+}
+
+function fmt(n, decimals = 2) {
+  if (n === null || n === undefined || isNaN(n)) return '—';
+  return n.toLocaleString(currentLang === 'PT' ? 'pt-BR' : 'en-US',
+    { minimumFractionDigits: decimals, maximumFractionDigits: decimals });
+}
+
+async function loadData() {
+  try {
+    LOADING_STATE = 'loading';
+    const res = await fetch('../data/pld.json', { cache: 'no-cache' });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const j = await res.json();
+    PLD_NOW = j.now || {};
+    PLD_DAILY = j.daily_by_year || {};
+    PLD_MONTHLY = j.monthly_avg || {};
+    YEAR_STATS = j.year_stats || {};
+    DATA_GENERATED_AT = j.generated_at_utc || null;
+    const yearSet = new Set();
+    for (const sub of SUBS) {
+      Object.keys(PLD_DAILY[sub] || {}).forEach(y => yearSet.add(parseInt(y)));
+      Object.keys(PLD_MONTHLY[sub] || {}).forEach(y => yearSet.add(parseInt(y)));
+    }
+    AVAILABLE_YEARS = Array.from(yearSet).filter(y => !isNaN(y)).sort((a, b) => a - b);
+    selectedYears = new Set(AVAILABLE_YEARS.slice(-3));
+    LOADING_STATE = 'ready';
+    console.log('PLD loaded:', DATA_GENERATED_AT, '| years:', AVAILABLE_YEARS, '| daily:', hasDailyData());
+  } catch (e) {
+    LOADING_STATE = 'error';
+    console.error('Failed to load pld.json:', e);
+  }
+}
+
+async function reloadAllData() {
+  const btn = document.getElementById('reload-btn');
+  if (btn) btn.classList.add('spinning');
+  await loadData();
+  renderAll();
+  if (btn) btn.classList.remove('spinning');
+}
+
+function renderYearChips() {
+  const container = document.getElementById('year-chips');
+  if (!container || !AVAILABLE_YEARS.length) { if (container) container.innerHTML = ''; return; }
+  const t = I18N[currentLang];
+  const chipsHTML = AVAILABLE_YEARS.map(yr => {
+    const sel = selectedYears.has(yr) ? 'selected' : '';
+    const dr = DROUGHT_YEARS.includes(yr) ? 'drought' : '';
+    return `<button class="year-chip ${sel} ${dr}" data-year="${yr}">${yr}</button>`;
+  }).join('');
+  container.innerHTML = `
+    <span class="year-chips-label">${t.compareYrs}</span>
+    ${chipsHTML}
+    <div class="year-presets">
+      <button class="year-preset-btn" data-preset="last3">${t.presetLast3}</button>
+      <button class="year-preset-btn" data-preset="last5">${t.presetLast5}</button>
+      <button class="year-preset-btn" data-preset="drought">${t.presetDrought}</button>
+      <button class="year-preset-btn" data-preset="all">${t.presetAll}</button>
+      <button class="year-preset-btn" data-preset="clear">${t.presetClear}</button>
+    </div>
+  `;
+  container.querySelectorAll('.year-chip').forEach(b => {
+    b.addEventListener('click', () => toggleYearSelection(parseInt(b.dataset.year)));
+  });
+  container.querySelectorAll('.year-preset-btn').forEach(b => {
+    b.addEventListener('click', () => applyYearPreset(b.dataset.preset));
+  });
+}
+
+function toggleYearSelection(yr) {
+  if (selectedYears.has(yr)) selectedYears.delete(yr); else selectedYears.add(yr);
+  Object.keys(xZooms).forEach(k => delete xZooms[k]);
+  renderYearChips();
+  renderPLDMultiples();
+  if (activeModal) {
+    const body = document.getElementById('chart-modal-body');
+    body.innerHTML = '';
+    renderSingleChartLarge(activeModal.sub, body);
+  }
+}
+
+function applyYearPreset(preset) {
+  const now = new Date().getUTCFullYear();
+  if (preset === 'last3') selectedYears = new Set(AVAILABLE_YEARS.slice(-3));
+  else if (preset === 'last5') selectedYears = new Set(AVAILABLE_YEARS.slice(-5));
+  else if (preset === 'drought') selectedYears = new Set([...DROUGHT_YEARS, now].filter(y => AVAILABLE_YEARS.includes(y)));
+  else if (preset === 'all') selectedYears = new Set(AVAILABLE_YEARS);
+  else if (preset === 'clear') selectedYears = new Set([now].filter(y => AVAILABLE_YEARS.includes(y)));
+  Object.keys(xZooms).forEach(k => delete xZooms[k]);
+  renderYearChips();
+  renderPLDMultiples();
+  if (activeModal) {
+    const body = document.getElementById('chart-modal-body');
+    body.innerHTML = '';
+    renderSingleChartLarge(activeModal.sub, body);
+  }
+}
+
+function renderKPIs() {
+  const container = document.getElementById('kpi-strip');
+  const now = new Date().getUTCFullYear();
+  const prev = now - 1;
+  container.innerHTML = SUBS.map(sub => {
+    const n = PLD_NOW[sub];
+    const curStats = YEAR_STATS[sub] && YEAR_STATS[sub][String(now)];
+    const prevStats = YEAR_STATS[sub] && YEAR_STATS[sub][String(prev)];
+    let deltaPct = null, deltaCls = 'flat';
+    if (curStats && prevStats && prevStats.avg) {
+      deltaPct = ((curStats.avg - prevStats.avg) / prevStats.avg) * 100;
+      deltaCls = deltaPct > 2 ? 'up' : (deltaPct < -2 ? 'down' : 'flat');
+    }
+    const pldNow = n ? n.pld : null;
+    return `
+      <div class="kpi ${sub.toLowerCase()}">
+        <div class="label">${SUB_LABELS[sub]}</div>
+        <div class="value">${pldNow !== null ? fmt(pldNow) : '—'}<span class="value-unit">R$/MWh</span></div>
+        <div class="delta ${deltaCls}">${deltaPct !== null ? `${fmt(deltaPct, 1)}% YoY` : '—'}</div>
+      </div>
+    `;
+  }).join('');
+}
+
+function renderPLDMultiples() {
+  const container = document.getElementById('pld-multiples');
+  const mode = currentDisplayMode();
+  const badge = document.getElementById('mode-badge');
+  if (badge) {
+    badge.textContent = mode;
+    badge.classList.remove('daily', 'weekly', 'monthly');
+    badge.classList.add(mode);
+  }
+  if (LOADING_STATE === 'loading') {
+    container.innerHTML = `<div style="grid-column:1/-1;padding:40px;text-align:center;color:var(--text-dim);font-family:var(--font-mono);font-size:11px">${I18N[currentLang].loadingData}</div>`;
+    return;
+  }
+  if (LOADING_STATE === 'error') {
+    container.innerHTML = `<div style="grid-column:1/-1;padding:40px;text-align:center;color:var(--danger);font-family:var(--font-mono);font-size:11px">${I18N[currentLang].loadFailed}<br><br><button class="mc-reload-btn" onclick="reloadAllData()">${I18N[currentLang].retryBtn}</button></div>`;
+    return;
+  }
+
+  const W = 600, H = 200, padL = 50, padR = 16, padT = 14, padB = 24;
+  const innerW = W - padL - padR, innerH = H - padT - padB;
+  const yearsToPlot = Array.from(selectedYears).sort((a, b) => a - b);
+  const currentYear = new Date().getUTCFullYear();
+  const MONTH_LABELS = currentLang === 'PT' ? MONTH_ABBR_PT : MONTH_ABBR_EN;
+  const totalUnits = xUnits();
+
+  container.innerHTML = SUBS.map(sub => {
+    if (!hasSubData(sub)) return '';
+    const subColor = `var(--${sub.toLowerCase()})`;
+    const chartKey = `pld-${sub}`;
+    const zoom = xZooms[chartKey];
+    const rStart = zoom ? Math.max(0, zoom.start) : 0;
+    const rEnd = zoom ? Math.min(totalUnits - 1, zoom.end) : totalUnits - 1;
+    const rangeSize = Math.max(1, rEnd - rStart);
+    const xScale = i => padL + ((i - rStart) / rangeSize) * innerW;
+    let yMax = 100;
+    for (const yr of yearsToPlot) {
+      const pts = pldSeries(sub, yr);
+      for (const p of pts) if (p.value > yMax) yMax = p.value;
+    }
+    yMax = Math.ceil(yMax * 1.1 / 100) * 100;
+    const yScale = v => padT + innerH - (v / yMax) * innerH;
+
+    let paths = '', recentDots = '';
+    const legendItems = [];
+    for (const yr of yearsToPlot) {
+      let pts = pldSeries(sub, yr);
+      if (!pts.length) continue;
+      pts = pts.filter(p => p.idx >= rStart && p.idx <= rEnd);
+      if (!pts.length) continue;
+      const coords = pts.map(p => ({ x: xScale(p.idx), y: yScale(p.value) }));
+      const d = coords.map((c, i) => `${i === 0 ? 'M' : 'L'} ${c.x.toFixed(1)} ${c.y.toFixed(1)}`).join(' ');
+      const cfg = colorForYear(yr);
+      const stroke = cfg.color === 'CURRENT' ? subColor : cfg.color;
+      const opacity = (currentYear - yr) > 6 ? 0.55 : (yr === currentYear ? 1.0 : 0.85);
+      paths += `<path d="${d}" stroke="${stroke}" stroke-width="${cfg.width}" fill="none" opacity="${opacity}"/>`;
+      if (yr === currentYear && mode !== 'daily') {
+        recentDots += coords.map(c => `<circle cx="${c.x.toFixed(1)}" cy="${c.y.toFixed(1)}" r="2" fill="${subColor}" stroke="var(--bg)" stroke-width="0.5"/>`).join('');
+      }
+      legendItems.push(`<span class="ml-item"><span class="ml-swatch" style="background:${stroke};height:${cfg.width >= 2 ? 3 : 2}px;width:14px"></span> ${yr}${yr === currentYear ? ' YTD' : ''}</span>`);
+    }
+
+    let thresholds = '';
+    for (const th of PLD_THRESHOLDS) {
+      if (th.value <= yMax) {
+        const y = yScale(th.value);
+        thresholds += `<line class="mc-threshold" x1="${padL}" x2="${W - padR}" y1="${y}" y2="${y}" stroke="${th.color}"/>`;
+        if (th.value <= yMax * 0.95) {
+          thresholds += `<text class="mc-threshold-label" x="${W - padR - 4}" y="${y - 2}" text-anchor="end" fill="${th.color}">${th.label}</text>`;
+        }
+      }
+    }
+
+    let grid = '';
+    const ticks = [0, yMax * 0.25, yMax * 0.5, yMax * 0.75, yMax];
+    for (const tv of ticks) {
+      grid += `<line class="mc-grid" x1="${padL}" x2="${W - padR}" y1="${yScale(tv)}" y2="${yScale(tv)}" />`;
+      grid += `<text class="mc-axis" x="${padL - 6}" y="${yScale(tv) + 3}" text-anchor="end">${Math.round(tv)}</text>`;
+    }
+
+    let xlab = '';
+    for (let m = 1; m <= 12; m++) {
+      const doy = MONTH_START_DOY[m - 1] + 14;
+      let idx;
+      if (mode === 'daily') idx = doy - 1;
+      else if (mode === 'weekly') idx = Math.round(doy / 7);
+      else idx = m - 1;
+      if (idx < rStart || idx > rEnd) continue;
+      xlab += `<text class="mc-axis" x="${xScale(idx)}" y="${H - padB + 13}" text-anchor="middle">${MONTH_LABELS[m - 1][0].toUpperCase()}</text>`;
+    }
+
+    const now = PLD_NOW[sub];
+    const nowVal = now ? `R$ ${fmt(now.pld)}` : '—';
+
+    return `
+      <div class="mini-chart" data-chart-key="pld-${sub}" data-sub="${sub}">
+        <button class="chart-expand-btn" data-sub="${sub}" title="${I18N[currentLang].expandChart}">⛶</button>
+        ${zoom ? `<button class="chart-zoom-reset active" data-chart-key="pld-${sub}">↺ ${I18N[currentLang].zoomReset}</button>` : ''}
+        <div class="mini-chart-head">
+          <span class="mc-name ${sub.toLowerCase()}">${SUB_LABELS[sub]} · ${SUB_FULL[sub]}</span>
+          <span class="mc-avg">${currentLang === 'PT' ? 'agora' : 'now'}: <strong>${nowVal}</strong></span>
+        </div>
+        <svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none">
+          ${grid}
+          ${thresholds}
+          ${xlab}
+          ${paths}
+          ${recentDots}
+          <line class="mc-crosshair" x1="0" y1="${padT}" x2="0" y2="${padT + innerH}"/>
+          <rect class="chart-brush" x="0" y="${padT}" width="0" height="${innerH}" style="display:none"/>
+          <rect class="mc-hover-overlay" x="${padL}" y="${padT}" width="${innerW}" height="${innerH}" fill="transparent"/>
+        </svg>
+        <div class="mc-tooltip"></div>
+        <div class="mc-legend">${legendItems.join('')}</div>
+      </div>
+    `;
+  }).join('');
+
+  SUBS.forEach(sub => {
+    if (!hasSubData(sub)) return;
+    const chartEl = container.querySelector(`.mini-chart[data-sub="${sub}"]`);
+    if (!chartEl) return;
+    const chartKey = `pld-${sub}`;
+    const zoom = xZooms[chartKey];
+    const rStart = zoom ? zoom.start : 0;
+    const rEnd = zoom ? zoom.end : (xUnits() - 1);
+    attachUniversalHover(chartEl, sub, W, H, padL, padR, padT, padB, innerW, innerH, yearsToPlot, { start: rStart, end: rEnd });
+    attachDragZoom(chartEl, chartKey, W, H, padL, padR, padT, padB, innerW, innerH, totalUnits, { start: rStart, end: rEnd });
+  });
+}
+
+function attachUniversalHover(chartEl, sub, W, H, padL, padR, padT, padB, innerW, innerH, yearsToPlot, range) {
+  const svg = chartEl.querySelector('svg');
+  const overlay = chartEl.querySelector('.mc-hover-overlay');
+  const crosshair = chartEl.querySelector('.mc-crosshair');
+  const tooltip = chartEl.querySelector('.mc-tooltip');
+  if (!svg || !overlay) return;
+  const subColor = `var(--${sub.toLowerCase()})`;
+  const rangeSize = Math.max(1, range.end - range.start);
+  const xScale = i => padL + ((i - range.start) / rangeSize) * innerW;
+
+  overlay.addEventListener('mousemove', (e) => {
+    if (chartEl.dataset.dragging === '1') return;
+    const rect = svg.getBoundingClientRect();
+    const mouseX = e.clientX - rect.left;
+    const viewBoxX = (mouseX / rect.width) * W;
+    const idxFloat = range.start + ((viewBoxX - padL) / innerW) * rangeSize;
+    const idx = Math.max(range.start, Math.min(range.end, Math.round(idxFloat)));
+    const xPos = xScale(idx);
+    crosshair.setAttribute('x1', xPos);
+    crosshair.setAttribute('x2', xPos);
+    crosshair.style.opacity = 0.7;
+
+    const rows = [];
+    let label = '';
+    const tolerance = Math.max(1, Math.round(rangeSize / 26));
+    for (const yr of yearsToPlot) {
+      const pts = pldSeries(sub, yr);
+      if (!pts.length) continue;
+      let best = null, bestDist = Infinity;
+      for (const p of pts) {
+        const d = Math.abs(p.idx - idx);
+        if (d < bestDist) { bestDist = d; best = p; }
+      }
+      if (best && bestDist <= tolerance) {
+        const cfg = colorForYear(yr);
+        const stroke = cfg.color === 'CURRENT' ? subColor : cfg.color;
+        if (!label) label = labelForIdx(best.idx, yr, currentLang);
+        rows.push(`<div class="mctt-row"><span class="mctt-lbl"><span class="mctt-sw" style="background:${stroke}"></span>${yr}</span><span class="mctt-val">R$ ${fmt(best.value)}</span></div>`);
+      }
+    }
+    if (!label) label = currentDisplayMode();
+    tooltip.innerHTML = `<div class="mctt-month">${label}</div>${rows.join('')}`;
+
+    const chartRect = chartEl.getBoundingClientRect();
+    const tooltipW = 220;
+    const cursorX = e.clientX - chartRect.left;
+    const cursorY = e.clientY - chartRect.top;
+    const left = cursorX + tooltipW + 12 > chartRect.width
+      ? Math.max(4, cursorX - tooltipW - 12)
+      : cursorX + 12;
+    tooltip.style.left = left + 'px';
+    tooltip.style.top = Math.max(4, cursorY - 60) + 'px';
+    tooltip.style.opacity = 1;
+  });
+
+  overlay.addEventListener('mouseleave', () => {
+    crosshair.style.opacity = 0;
+    tooltip.style.opacity = 0;
+  });
+}
+
+function attachDragZoom(chartEl, chartKey, W, H, padL, padR, padT, padB, innerW, innerH, totalUnits, range) {
+  const svg = chartEl.querySelector('svg');
+  const overlay = chartEl.querySelector('.mc-hover-overlay');
+  const brush = chartEl.querySelector('.chart-brush');
+  if (!overlay || !brush) return;
+  const rangeSize = Math.max(1, range.end - range.start);
+  let dragStartX = null;
+  const screenToIdx = (clientX) => {
+    const rect = svg.getBoundingClientRect();
+    const mouseX = clientX - rect.left;
+    const viewBoxX = (mouseX / rect.width) * W;
+    const idxFloat = range.start + ((viewBoxX - padL) / innerW) * rangeSize;
+    return Math.max(range.start, Math.min(range.end, Math.round(idxFloat)));
+  };
+  const idxToViewBoxX = (idx) => padL + ((idx - range.start) / rangeSize) * innerW;
+  overlay.addEventListener('mousedown', (e) => {
+    if (e.button !== 0) return;
+    dragStartX = e.clientX;
+    chartEl.dataset.dragging = '1';
+    brush.style.display = 'block';
+    e.preventDefault();
+  });
+  const onMove = (e) => {
+    if (dragStartX === null) return;
+    const startIdx = screenToIdx(dragStartX);
+    const curIdx = screenToIdx(e.clientX);
+    const lo = Math.min(startIdx, curIdx);
+    const hi = Math.max(startIdx, curIdx);
+    const x1 = idxToViewBoxX(lo);
+    const x2 = idxToViewBoxX(hi);
+    brush.setAttribute('x', x1);
+    brush.setAttribute('width', Math.max(0, x2 - x1));
+  };
+  const onUp = (e) => {
+    if (dragStartX === null) return;
+    const startIdx = screenToIdx(dragStartX);
+    const endIdx = screenToIdx(e.clientX);
+    const lo = Math.min(startIdx, endIdx);
+    const hi = Math.max(startIdx, endIdx);
+    dragStartX = null;
+    chartEl.dataset.dragging = '0';
+    brush.style.display = 'none';
+    if (hi - lo >= 1) {
+      xZooms[chartKey] = { start: lo, end: hi };
+      reRenderAfterZoom(chartKey);
+    }
+  };
+  document.addEventListener('mousemove', onMove);
+  document.addEventListener('mouseup', onUp);
+}
+
+function reRenderAfterZoom(chartKey) {
+  if (activeModal && `pld-${activeModal.sub}` === chartKey) {
+    const body = document.getElementById('chart-modal-body');
+    body.innerHTML = '';
+    renderSingleChartLarge(activeModal.sub, body);
+  }
+  renderPLDMultiples();
+}
+
+function resetZoom(chartKey) {
+  delete xZooms[chartKey];
+  reRenderAfterZoom(chartKey);
+}
+
+function openChartModal(sub) {
+  activeModal = { sub };
+  const overlay = document.getElementById('chart-modal-overlay');
+  const body = document.getElementById('chart-modal-body');
+  const titleEl = document.getElementById('chart-modal-title');
+  titleEl.textContent = `PLD · ${SUB_LABELS[sub]} (${SUB_FULL[sub]})`;
+  body.innerHTML = '';
+  renderSingleChartLarge(sub, body);
+  overlay.classList.add('active');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeChartModal() {
+  const overlay = document.getElementById('chart-modal-overlay');
+  overlay.classList.remove('active');
+  document.body.style.overflow = '';
+  activeModal = null;
+}
+
+function renderSingleChartLarge(sub, container) {
+  const W = 1300, H = 480, padL = 70, padR = 24, padT = 16, padB = 30;
+  const innerW = W - padL - padR, innerH = H - padT - padB;
+  const MONTH_LABELS = currentLang === 'PT' ? MONTH_ABBR_PT : MONTH_ABBR_EN;
+  const yearsToPlot = Array.from(selectedYears).sort((a, b) => a - b);
+  const currentYear = new Date().getUTCFullYear();
+  const mode = currentDisplayMode();
+  const chartKey = `pld-${sub}`;
+  const totalUnits = xUnits();
+  const zoom = xZooms[chartKey];
+  const rStart = zoom ? Math.max(0, zoom.start) : 0;
+  const rEnd = zoom ? Math.min(totalUnits - 1, zoom.end) : totalUnits - 1;
+  const rangeSize = Math.max(1, rEnd - rStart);
+  const xScale = i => padL + ((i - rStart) / rangeSize) * innerW;
+  const subColor = `var(--${sub.toLowerCase()})`;
+
+  let yMax = 100;
+  for (const yr of yearsToPlot) {
+    const pts = pldSeries(sub, yr);
+    for (const p of pts) if (p.value > yMax) yMax = p.value;
+  }
+  yMax = Math.ceil(yMax * 1.1 / 100) * 100;
+  const yScale = v => padT + innerH - (v / yMax) * innerH;
+
+  let paths = '', recentDots = '';
+  const legendItems = [];
+  for (const yr of yearsToPlot) {
+    let pts = pldSeries(sub, yr).filter(p => p.idx >= rStart && p.idx <= rEnd);
+    if (!pts.length) continue;
+    const coords = pts.map(p => ({ x: xScale(p.idx), y: yScale(p.value) }));
+    const d = coords.map((c, i) => `${i === 0 ? 'M' : 'L'} ${c.x.toFixed(1)} ${c.y.toFixed(1)}`).join(' ');
+    const cfg = colorForYear(yr);
+    const stroke = cfg.color === 'CURRENT' ? subColor : cfg.color;
+    const opacity = (currentYear - yr) > 6 ? 0.55 : (yr === currentYear ? 1.0 : 0.85);
+    paths += `<path d="${d}" stroke="${stroke}" stroke-width="${cfg.width + 0.6}" fill="none" opacity="${opacity}"/>`;
+    if (yr === currentYear && mode !== 'daily') {
+      recentDots += coords.map(c => `<circle cx="${c.x.toFixed(1)}" cy="${c.y.toFixed(1)}" r="2.5" fill="${subColor}" stroke="var(--bg)" stroke-width="0.5"/>`).join('');
+    }
+    legendItems.push(`<span class="ml-item"><span class="ml-swatch" style="background:${stroke};height:${cfg.width >= 2 ? 3 : 2}px;width:18px"></span> ${yr}${yr === currentYear ? ' YTD' : ''}</span>`);
+  }
+
+  let thresholds = '';
+  for (const th of PLD_THRESHOLDS) {
+    if (th.value <= yMax) {
+      const y = yScale(th.value);
+      thresholds += `<line class="mc-threshold" x1="${padL}" x2="${W - padR}" y1="${y}" y2="${y}" stroke="${th.color}"/>`;
+      if (th.value <= yMax * 0.95) {
+        thresholds += `<text class="mc-threshold-label" x="${W - padR - 4}" y="${y - 3}" text-anchor="end" fill="${th.color}" font-size="11">${th.label} (R$ ${th.value})</text>`;
+      }
+    }
+  }
+
+  let grid = '';
+  const ticks = [0, yMax * 0.25, yMax * 0.5, yMax * 0.75, yMax];
+  for (const tv of ticks) {
+    grid += `<line class="mc-grid" x1="${padL}" x2="${W - padR}" y1="${yScale(tv)}" y2="${yScale(tv)}" />`;
+    grid += `<text class="mc-axis" x="${padL - 8}" y="${yScale(tv) + 4}" text-anchor="end" font-size="11">${Math.round(tv)}</text>`;
+  }
+
+  let xlab = '';
+  for (let m = 1; m <= 12; m++) {
+    const doy = MONTH_START_DOY[m - 1] + 14;
+    let idx;
+    if (mode === 'daily') idx = doy - 1;
+    else if (mode === 'weekly') idx = Math.round(doy / 7);
+    else idx = m - 1;
+    if (idx < rStart || idx > rEnd) continue;
+    xlab += `<text class="mc-axis" x="${xScale(idx)}" y="${H - padB + 18}" text-anchor="middle" font-size="11">${MONTH_LABELS[m - 1]}</text>`;
+  }
+  const hasZoom = zoom && (zoom.end - zoom.start) < totalUnits - 1;
+
+  container.innerHTML = `
+    <div class="mini-chart" data-chart-key="${chartKey}" data-sub="${sub}">
+      ${hasZoom ? `<button class="chart-zoom-reset active" data-chart-key="${chartKey}">↺ ${I18N[currentLang].zoomReset}</button>` : ''}
+      <div class="mini-chart-head">
+        <span class="mc-name ${sub.toLowerCase()}">${SUB_LABELS[sub]} · ${SUB_FULL[sub]} · PLD</span>
+        <span class="mc-avg">${I18N[currentLang].unitLabel}</span>
+      </div>
+      <svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMid meet">
+        ${grid}
+        ${thresholds}
+        ${xlab}
+        ${paths}
+        ${recentDots}
+        <line class="mc-crosshair" x1="0" y1="${padT}" x2="0" y2="${padT + innerH}"/>
+        <rect class="chart-brush" x="0" y="${padT}" width="0" height="${innerH}" style="display:none"/>
+        <rect class="mc-hover-overlay" x="${padL}" y="${padT}" width="${innerW}" height="${innerH}" fill="transparent"/>
+      </svg>
+      <div class="mc-tooltip"></div>
+      <div class="mc-legend">${legendItems.join('')}</div>
+    </div>
+  `;
+  const chartEl = container.querySelector('.mini-chart');
+  attachUniversalHover(chartEl, sub, W, H, padL, padR, padT, padB, innerW, innerH, yearsToPlot, { start: rStart, end: rEnd });
+  attachDragZoom(chartEl, chartKey, W, H, padL, padR, padT, padB, innerW, innerH, totalUnits, { start: rStart, end: rEnd });
+}
+
+function renderStatsTable() {
+  const table = document.getElementById('stats-table');
+  if (!table || !AVAILABLE_YEARS.length) {
+    if (table) { table.querySelector('thead').innerHTML = ''; table.querySelector('tbody').innerHTML = ''; }
+    return;
+  }
+  const t = I18N[currentLang];
+  const years = AVAILABLE_YEARS;
+  const headRow1 = `<tr>
+    <th rowspan="2">${t.thSub}</th>
+    ${years.map(yr => `<th colspan="4" class="stats-year-header">${yr}</th>`).join('')}
+  </tr>
+  <tr>
+    ${years.map(() => `<th>${t.thAvg}</th><th>${t.thMin}</th><th>${t.thMax}</th><th>${t.thStd}</th>`).join('')}
+  </tr>`;
+  table.querySelector('thead').innerHTML = headRow1;
+  const rows = SUBS.map(sub => {
+    const cells = years.map(yr => {
+      const s = YEAR_STATS[sub] && YEAR_STATS[sub][String(yr)];
+      if (!s) return `<td>—</td><td>—</td><td>—</td><td>—</td>`;
+      return `<td>${fmt(s.avg, 0)}</td><td>${fmt(s.min, 0)}</td><td>${fmt(s.max, 0)}</td><td>${fmt(s.std, 0)}</td>`;
+    }).join('');
+    return `<tr class="${sub.toLowerCase()}"><td>${SUB_LABELS[sub]}</td>${cells}</tr>`;
+  }).join('');
+  table.querySelector('tbody').innerHTML = rows;
+}
+
+function renderInsights() {
+  const now = new Date().getUTCFullYear();
+  const prev = now - 1;
+  const prev2 = now - 2;
+  const t = I18N[currentLang];
+  const yoyEl = document.getElementById('insight-yoy');
+  const bndEl = document.getElementById('insight-bandeira');
+  if (!yoyEl || !bndEl) return;
+  if (!YEAR_STATS.SECO || Object.keys(YEAR_STATS.SECO).length === 0) {
+    yoyEl.innerHTML = t.insightLoading;
+    bndEl.innerHTML = '';
+    return;
+  }
+  const seco_now = YEAR_STATS.SECO[String(now)];
+  const seco_prev = YEAR_STATS.SECO[String(prev)];
+  const seco_prev2 = YEAR_STATS.SECO[String(prev2)];
+  let yoyText = '';
+  if (seco_now && seco_prev) {
+    const pct1 = ((seco_now.avg - seco_prev.avg) / seco_prev.avg * 100);
+    const dirCls = pct1 > 5 ? 'up' : (pct1 < -5 ? 'down' : '');
+    yoyText = `<strong>SE/CO ${seco_now.avg > seco_prev.avg ? t.rose : t.fell} ${fmt(Math.abs(pct1), 0)}% ${prev}→${now}.</strong> `;
+    yoyText += `${t.insightYoyTraj}: `;
+    if (seco_prev2) yoyText += `<span class="v">R$ ${fmt(seco_prev2.avg, 0)}</span> → `;
+    yoyText += `<span class="v">R$ ${fmt(seco_prev.avg, 0)}</span> → <span class="v ${dirCls}">R$ ${fmt(seco_now.avg, 0)}</span> (${now} YTD)`;
+  }
+  yoyEl.innerHTML = yoyText;
+
+  const bandeiraFor = (avg) => {
+    if (avg < 100) return { name: 'Verde', color: 'var(--ok)' };
+    if (avg < 200) return { name: 'Amarela', color: 'var(--warn)' };
+    if (avg < 400) return { name: 'Vermelha 1', color: '#f97373' };
+    return { name: 'Vermelha 2', color: 'var(--danger)' };
+  };
+  if (seco_now) {
+    const bnd = bandeiraFor(seco_now.avg);
+    const cheapest = SUBS.reduce((acc, s) => {
+      const cur = YEAR_STATS[s] && YEAR_STATS[s][String(now)];
+      if (cur && (acc === null || cur.avg < acc.avg)) return { sub: s, avg: cur.avg };
+      return acc;
+    }, null);
+    const priciest = SUBS.reduce((acc, s) => {
+      const cur = YEAR_STATS[s] && YEAR_STATS[s][String(now)];
+      if (cur && (acc === null || cur.avg > acc.avg)) return { sub: s, avg: cur.avg };
+      return acc;
+    }, null);
+    let bndText = `${t.insightBandeiraPrefix} <span class="v" style="color:${bnd.color}">${bnd.name}</span> ` +
+                  `(${t.insightBandeiraEq.replace('{0}', `R$ ${fmt(seco_now.avg, 0)}`)})`;
+    if (cheapest && priciest && cheapest.sub !== priciest.sub) {
+      bndText += `. ${t.insightSpread.replace('{cheapestSub}', SUB_LABELS[cheapest.sub]).replace('{cheapestVal}', fmt(cheapest.avg, 0)).replace('{pricySub}', SUB_LABELS[priciest.sub]).replace('{pricyVal}', fmt(priciest.avg, 0))}`;
+    }
+    bndEl.innerHTML = bndText;
+  }
+}
+
+document.addEventListener('click', (e) => {
+  const expandBtn = e.target.closest('.chart-expand-btn');
+  if (expandBtn) {
+    const sub = expandBtn.dataset.sub;
+    if (sub) openChartModal(sub);
+    return;
+  }
+  const resetBtn = e.target.closest('.chart-zoom-reset');
+  if (resetBtn) {
+    const key = resetBtn.dataset.chartKey;
+    if (key) resetZoom(key);
+    return;
+  }
+  if (e.target.id === 'chart-modal-close' || e.target.id === 'chart-modal-overlay') {
+    closeChartModal();
+    return;
+  }
+  const reloadBtn = e.target.closest('#reload-btn');
+  if (reloadBtn) {
+    reloadAllData();
+    return;
+  }
+});
+
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape' && activeModal) closeChartModal();
+});
 
 const I18N = {
   EN: {
-    module: 'Market · PLD Monitor',
-    dataLag: 'CCEE Dados Abertos · 3-year series',
+    dataLag: 'CCEE Dados Abertos · live',
     pageTitle: 'PLD by submarket · multi-year context',
-    pageSub: 'Spot price R$/MWh — daily granularity for 2026, monthly averages 2024-2026',
-    period: 'Period',
-    months: '27 months',
-    insightsLabel: 'Highlights · multi-year regime shift',
-    insightYoy: '<strong>SE/CO average PLD rose 69% from 2024 to 2025, then another 47% YTD into 2026.</strong> Trajectory: <span class="v">R$ 125.70</span> → <span class="v">R$ 212.63</span> → <span class="v up">R$ 313.30</span>. Sul is the most exposed: <span class="v">R$ 125.73</span> → <span class="v">R$ 216.27</span> → <span class="v up">R$ 368.87</span> (+193% over 24 months).',
-    insightSeasonality: '<strong>The piso-floor regime that defined 2024 has dissolved.</strong> In 2024, all four submarkets averaged at the floor (R$ 61.07) for 5 of 12 months; in 2026 YTD, the floor has not been touched in any submarket. ENA/EAR trajectory has shifted the cost curve up structurally.',
-    insightSpread: '<strong>NE/N remain the cheapest submarkets across all three years</strong> — 2026 YTD averages of <span class="v">R$ 289.55</span> and <span class="v">R$ 290.46</span> vs SE/CO at <span class="v">R$ 313.30</span> and Sul at <span class="v up">R$ 368.87</span>. NE→SE/CO intercâmbio remains the binding constraint that prices this gap.',
-    seasonalityTitle: 'Seasonality · monthly average per year',
-    seasonalityHint: 'Lines: 2024 / 2025 / 2026 ytd · y-axis 0-500 R$/MWh',
-    yoyTitle: 'Year-over-year · same months Jan-Mar',
-    yoyHint: 'Δ vs prior year',
-    lineTitle: 'Daily PLD · 2026 detail (Jan 1 - Mar 10)',
-    lineHint: 'Hover for detail · click legend to isolate',
-    thSub: 'Sub', thJan: 'Jan 24', thJan25: 'Jan 25', thJan26: 'Jan 26',
-    thFeb: 'Feb 24', thFeb25: 'Feb 25', thFeb26: 'Feb 26',
-    thMar: 'Mar 24', thMar25: 'Mar 25', thMar26: 'Mar 26',
-    source: 'Source', limitsLabel: 'Piso/teto 2026',
-    avg24: '2024 avg', avg25: '2025 avg', avg26: '2026 ytd',
+    pageSub: 'Spot price R$/MWh — daily/weekly/monthly granularity 2021-2026',
+    period: 'Updated',
+    insightsLabel: 'Highlights · regime context',
+    insightLoading: 'Loading insights...',
+    rose: 'rose', fell: 'fell',
+    insightYoyTraj: 'Trajectory',
+    insightBandeiraPrefix: 'Current SE/CO level maps to <strong>bandeira</strong>',
+    insightBandeiraEq: 'avg = {0}/MWh',
+    insightSpread: 'Cheapest: <span class="v">{cheapestSub}</span> (R$ {cheapestVal}). Most exposed: <span class="v up">{pricySub}</span> (R$ {pricyVal})',
+    seasonalityTitle: 'Daily PLD · multi-year by submarket',
+    seasonalityHint: 'Pick years to compare · current year highlighted',
+    statsTitle: 'Year statistics · avg / min / max / std',
+    statsHint: 'All values in R$/MWh',
+    thSub: 'Sub', thAvg: 'avg', thMin: 'min', thMax: 'max', thStd: 'std',
+    source: 'Source',
+    bandeiraLegend: 'PLD ≈ Bandeira: &lt;100 Green · 100-200 Yellow · 200-400 Red1 · &gt;400 Red2',
+    compareYrs: 'Compare years',
+    presetLast3: 'Last 3y', presetLast5: 'Last 5y', presetDrought: 'Drought yrs',
+    presetAll: 'All', presetClear: 'Clear',
+    reloadLbl: 'Reload',
+    expandChart: 'Expand to fullscreen',
+    zoomReset: 'Reset zoom',
+    modalHint: 'Drag horizontally to zoom · click Reset to clear',
+    unitLabel: 'R$/MWh — dashed lines = bandeira tarifária thresholds',
+    loadingData: 'Loading data...',
+    loadFailed: 'Failed to load data',
+    retryBtn: 'Retry',
   },
   PT: {
-    module: 'Mercado · Monitor de PLD',
-    dataLag: 'CCEE Dados Abertos · série 3 anos',
+    dataLag: 'CCEE Dados Abertos · ao vivo',
     pageTitle: 'PLD por submercado · contexto multi-anos',
-    pageSub: 'Preço spot R$/MWh — granularidade diária para 2026, médias mensais 2024-2026',
-    period: 'Período',
-    months: '27 meses',
-    insightsLabel: 'Destaques · mudança de regime multi-anos',
-    insightYoy: '<strong>PLD médio SE/CO subiu 69% de 2024 para 2025, e mais 47% no acumulado de 2026.</strong> Trajetória: <span class="v">R$ 125,70</span> → <span class="v">R$ 212,63</span> → <span class="v up">R$ 313,30</span>. Sul é o mais exposto: <span class="v">R$ 125,73</span> → <span class="v">R$ 216,27</span> → <span class="v up">R$ 368,87</span> (+193% em 24 meses).',
-    insightSeasonality: '<strong>O regime de piso que definiu 2024 dissolveu-se.</strong> Em 2024, os quatro submercados ficaram na média do piso (R$ 61,07) por 5 dos 12 meses; em 2026 YTD, o piso não foi tocado em nenhum submercado. A trajetória de ENA/EAR moveu a curva de custo estruturalmente para cima.',
-    insightSpread: '<strong>NE/N permanecem os submercados mais baratos nos três anos</strong> — médias 2026 YTD de <span class="v">R$ 289,55</span> e <span class="v">R$ 290,46</span> contra SE/CO em <span class="v">R$ 313,30</span> e Sul em <span class="v up">R$ 368,87</span>. O intercâmbio NE→SE/CO continua sendo a restrição que precifica esse gap.',
-    seasonalityTitle: 'Sazonalidade · média mensal por ano',
-    seasonalityHint: 'Linhas: 2024 / 2025 / 2026 ytd · eixo y 0-500 R$/MWh',
-    yoyTitle: 'Ano contra ano · mesmos meses jan-mar',
-    yoyHint: 'Δ vs ano anterior',
-    lineTitle: 'PLD diário · detalhe 2026 (1/jan - 10/mar)',
-    lineHint: 'Passe o mouse · clique na legenda para isolar',
-    thSub: 'Sub', thJan: 'jan/24', thJan25: 'jan/25', thJan26: 'jan/26',
-    thFeb: 'fev/24', thFeb25: 'fev/25', thFeb26: 'fev/26',
-    thMar: 'mar/24', thMar25: 'mar/25', thMar26: 'mar/26',
-    source: 'Fonte', limitsLabel: 'Piso/teto 2026',
-    avg24: 'média 2024', avg25: 'média 2025', avg26: '2026 ytd',
+    pageSub: 'Preço spot R$/MWh — granularidade diária/semanal/mensal 2021-2026',
+    period: 'Atualizado',
+    insightsLabel: 'Destaques · contexto de regime',
+    insightLoading: 'Carregando insights...',
+    rose: 'subiu', fell: 'caiu',
+    insightYoyTraj: 'Trajetória',
+    insightBandeiraPrefix: 'Nível SE/CO atual mapeia para <strong>bandeira</strong>',
+    insightBandeiraEq: 'média = {0}/MWh',
+    insightSpread: 'Mais barato: <span class="v">{cheapestSub}</span> (R$ {cheapestVal}). Mais exposto: <span class="v up">{pricySub}</span> (R$ {pricyVal})',
+    seasonalityTitle: 'PLD diário · multi-anos por submercado',
+    seasonalityHint: 'Escolha anos para comparar · ano atual destacado',
+    statsTitle: 'Estatísticas anuais · média / mín / máx / desvio',
+    statsHint: 'Todos os valores em R$/MWh',
+    thSub: 'Sub', thAvg: 'média', thMin: 'mín', thMax: 'máx', thStd: 'desvio',
+    source: 'Fonte',
+    bandeiraLegend: 'PLD ≈ Bandeira: &lt;100 Verde · 100-200 Amarela · 200-400 Vermelha 1 · &gt;400 Vermelha 2',
+    compareYrs: 'Comparar anos',
+    presetLast3: 'Últ. 3 anos', presetLast5: 'Últ. 5 anos', presetDrought: 'Anos de seca',
+    presetAll: 'Todos', presetClear: 'Limpar',
+    reloadLbl: 'Recarregar',
+    expandChart: 'Expandir tela cheia',
+    zoomReset: 'Resetar zoom',
+    modalHint: 'Arraste horizontalmente para dar zoom · clique em Resetar',
+    unitLabel: 'R$/MWh — linhas tracejadas = limiares de bandeira tarifária',
+    loadingData: 'Carregando dados...',
+    loadFailed: 'Falha ao carregar dados',
+    retryBtn: 'Tentar novamente',
   }
 };
-
-let currentLang = 'EN';
 
 function setLang(lang) {
   currentLang = lang;
@@ -440,282 +1021,42 @@ function setLang(lang) {
   document.querySelectorAll('.lang-toggle button').forEach(b => {
     b.classList.toggle('active', b.dataset.lang === lang);
   });
-  renderKPIs();
-  renderLegend();
-  renderSmallMultiples();
-  renderYoYTable();
-  try { localStorage.setItem('lang', lang); } catch(e){}
+  renderAll();
+  try { localStorage.setItem('lang', lang); } catch (e) {}
 }
 
 document.querySelectorAll('.lang-toggle button').forEach(b => {
   b.addEventListener('click', () => setLang(b.dataset.lang));
 });
 
-function fmt(n, decimals=2) {
-  if (n === null || n === undefined || isNaN(n)) return '—';
-  return n.toLocaleString(currentLang === 'PT' ? 'pt-BR' : 'en-US',
-    { minimumFractionDigits: decimals, maximumFractionDigits: decimals });
+function renderAll() {
+  renderKPIs();
+  renderYearChips();
+  renderPLDMultiples();
+  renderStatsTable();
+  renderInsights();
+  updateDataStatus();
 }
 
-// ── KPI strip (now with 3-year context) ──
-function renderKPIs() {
-  const t = I18N[currentLang];
-  const strip = document.querySelector('.kpi-strip');
-  strip.innerHTML = SUBS.map(sub => {
-    const y24 = YEAR_STATS['2024'][sub].avg;
-    const y25 = YEAR_STATS['2025'][sub].avg;
-    const y26 = YEAR_STATS['2026'][sub].avg;
-    return `
-      <div class="kpi ${sub.toLowerCase()}">
-        <div class="header">
-          <span class="name">${SUB_LABELS[sub]}</span>
-          <span class="unit">R$/MWh · avg</span>
-        </div>
-        <div class="value-row">
-          <span class="value">${fmt(y26)}</span>
-          <span class="value-label">${t.avg26}</span>
-        </div>
-        <div class="yoy-row">
-          <div class="y"><span class="yr">2024</span><span class="val">${fmt(y24)}</span></div>
-          <div class="y"><span class="yr">2025</span><span class="val">${fmt(y25)}</span></div>
-          <div class="y current"><span class="yr">2026 YTD</span><span class="val">${fmt(y26)}</span></div>
-        </div>
-      </div>
-    `;
-  }).join('');
+function updateDataStatus() {
+  const el = document.getElementById('data-status');
+  if (!el) return;
+  if (!DATA_GENERATED_AT) { el.textContent = '—'; return; }
+  const d = new Date(DATA_GENERATED_AT);
+  const opts = { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit', timeZone: 'America/Sao_Paulo' };
+  el.textContent = `CCEE · ${d.toLocaleString(currentLang === 'PT' ? 'pt-BR' : 'en-US', opts)} BRT`;
 }
 
-// ── small multiples: per-submarket seasonality ──
-function renderSmallMultiples() {
-  const container = document.getElementById('small-multiples');
-  const W = 540, H = 160, padL = 32, padR = 12, padT = 12, padB = 22;
-  const innerW = W - padL - padR, innerH = H - padT - padB;
-
-  const MONTH_LABELS = currentLang === 'PT' ? MONTH_ABBR_PT : MONTH_ABBR_EN;
-  const yMax = 550;
-
-  const xScale = m => padL + ((m-1)/11)*innerW;
-  const yScale = v => padT + innerH - (v/yMax)*innerH;
-
-  container.innerHTML = SUBS.map(sub => {
-    // Build paths for 3 years
-    const yr24 = [];
-    const yr25 = [];
-    const yr26 = [];
-    for (let m = 1; m <= 12; m++) {
-      const mm = m.toString().padStart(2, '0');
-      const k24 = `2024-${mm}`, k25 = `2025-${mm}`, k26 = `2026-${mm}`;
-      if (MONTHLY[k24]) yr24.push({x:xScale(m), y:yScale(MONTHLY[k24][sub])});
-      if (MONTHLY[k25]) yr25.push({x:xScale(m), y:yScale(MONTHLY[k25][sub])});
-      if (MONTHLY[k26]) yr26.push({x:xScale(m), y:yScale(MONTHLY[k26][sub])});
-    }
-    const path = pts => pts.length ? pts.map((p,i) => `${i===0?'M':'L'} ${p.x.toFixed(1)} ${p.y.toFixed(1)}`).join(' ') : '';
-
-    // Y gridlines
-    let grid = '';
-    for (const t of [100, 200, 300, 400, 500]) {
-      grid += `<line class="mc-grid" x1="${padL}" x2="${W-padR}" y1="${yScale(t)}" y2="${yScale(t)}" />`;
-      grid += `<text class="mc-axis" x="${padL-6}" y="${yScale(t)+3}" text-anchor="end">${t}</text>`;
-    }
-
-    // X labels: J F M A M J J A S O N D - show every other
-    let xlab = '';
-    for (let m = 1; m <= 12; m++) {
-      const x = xScale(m);
-      const label = MONTH_LABELS[m-1][0].toUpperCase();
-      xlab += `<text class="mc-axis" x="${x}" y="${H-padB+13}" text-anchor="middle">${label}</text>`;
-    }
-
-    // Highlight dots for 2026
-    const dots = yr26.map(p => `<circle class="mc-dot-y26" cx="${p.x}" cy="${p.y}" r="2.5" />`).join('');
-
-    return `
-      <div class="mini-chart">
-        <div class="mini-chart-head">
-          <span class="mc-name ${sub.toLowerCase()}">${SUB_LABELS[sub]} · ${SUB_FULL[sub]}</span>
-          <span class="mc-avg">2026: <strong style="color:var(--text)">R$ ${fmt(YEAR_STATS['2026'][sub].avg)}</strong></span>
-        </div>
-        <svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none">
-          ${grid}
-          ${xlab}
-          <path class="mc-y24" d="${path(yr24)}" />
-          <path class="mc-y25" d="${path(yr25)}" />
-          <path class="mc-y26" d="${path(yr26)}" />
-          ${dots}
-        </svg>
-        <div class="mc-legend">
-          <span class="ml-item"><span class="ml-swatch y24"></span> 2024</span>
-          <span class="ml-item"><span class="ml-swatch y25"></span> 2025</span>
-          <span class="ml-item"><span class="ml-swatch y26"></span> 2026 YTD</span>
-        </div>
-      </div>
-    `;
-  }).join('');
+async function init() {
+  try {
+    const stored = localStorage.getItem('lang');
+    if (stored === 'EN' || stored === 'PT') currentLang = stored;
+  } catch (e) {}
+  await loadData();
+  setLang(currentLang);
 }
 
-// ── YoY table ──
-function renderYoYTable() {
-  const tbody = document.querySelector('#yoy-table tbody');
-  function pct(curr, prev) {
-    const p = ((curr - prev) / prev) * 100;
-    const cls = Math.abs(p) < 5 ? 'pct-flat' : (p > 0 ? 'pct-up' : 'pct-down');
-    const arrow = p > 5 ? '↑' : p < -5 ? '↓' : '·';
-    return `<span class="${cls}">${arrow} ${fmt(Math.abs(p),0)}%</span>`;
-  }
-  tbody.innerHTML = SUBS.map(sub => {
-    const j24 = MONTHLY['2024-01'][sub];
-    const j25 = MONTHLY['2025-01'][sub];
-    const j26 = MONTHLY['2026-01'][sub];
-    const f24 = MONTHLY['2024-02'][sub];
-    const f25 = MONTHLY['2025-02'][sub];
-    const f26 = MONTHLY['2026-02'][sub];
-    const m24 = MONTHLY['2024-03'][sub];
-    const m25 = MONTHLY['2025-03'][sub];
-    const m26 = MONTHLY['2026-03'][sub];
-    return `
-      <tr class="${sub.toLowerCase()}">
-        <td>${SUB_LABELS[sub]}</td>
-        <td>${fmt(j24)}</td>
-        <td>${fmt(j25)}</td>
-        <td>${fmt(j26)} <span style="font-size:9px;margin-left:4px">${pct(j26, j25)}</span></td>
-        <td>${fmt(f24)}</td>
-        <td>${fmt(f25)}</td>
-        <td>${fmt(f26)} <span style="font-size:9px;margin-left:4px">${pct(f26, f25)}</span></td>
-        <td>${fmt(m24)}</td>
-        <td>${fmt(m25)}</td>
-        <td>${fmt(m26)} <span style="font-size:9px;margin-left:4px">${pct(m26, m25)}</span></td>
-      </tr>
-    `;
-  }).join('');
-}
-
-// ── daily chart legend ──
-const hiddenSubs = new Set();
-function renderLegend() {
-  const legend = document.getElementById('legend');
-  legend.innerHTML = SUBS.map(sub => {
-    const muted = hiddenSubs.has(sub) ? 'muted' : '';
-    const latest = DATA[DATA.length-1][sub];
-    return `
-      <div class="legend-item ${muted}" data-sub="${sub}">
-        <div class="swatch" style="background:${SUB_COLORS[sub]}"></div>
-        <span class="name">${SUB_LABELS[sub]}</span>
-        <span class="val">R$ ${fmt(latest)}</span>
-      </div>
-    `;
-  }).join('');
-  legend.querySelectorAll('.legend-item').forEach(el => {
-    el.addEventListener('click', () => {
-      const sub = el.dataset.sub;
-      if (hiddenSubs.has(sub)) hiddenSubs.delete(sub); else hiddenSubs.add(sub);
-      renderLineChart();
-      renderLegend();
-    });
-  });
-}
-
-// ── daily line chart ──
-const CHART = { w: 1200, h: 340, padL: 50, padR: 18, padT: 18, padB: 36 };
-
-function renderLineChart() {
-  const svg = document.getElementById('line-chart');
-  const { w, h, padL, padR, padT, padB } = CHART;
-  const innerW = w - padL - padR, innerH = h - padT - padB;
-
-  const allVals = DATA.flatMap(d => SUBS.map(s => d[s]));
-  let yMin = Math.min(...allVals), yMax = Math.max(...allVals);
-  yMin = Math.floor((yMin - 20) / 50) * 50;
-  yMax = Math.ceil((yMax + 20) / 50) * 50;
-
-  const xScale = i => padL + (i/(DATA.length-1))*innerW;
-  const yScale = v => padT + innerH - ((v-yMin)/(yMax-yMin))*innerH;
-
-  const yTicks = [];
-  for (let v = yMin; v <= yMax; v += 100) yTicks.push(v);
-
-  let html = '';
-  html += `<rect x="${padL}" y="${padT}" width="${innerW}" height="${innerH}" fill="transparent" />`;
-  yTicks.forEach(t => {
-    const y = yScale(t);
-    html += `<line class="grid-line" x1="${padL}" x2="${w-padR}" y1="${y}" y2="${y}" />`;
-    html += `<text class="axis-label" x="${padL-8}" y="${y+3}" text-anchor="end">${t}</text>`;
-  });
-
-  const xTickCount = 6;
-  for (let i = 0; i < xTickCount; i++) {
-    const idx = Math.round(i*(DATA.length-1)/(xTickCount-1));
-    const x = xScale(idx);
-    const dateStr = DATA[idx].date;
-    const [y,m,d] = dateStr.split('-');
-    const monthAbbr = (currentLang === 'PT' ? MONTH_ABBR_PT : MONTH_ABBR_EN)[parseInt(m)-1];
-    html += `<text class="axis-label" x="${x}" y="${h-padB+16}" text-anchor="middle">${d} ${monthAbbr}</text>`;
-    html += `<line class="axis-tick" x1="${x}" x2="${x}" y1="${padT+innerH}" y2="${padT+innerH+4}" />`;
-  }
-
-  SUBS.forEach(sub => {
-    const muted = hiddenSubs.has(sub) ? ' muted' : '';
-    const path = DATA.map((d,i) => `${i===0?'M':'L'} ${xScale(i).toFixed(2)} ${yScale(d[sub]).toFixed(2)}`).join(' ');
-    html += `<path class="line-path${muted}" d="${path}" stroke="${SUB_COLORS[sub]}" />`;
-  });
-
-  html += `<line id="tooltip-line" class="tooltip-line" x1="0" y1="${padT}" x2="0" y2="${padT+innerH}" />`;
-  html += `<rect id="hover-overlay" x="${padL}" y="${padT}" width="${innerW}" height="${innerH}" fill="transparent" />`;
-
-  svg.innerHTML = html;
-  attachTooltip(xScale, yScale, innerW, innerH);
-}
-
-function attachTooltip(xScale, yScale, innerW, innerH) {
-  const overlay = document.getElementById('hover-overlay');
-  const tooltipLine = document.getElementById('tooltip-line');
-  const tooltip = document.getElementById('tooltip');
-  const svg = document.getElementById('line-chart');
-
-  overlay.addEventListener('mousemove', e => {
-    const rect = svg.getBoundingClientRect();
-    const mx = e.clientX - rect.left;
-    const vbx = (mx / rect.width) * CHART.w;
-    const idx = Math.round(((vbx - CHART.padL) / innerW) * (DATA.length-1));
-    if (idx < 0 || idx >= DATA.length) return;
-    const d = DATA[idx];
-
-    const xPos = xScale(idx);
-    tooltipLine.setAttribute('x1', xPos);
-    tooltipLine.setAttribute('x2', xPos);
-    tooltipLine.style.opacity = 0.6;
-
-    const xPx = (xPos / CHART.w) * rect.width;
-    const tooltipX = Math.min(rect.width - 200, Math.max(0, xPx + 12));
-    tooltip.style.left = tooltipX + 'px';
-    tooltip.style.top = '36px';
-    tooltip.style.opacity = 1;
-
-    const [yy, mm, dd] = d.date.split('-');
-    const monthAbbr = (currentLang === 'PT' ? MONTH_ABBR_PT : MONTH_ABBR_EN)[parseInt(mm)-1];
-    let html = `<div class="date">${dd} ${monthAbbr} ${yy}</div>`;
-    SUBS.forEach(sub => {
-      if (hiddenSubs.has(sub)) return;
-      html += `<div class="row ${sub.toLowerCase()}"><span class="name">${SUB_LABELS[sub]}</span><span class="val">R$ ${fmt(d[sub])}</span></div>`;
-    });
-    tooltip.innerHTML = html;
-  });
-
-  overlay.addEventListener('mouseleave', () => {
-    tooltipLine.style.opacity = 0;
-    tooltip.style.opacity = 0;
-  });
-}
-
-// ── init ──
-function init() {
-  let saved = 'EN';
-  try { saved = localStorage.getItem('lang') || 'EN'; } catch(e){}
-  setLang(saved);
-  renderLineChart();
-  window.addEventListener('resize', () => { renderLineChart(); renderSmallMultiples(); });
-}
 init();
 </script>
-
 </body>
 </html>
