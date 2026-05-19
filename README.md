@@ -1,120 +1,137 @@
-# dashsin — Phase 4a v3 (hidrologia daily/weekly + MMGD ~46 GW + refinos)
+# dashsin · Patch Fase 4b — PLD pipeline + Market refeita
 
-Patch sobre Phase 4a v1. Cinco frentes de mudança.
+**Bug original**: a aba Market tinha dados de PLD **hardcoded** (`const MONTHLY = {…}`) que iam só até março/2026. Sem pipeline conectado, **não atualizavam sozinhos** quando a CCEE publicava dias novos.
 
-## What's new
+**Fix**: pipeline automatizado puxando `PLD_MEDIA_DIARIA` direto do portal Dados Abertos da CCEE, com histórico completo 2021-2026, e a aba Market refeita do zero seguindo o padrão de Climate/Hydrology (chips de anos, modal, drag-zoom, tooltip universal, etc).
 
-### 1. Bandeira tarifária — valor monetário cobrado (v2)
-- Card "active flag" mostra valor adicional (R$/100 kWh)
-- 4 cartões com valor vigente de cada bandeira (Verde, Amarela, V1, V2)
-- Tabela hardcoded de Resoluções ANEEL 2015→2026 + fallback no CSV
+---
 
-### 2. Tarifas — TODAS componentes (v2)
-- B1 Convencional: TE + TUSD consumo
-- A4 Verde: TE/TUSD Ponta/FP + TUSD demanda única
-- A4 Azul: TE/TUSD Ponta/FP + TUSD demanda Ponta/FP segregada
-- Tabela com chevron ▸ expansível ao clique
+## Arquivos neste patch
 
-### 3. MMGD — agora calibrado a ~46 GW (v3)
-- Toggle modalidade (Todas/Própria UC/Autoconsumo remoto/etc) — todos os gráficos recalculam
-- Gráfico "Crescimento anual desde 2015": barras MW + linha GW acumulado
-- **Seed corrigido**: `46.6 GW total` (era 34 GW), aligned com EPE/GESEL 2026
-- Splits realistas separados pra kW (~22% autoconsumo remoto) vs count (~4%)
+| Arquivo | Destino no repo | Função |
+|---|---|---|
+| `pipelines/ccee_pld.py` | `pipelines/ccee_pld.py` | **NOVO** — busca PLD diário CCEE 2021-2026 e gera `data/pld.json` |
+| `tabs/market.html` | `tabs/market.html` | **SUBSTITUI** — Market refeita do zero (1062 linhas) |
+| `update-data.yml` | `.github/workflows/update-data.yml` | **SUBSTITUI** — adiciona step CCEE PLD ao workflow |
+| `data/pld.json` | `data/pld.json` | **NOVO seed** — 141 KB, será sobrescrito na 1ª run do Action |
 
-### 4. Hidrologia — daily/weekly híbrido + tooltip interativo (v3 NOVA)
+---
 
-**Granularidade adaptativa**:
-- **1 ano selecionado** → modo `daily` (366 pontos, linha "ondulada")
-- **2+ anos selecionados** → modo `weekly` (52 pontos por ano, agregação on-the-fly)
-- Badge `DAILY` ou `WEEKLY` no canto da seção EAR
+## O que o pipeline faz
 
-**Histórico desde 2010**:
-- Pipelines `ons_ear_ena.py` e `ons_ena_bacia.py` puxam 2010→corrente (17 anos)
-- Anos faltantes falham gracefully
-- Chips de seleção pra cada ano disponível
-- Presets: Últ. 3 anos / Últ. 5 anos / Anos de seca (2014/15/17/21+atual) / Todos / Limpar
+`pipelines/ccee_pld.py`:
 
-**Tooltip interativo agora em TODOS os 3 charts (EAR, ENA, Bacias)**:
-- Crosshair vertical segue o mouse
-- Mostra TODOS os anos selecionados na coluna
-- Modo daily: label "15 Mar 2024"; modo weekly: label "Wk 11 · 18 Mar 2024"
-- Valor formatado por chart (% pra EAR, MWmed pra ENA/Bacias)
+- Resolve UUIDs estáveis dos 6 CSVs anuais via CKAN `resource_show` (não precisa scrape do HTML)
+- Anos: **2021, 2022, 2023, 2024, 2025, 2026** (cobertura total do dataset CCEE)
+- Parse robusto do CSV `MES_REFERENCIA;SUBMERCADO;DIA;PLD_MEDIA_DIA` com fallback de encoding
+- Mapeia submercados PT-BR → siglas internas: `SUDESTE→SECO`, `NORDESTE→NE`, `NORTE→N`, `SUL→SUL`
+- Output `data/pld.json`:
 
-**Cores dinâmicas**:
-- Ano corrente: cor do subsistema (SECO azul, Sul laranja, NE verde, N roxo) — linha grossa
-- Penúltimo: cinza médio claro
-- Anteriores: gradiente de cinza progressivamente mais escuro
-
-### 5. Pipelines — agregação daily preservando monthly
-
-`ons_ear_ena.py` agora gera **ambos**:
-- `ear_monthly_pct`, `ena_monthly_mwmed` (compatibilidade)
-- `ear_daily_pct`, `ena_daily_mwmed` (366 valores por ano por sub)
-
-`ons_ena_bacia.py` mesma coisa: `monthly_mwmed` + `daily_mwmed`.
-
-JSON cresce de ~50 KB pra ~600 KB combinados — aceitável.
-
-## Files in this patch
-
-```
-pipelines/
-  common.py           ← upload again
-  aneel_bandeira.py   ← v2
-  aneel_tarifas.py    ← v2
-  aneel_mmgd.py       ← v2
-  ons_ear_ena.py      ← MODIFICADO: years 2010+ e agregação daily
-  ons_ena_bacia.py    ← MODIFICADO: years 2010+ e agregação daily
-
-tabs/
-  acl.html            ← v2
-  mmgd.html           ← v2
-  hydrology.html      ← MODIFICADO: daily/weekly híbrido, mode badge, tooltip universal
-
-data/
-  bandeira.json       ← seed v2
-  tarifas.json        ← seed v2
-  mmgd.json           ← seed v3 calibrado a 46.6 GW
-
-README.md
+```json
+{
+  "generated_at_utc": "...",
+  "source": { "name": "CCEE Dados Abertos — PLD_MEDIA_DIARIA", ... },
+  "submarkets": ["SECO", "SUL", "NE", "N"],
+  "now": { "SECO": {"pld": 366.97, "date": "2026-05-18"}, ... },
+  "daily_by_year": { "SECO": {"2021": [366 valores], ...}, ... },
+  "monthly_avg":   { "SECO": {"2021": [12 médias], ...}, ... },
+  "year_stats":    { "SECO": {"2021": {"avg":..., "min":..., "max":..., "std":..., "days":...}, ...}, ... }
+}
 ```
 
-## How to deploy on GitHub web
+---
 
-1. **pipelines/** — substituir 6 arquivos
-2. **tabs/** — substituir 3 arquivos (acl, mmgd, hydrology)
-3. **data/** — substituir 3 arquivos
-4. **README.md** — substituir
-5. **Actions → "update-data" → Run workflow**
+## O que a Market nova entrega
 
-## Performance expectations
+### Visual (igual Climate/Hydrology)
+- **Chips de anos**: 2021-2026 selecionáveis, com 5 presets (last3 / last5 / **drought** / all / clear)
+- **Mode badge** auto: `DAILY` (1 ano), `WEEKLY` (2+ anos), `MONTHLY` (fallback)
+- **4 mini-charts**: um por submercado (SECO/SUL/NE/N) com cores próprias
+- **Modal fullscreen** (botão ⛶): chart grande ~1300×480 com mesma interatividade
+- **Drag-zoom horizontal**: arrastar no chart pequeno OU no modal, brush azul, botão `↺ Reset zoom`
+- **Tooltip universal**: crosshair vertical + valores por ano (com cores)
+- **Cores dinâmicas por ano**: ano atual em cor do submercado (linha grossa), anteriores em escala de cinza
+- **Loading/erro states** + botão `↻ Reload` com spinner
 
-Primeira rodada após este patch:
-- EAR/ENA: 17 CSVs cada + agregação diária ≈ **6-10 min**
-- ENA Bacia: 17 CSVs + agregação diária ≈ **5-8 min**
-- Tarifas v2: ≈ **5-10 min**
-- MMGD v2: ≈ **8-15 min**
-- Outros (NASA, NOAA, Bandeira): ≈ **2 min**
+### Extras solicitados
+- **(a) Histórico completo 2021+**: 6 anos no chip selector e na stats table
+- **(c) Year stats table**: tabela com `avg / min / max / std` por submercado × ano
+- **(d) Linhas de referência bandeira tarifária** (R$/MWh):
+  - `< 100` Verde (verde claro tracejado)
+  - `100–200` Amarela
+  - `200–400` Vermelha 1
+  - `> 400` Vermelha 2
 
-Total: **25-45 min na primeira rodada**.
+### Insights automatizados
+- Análise YoY SE/CO computada do `year_stats` (não hardcoded)
+- Bandeira-equivalente do nível atual SE/CO
+- Spread NE/N vs SE/CO automático (cheapest vs most exposed)
 
-## Como usar a nova interface de hidrologia
+---
 
-1. **Comparar com anos antigos**: clica em chips individuais ou usa preset "Anos de seca" — vê 2014/15/17/21 + atual lado a lado em modo weekly
-2. **Investigar um ano específico**: clica em "Limpar" pra deixar só o ano corrente — automaticamente entra em modo **daily** com toda a granularidade
-3. **Tooltip**: passa o mouse sobre qualquer chart — crosshair vertical mostra o ponto exato e o valor de todos os anos selecionados na mesma data
+## Ordem de aplicação no GitHub
 
-## Modalidades MMGD — splits realistas
+Use upload web (drag-drop) para substituir cada arquivo:
 
-| Modalidade | % kW | % count |
-|---|---:|---:|
-| propria_uc | 68% | 93% |
-| autoconsumo_remoto | 22% | 4% |
-| compartilhada | 7% | 2% |
-| condominio | 2% | 0.7% |
-| multipla_uc | 0.6% | 0.2% |
+1. **`pipelines/ccee_pld.py`** → criar arquivo novo
+2. **`tabs/market.html`** → substituir o existente
+3. **`.github/workflows/update-data.yml`** → substituir
+4. **`data/pld.json`** → criar arquivo novo (seed sintético — será sobrescrito na 1ª Action run)
 
-## Live URLs (não mudam)
-- Site: https://rtbarbosa3.github.io/dashsin/
-- Actions: https://github.com/rtbarbosa3/dashsin/actions
-- Repo: https://github.com/rtbarbosa3/dashsin
+Depois disso, executar manualmente o workflow em **Actions → update-data → Run workflow** para puxar os dados reais da CCEE pela 1ª vez. O `pld.json` será atualizado com dados reais e o site refletirá imediatamente.
+
+---
+
+## Verificação pós-deploy
+
+### 1. Action rodou sem erro
+- Em **Actions**, o run mais recente deve mostrar 8 steps verdes (todos os pipelines)
+- Step `Run CCEE PLD pipeline` deve mostrar nos logs:
+  ```
+  [2021] parsed ~1,460 rows (skipped 0)
+  [2022] parsed ~1,460 rows
+  ...
+  [2026] parsed ~XXX rows (YTD)
+  Total records: ~9,000
+  Wrote .../pld.json (~150 KB)
+  ```
+
+### 2. Arquivo commitado
+- Em `data/pld.json`, o `source.name` deve dizer `"CCEE Dados Abertos — PLD_MEDIA_DIARIA"` (não mais `"INITIAL SEED — synthetic..."`)
+- `source.fetch_errors` deve ser `[]`
+
+### 3. Market mostra dados atualizados
+- Abrir https://rtbarbosa3.github.io/dashsin/tabs/market.html
+- KPI strip mostra o PLD do dia mais recente disponível (4 submercados)
+- Chips mostram 2021-2026
+- "Updated" no canto direito mostra data/hora da última run do Action (BRT)
+- Clicar no ⛶ de qualquer chart abre o modal
+- Arrastar no chart faz zoom
+
+### 4. Teste rápido de regressão
+- Mudar ano selecionado → mode badge alterna entre DAILY/WEEKLY corretamente
+- Preset "Drought yrs" deve marcar **2021** (crise hídrica) + ano atual
+- Year stats table mostra 4 colunas × 6 anos (24 cells de stats por linha)
+- Stats SECO 2021 deve mostrar avg ≈ R$ 600 e max ≈ R$ 1.100 (refletindo crise hídrica)
+
+---
+
+## Notas técnicas
+
+- **CKAN API**: a CCEE usa CKAN 2.10 com endpoint público `/api/3/action/resource_show?id=<uuid>`. Os UUIDs dos resources anuais são estáveis (não mudam entre uploads), por isso estão hardcoded no `PLD_RESOURCES`. Se a CCEE algum dia mudar os UUIDs, atualizar essa constante.
+- **Encoding**: o CSV vem em UTF-8 mas testamos fallback para latin-1 caso a CCEE mude. Função `fetch_text` do `common.py` já lida com isso.
+- **Robustez**: pipeline continua mesmo se 1 ano falhar (log em `source.fetch_errors`). Só aborta se NENHUM ano carregar.
+- **Sintético seed**: o `pld.json` deste patch tem dados sintéticos com baselines aproximados (2021=R$ 642 SECO refletindo crise hídrica, 2022=R$ 78 piso, etc). **Será sobrescrito na 1ª Action run** com dados reais.
+
+---
+
+## Mudanças no `update-data.yml`
+
+Apenas adicionado UM step entre `noaa_oni` e `aneel_bandeira`:
+
+```yaml
+- name: Run CCEE PLD pipeline (6 years × 4 submarkets)
+  run: python pipelines/ccee_pld.py
+```
+
+Todo o resto (concurrency lock, git pull --rebase, push) permanece igual.
