@@ -47,6 +47,9 @@ jobs:
       - name: Run NOAA ONI pipeline
         run: python pipelines/noaa_oni.py
 
+      - name: Run CCEE PLD pipeline (6 years × 4 submarkets)
+        run: python pipelines/ccee_pld.py
+
       - name: Run ANEEL bandeira pipeline
         run: python pipelines/aneel_bandeira.py
 
